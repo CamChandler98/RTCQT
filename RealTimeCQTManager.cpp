@@ -30,6 +30,7 @@ ARealTimeCQTManager::ARealTimeCQTManager()
 
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, sampleRate);
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
+    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     Smoother = MakeUnique<Audio::FAttackReleaseSmoother>(sampleRate, 1,  10.0f, 100.0f, false );
     Envelop.SetMode(Audio::EPeakMode::RootMeanSquared);
 }  
@@ -160,8 +161,14 @@ void ARealTimeCQTManager::PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<
             OutAmplitudes.Add(Amplitude);
         }
         // Audio::ArrayMultiplyByConstantInPlace(OutAmplitudes, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
-        
-        ConstantQAnalyzer -> CalculateCQT(outAmp.GetData(), outCQT);
+        cqtProcessing(OutAmplitudes);
+      
+    }
+}
+
+void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
+{
+        ConstantQAnalyzer -> CalculateCQT(audioData.GetData(), outCQT);
 
         TArray<float> SmoothedCQT;
         if(doSmooth){
@@ -229,6 +236,50 @@ void ARealTimeCQTManager::PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<
         }
 
         outCQT = SmoothedCQT;
+}
+
+void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes)
+{
+    const int32 SampleSize = sizeof(int16); // 16-bit PCM samples
+    const int32 SamplesPerChannel = PCMStream.Num() / (NumChannels * SampleSize);
+    const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
+
+    TArray<uint8> PaddedPCMStream;
+    PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
+    PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
+    PaddedPCMStream.Append(PCMStream);
+
+    TArray<float> floatStream= combineStream(PaddedPCMStream, NumChannels, 16);
+
+
+
+    TArray<float> WindowBuffer;
+    WindowBuffer.AddZeroed(NumWindowSamples);
+    OutAmplitudes.Reset();
+    OutAmplitudes.AddZeroed(PaddedSamplesPerChannel);
+    // Iterate over sliding windows
+    for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, floatStream , WindowBuffer, true))
+    {
+        // Iterate over samples in window
+        for (int32 SampleIndex = 0; SampleIndex < NumWindowSamples; SampleIndex++)
+        {
+            float Amplitude = 0.0f;
+
+            // Iterate over channels in window
+            for (int32 ChannelIndex = 0; ChannelIndex < NumChannels; ChannelIndex++)
+            {
+                const int16* SampleDataPtr = reinterpret_cast<const int16*>(Window.GetData() + ((SampleIndex + NumPaddingSamples) * NumChannels + ChannelIndex) * SampleSize);
+                const float SampleValue =  static_cast<float>(*SampleDataPtr) / 32768.0f;
+
+                Amplitude += SampleValue;
+            }
+
+            Amplitude /= NumChannels;
+            OutAmplitudes.Add(Amplitude);
+        }
+        // Audio::ArrayMultiplyByConstantInPlace(OutAmplitudes, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
+        
+       cqtProcessing(OutAmplitudes);
       
     }
 }

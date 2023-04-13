@@ -31,8 +31,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void anaylze(TArray<uint8> byteArray);
-	
+	void PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes);
 	void PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes);
+	void cqtProcessing(const TArray<float> audioData);
 	TArray<float> combineStream(TArray<uint8> interleavedStream, int numChannels, int bitsPerSample);
 	float ComputePolynomialCurve(float x, const TArray<float>& Coefficients);
 	
@@ -42,6 +43,7 @@ public:
 
 	TUniquePtr<Audio::FConstantQAnalyzer> ConstantQAnalyzer;
 	TUniquePtr<Audio::TSlidingBuffer<uint8> > SlidingBuffer;
+	TUniquePtr<Audio::TSlidingBuffer<float> > SlidingFloatBuffer;
 	TUniquePtr<Audio::FAttackReleaseSmoother> Smoother;
 	Audio::FInlineEnvelopeFollower Envelop;
 
@@ -100,7 +102,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumHopSamples;
-	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumWindowSamples;
 
