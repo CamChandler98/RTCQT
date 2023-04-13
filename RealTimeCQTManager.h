@@ -49,11 +49,11 @@ public:
 
 
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
-	float sampleRate = 176400.0;
+	float sampleRate = 48000.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 fftSize = 8192;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float NumBandsPerOctave = 12;	
+	float NumBandsPerOctave = 24;	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float KernelLowestCenterFreq = 40.0 ;		
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -95,7 +95,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool doScalePeaks = true;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool doBitDirect = true;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool isFloatFormat = true;
+	
     TArray<float> smoothAmplitudes;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumHopFrames;

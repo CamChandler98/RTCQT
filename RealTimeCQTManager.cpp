@@ -18,11 +18,16 @@ ARealTimeCQTManager::ARealTimeCQTManager()
 
 
 
+}  
+// Called when the game starts or when spawned
+void ARealTimeCQTManager::BeginPlay()
+{
+	Super::BeginPlay();
 	defaultSettings.BandWidthStretch = BandWidthStretch;
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize ;
-	defaultSettings.WindowType = Audio::EWindowType::Hann;
+	defaultSettings.WindowType = Audio::EWindowType::Blackman;
 
     NumHopFrames = FMath::Max(1, FMath::RoundToInt( sampleRate * analysisPeriod));
     NumHopSamples = NumHopFrames * NumChannels;
@@ -33,12 +38,6 @@ ARealTimeCQTManager::ARealTimeCQTManager()
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     Smoother = MakeUnique<Audio::FAttackReleaseSmoother>(sampleRate, 1,  10.0f, 100.0f, false );
     Envelop.SetMode(Audio::EPeakMode::RootMeanSquared);
-}  
-// Called when the game starts or when spawned
-void ARealTimeCQTManager::BeginPlay()
-{
-	Super::BeginPlay();
-	
 	
 }
 
@@ -52,15 +51,20 @@ void ARealTimeCQTManager::Tick(float DeltaTime)
 void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 {
 		outCQT.Reset();
-		// wildOutCQT.Reset();
-		// TArray<float> inSamples = combineStream(byteArray, 2, 16);
-		PCMToAmplitude(byteArray, outAmp);
-		// Equal power sum. assuming incoherrent signals.
+
+        if(doBitDirect)
+        {
+		    PCMToAmplitude(byteArray, outAmp);
+
+        }
+        else{
+            PCMToFloat(byteArray, outAmp);
+
+        }
 
 
-		// outCQT.Reserve(wildOutCQT.Num());
 
-		// Audio::ArrayMinMaxNormalize(wildOutCQT, outCQT);
+
 }
 
 TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStream, int numChannels, int bitsPerSample)
@@ -89,17 +93,36 @@ TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStrea
             int channelOffset = j * sampleSize;
 
             // Extract the sample value for the current channel
-            float sampleValue = 0.f;
-            for (int k = 0; k < sampleSize; k++)
+            if(isFloatFormat)
             {
-                sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
+                uint8 sampleValue = 0;
+                for (int k = 0; k < sampleSize; k++)
+                {
+                    sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
+                }
+
+                // Convert the uint8 sample value to float and normalize it to the range [-1, 1]
+                float normalizedSampleValue = static_cast<float>(sampleValue) / 255.f * 2.f - 1.f;
+
+                // Add the sample value for the current channel to the sum
+                sampleSum += normalizedSampleValue;
             }
+            else
+            {
 
-            // Normalize the sample value to the range [-1, 1]
-            sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
+                float sampleValue = 0.f;
+                for (int k = 0; k < sampleSize; k++)
+                {
+                    sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
+                }
 
-            // Add the sample value for the current channel to the sum
-            sampleSum += sampleValue;
+                // Normalize the sample value to the range [-1, 1]
+                sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
+
+                // Add the sample value for the current channel to the sum
+                sampleSum += sampleValue;
+
+            }
         }
 
         // Store the sum of the sample values for all channels in the output array
@@ -162,6 +185,34 @@ void ARealTimeCQTManager::PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<
         }
         // Audio::ArrayMultiplyByConstantInPlace(OutAmplitudes, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
         cqtProcessing(OutAmplitudes);
+      
+    }
+}
+
+
+
+void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes)
+{
+    const int32 SampleSize = sizeof(int16); // 16-bit PCM samples
+    const int32 SamplesPerChannel = PCMStream.Num() / (NumChannels * SampleSize);
+    const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
+
+    TArray<uint8> PaddedPCMStream;
+    PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
+    PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
+    PaddedPCMStream.Append(PCMStream);
+
+    TArray<float> floatStream= combineStream(PaddedPCMStream, NumChannels, 16);
+
+
+
+    TArray<float> WindowBuffer;
+    WindowBuffer.AddZeroed(fftSize);
+    // Iterate over sliding windows
+    for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, floatStream , WindowBuffer, true))
+    {
+    
+       cqtProcessing(Window);
       
     }
 }
@@ -236,50 +287,4 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
         }
 
         outCQT = SmoothedCQT;
-}
-
-void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes)
-{
-    const int32 SampleSize = sizeof(int16); // 16-bit PCM samples
-    const int32 SamplesPerChannel = PCMStream.Num() / (NumChannels * SampleSize);
-    const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
-
-    TArray<uint8> PaddedPCMStream;
-    PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
-    PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
-    PaddedPCMStream.Append(PCMStream);
-
-    TArray<float> floatStream= combineStream(PaddedPCMStream, NumChannels, 16);
-
-
-
-    TArray<float> WindowBuffer;
-    WindowBuffer.AddZeroed(NumWindowSamples);
-    OutAmplitudes.Reset();
-    OutAmplitudes.AddZeroed(PaddedSamplesPerChannel);
-    // Iterate over sliding windows
-    for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, floatStream , WindowBuffer, true))
-    {
-        // Iterate over samples in window
-        for (int32 SampleIndex = 0; SampleIndex < NumWindowSamples; SampleIndex++)
-        {
-            float Amplitude = 0.0f;
-
-            // Iterate over channels in window
-            for (int32 ChannelIndex = 0; ChannelIndex < NumChannels; ChannelIndex++)
-            {
-                const int16* SampleDataPtr = reinterpret_cast<const int16*>(Window.GetData() + ((SampleIndex + NumPaddingSamples) * NumChannels + ChannelIndex) * SampleSize);
-                const float SampleValue =  static_cast<float>(*SampleDataPtr) / 32768.0f;
-
-                Amplitude += SampleValue;
-            }
-
-            Amplitude /= NumChannels;
-            OutAmplitudes.Add(Amplitude);
-        }
-        // Audio::ArrayMultiplyByConstantInPlace(OutAmplitudes, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
-        
-       cqtProcessing(OutAmplitudes);
-      
-    }
 }
