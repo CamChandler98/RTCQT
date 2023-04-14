@@ -53,6 +53,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 fftSize = 8192;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumBands = 96;	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float NumBandsPerOctave = 24;	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float KernelLowestCenterFreq = 40.0 ;		
@@ -76,12 +78,13 @@ public:
 	float analysisPeriod = 0.1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float gainFactor = 1.5;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float peakExponentMultiplier = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float sclaeMultiplier = 1;
+	float scaleMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> outAmp;
-
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool doSmooth = true;

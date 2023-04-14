@@ -28,7 +28,7 @@ void ARealTimeCQTManager::BeginPlay()
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize ;
 	defaultSettings.WindowType = Audio::EWindowType::Blackman;
-
+    defaultSettings.NumBands = NumBands;
     NumHopFrames = FMath::Max(1, FMath::RoundToInt( sampleRate * analysisPeriod));
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
@@ -105,11 +105,11 @@ TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStrea
                 // Convert the uint8 sample value to float and normalize it to the range [-1, 1]
                 float normalizedSampleValue = static_cast<float>(sampleValue) / 255.f * 2.f - 1.f;
 
-                float absSampleValue = FMath::Abs(normalizedSampleValue);
+                float absSampleValue = FMath::Abs(normalizedSampleValue* gainFactor);
 
 
                 // Add the sample value for the current channel to the sum
-                sampleSum += normalizedSampleValue;
+                sampleSum += absSampleValue ;
             }
             else
             {
@@ -224,11 +224,10 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<floa
     for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, floatStream , FloatWindowBuffer, true))
     {
         //(LogTemp, Warning, TEXT("Window here"));
-	    UE_LOG(LogTemp, Warning, TEXT("The lengt window h is: %d"), Window.Num());
 
         outAmp = Window;
         
-        Audio::ArrayMultiplyByConstantInPlace(outAmp, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
+        Audio::ArrayMultiplyByConstantInPlace(outAmp, 1.f / FMath::Sqrt(static_cast<float>(1)));
        cqtProcessing(outAmp);
       
     }
@@ -308,7 +307,7 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
 
         for (int32 i = 0; i < SmoothedCQT.Num(); i++)
         {
-            SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i] * sclaeMultiplier), peakExponentMultiplier);
+            SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i] * scaleMultiplier), peakExponentMultiplier);
         }
         }
         outCQT = SmoothedCQT;
