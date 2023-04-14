@@ -77,7 +77,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float peakExponentMultiplier = 2;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float sclaeMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> outAmp;
 
@@ -100,8 +101,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool isFloatFormat = true;
-	
-    TArray<float> smoothAmplitudes;
+
+    TArray<uint8> ChannelBuffer;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumHopFrames;
 
@@ -111,6 +113,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumWindowSamples;
 
+    TArray<uint8> WindowBuffer;
+    TArray<float> FloatWindowBuffer;
 
 private:
 
