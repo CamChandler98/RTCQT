@@ -7,8 +7,7 @@
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
 #include "Kismet/KismetMathLibrary.h"
-
-
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 ARealTimeCQTManager::ARealTimeCQTManager()
 {
@@ -27,9 +26,9 @@ void ARealTimeCQTManager::BeginPlay()
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize ;
-	defaultSettings.WindowType = Audio::EWindowType::Blackman;
+	defaultSettings.WindowType = Audio::EWindowType::Hann;
     defaultSettings.NumBands = NumBands;
-    NumHopFrames = FMath::Max(1, FMath::RoundToInt( sampleRate * analysisPeriod));
+    NumHopFrames = FMath::Max(1, FMath::RoundToInt( fftSize * analysisPeriod));
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
 
@@ -237,8 +236,40 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
 {
 
         ConstantQAnalyzer -> CalculateCQT(audioData.GetData(), outCQT);
-
+        currentCQT = outCQT;
+        
+        currentTime = UGameplayStatics::GetAudioTimeSeconds(GetWorld()) ;
+        deltaTime = (currentTime + expandTime) - lastUpdateTime;
+        
+        if(oldCQT.Num() > 0){
+            for(int32 i = 0; i < currentCQT.Num() ; i++){
+                float oldValue;
+                float newValue; 
+                if (i > 0) 
+                {
+                 // Access the element at i-1 if i > 0
+                    oldValue = oldCQT[i - 1];
+                } 
+                else {
+                // Handle the case when i == 0
+                    oldValue = oldCQT[i - 1]/2; // or some other value
+                }
+                if (i == currentCQT.Num() - 1) 
+                {
+                 // Access the element at i-1 if i > 0
+                    newValue = currentCQT[i + 1]/2;
+                } 
+                else {
+                // Handle the case when i == 0
+                    newValue = currentCQT[i + 1]; // or some other value
+                }
+                outCQT[i] = FMath::CubicInterp(oldValue, oldCQT[i], currentCQT[i], newValue, deltaTime);
+            }
+        }
+        oldCQT = currentCQT;
+        lastUpdateTime = currentTime;
         TArray<float> SmoothedCQT;
+
         if(doSmooth){
                 
             SmoothedCQT.SetNumUninitialized(outCQT.Num());

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/World.h"
 #include "ConstantQAnalyzer.h"
 #include "DSP/AlignedBuffer.h"
 #include "DSP/ConstantQ.h"
@@ -50,6 +51,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
 	float sampleRate = 48000.0;
+	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
+	float deltaTime = 0.0;
+	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
+	float currentTime = 0.0;
+	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
+	float lastUpdateTime = 0.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 fftSize = 8192;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -62,8 +69,13 @@ public:
 	float BandWidthStretch = 1.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float NoiseFloorDB = -60.0;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> outCQT;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> currentCQT;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> oldCQT;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumChannels = 2;
@@ -76,7 +88,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float analysisPeriod = 0.1;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float expandTime = 1.005;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float gainFactor = 1.5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -118,6 +131,7 @@ public:
 
     TArray<uint8> WindowBuffer;
     TArray<float> FloatWindowBuffer;
+
 
 private:
 
