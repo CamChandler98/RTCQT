@@ -6,8 +6,11 @@
 #include "DSP/ConstantQ.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
+#include "SampleBuffer.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 ARealTimeCQTManager::ARealTimeCQTManager()
 {
@@ -22,22 +25,22 @@ ARealTimeCQTManager::ARealTimeCQTManager()
 void ARealTimeCQTManager::BeginPlay()
 {
 	Super::BeginPlay();
+
 	defaultSettings.BandWidthStretch = BandWidthStretch;
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize ;
 	defaultSettings.WindowType = Audio::EWindowType::Hann;
     defaultSettings.NumBands = NumBands;
-    NumHopFrames = FMath::Max(1, FMath::RoundToInt( fftSize * analysisPeriod));
+    NumHopFrames = FMath::Max(1,NumHopSamples);
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
-
+    
+    outCQT.AddZeroed(NumBands);
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, sampleRate);
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
-    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize + NumPaddingSamples, NumHopFrames);
-    Smoother = MakeUnique<Audio::FAttackReleaseSmoother>(sampleRate, 1,  10.0f, 100.0f, false );
-    Envelop.SetMode(Audio::EPeakMode::RootMeanSquared);
-	
+    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
+    BiquadFilter.Init(sampleRate, NumChannels/NumChannels, Audio::EBiquadFilter::Lowpass, cutoffFrequency, 2.f, 0.f );
 }
 
 // Called every frame
@@ -49,24 +52,10 @@ void ARealTimeCQTManager::Tick(float DeltaTime)
 
 void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 {
-		outCQT.Reset();
-
-        if(doBitDirect)
-        {
-		    PCMToAmplitude(byteArray, outAmp);
-
-        }
-        else{
-            PCMToFloat(byteArray, outAmp);
-
-        }
-
-
-
-
+        PCMToFloat(byteArray, inAmp);
 }
 
-TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStream, int numChannels, int bitsPerSample)
+TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStream, int numChannels)
 {
 	UE_LOG(LogTemp, Warning, TEXT("The length of the stream is: %d"), interleavedStream.Num());
      // Compute the size of each sample in bytes
@@ -104,11 +93,11 @@ TArray<float>  ARealTimeCQTManager::combineStream(TArray<uint8> interleavedStrea
                 // Convert the uint8 sample value to float and normalize it to the range [-1, 1]
                 float normalizedSampleValue = static_cast<float>(sampleValue) / 255.f * 2.f - 1.f;
 
-                float absSampleValue = FMath::Abs(normalizedSampleValue* gainFactor);
+                float absSampleValue = FMath::Abs(normalizedSampleValue);
 
 
                 // Add the sample value for the current channel to the sum
-                sampleSum += absSampleValue ;
+                sampleSum += normalizedSampleValue ;
             }
             else
             {
@@ -150,58 +139,6 @@ float ARealTimeCQTManager::ComputePolynomialCurve(float x, const TArray<float>& 
     return y;
 }
 
-void ARealTimeCQTManager::PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes)
-{
-
-	//(LogTemp, Warning, TEXT("The length of the stream is: %d"), PCMStream.Num());
-
-    const int32 SampleSize = sizeof(int16); // 16-bit PCM samples
-    const int32 SamplesPerChannel = PCMStream.Num() / (NumChannels * SampleSize);
-    const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
-
-    TArray<uint8> PaddedPCMStream;
-    PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
-    PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
-    PaddedPCMStream.Append(PCMStream);
-
-    
-    // Iterate over sliding windows
-    for (const TArray<uint8>& Window : Audio::TAutoSlidingWindow<uint8>(*SlidingBuffer, PaddedPCMStream , WindowBuffer, true))
-    {
-				FMemory::Memset(OutAmplitudes.GetData(), 0, sizeof(float) * fftSize);
-
-
-
-                TArrayView<const uint8> WindowView(Window);
-                ChannelBuffer.Reset();
-                ChannelBuffer.AddZeroed(Window.Num()/2);
-
-                for(auto Channel : Audio::TAutoDeinterleaveView(WindowView, ChannelBuffer, NumChannels) )
-                {
-                    const int32 NumSamples = Channel.Values.Num();
-                    TArray<float> SampleBuffer;
-                    SampleBuffer.Reserve(NumSamples);
-
-                    for (int32 i = 0; i < NumSamples; i++)
-                    {
-                        float SampleValue = static_cast<float>(Channel.Values[i]) / 32768.0f;
-	            //  //(LogTemp, Warning, TEXT("The length of the float  is: %f"), SampleValue);
-
-                        SampleBuffer.Add(SampleValue);
-                    }
-
-                    Audio::ArrayMixIn(SampleBuffer, OutAmplitudes);
-                }
-
-
-        // Audio::ArrayMultiplyByConstantInPlace(OutAmplitudes, 1.f / FMath::Sqrt(static_cast<float>(NumChannels)));
-	    //(LogTemp, Warning, TEXT("The length of the amp array is: %d"), OutAmplitudes.Num());
-        cqtProcessing(OutAmplitudes);
-      
-    }
-}
-
-
 
 void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes)
 {
@@ -214,29 +151,57 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<uint8>& PCMStream, TArray<floa
     PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
     PaddedPCMStream.Append(PCMStream);
 
-    TArray<float> floatStream= combineStream(PaddedPCMStream, NumChannels, 32);
+    TArray<float> floatStream= combineStream(PaddedPCMStream, NumChannels);
 
 
 
-        
+    TArray<float> eventSpectrum;
+    eventSpectrum.AddZeroed(fftSize);
     // Iterate over sliding windows
     for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, floatStream , FloatWindowBuffer, true))
     {
-        //(LogTemp, Warning, TEXT("Window here"));
+        inAmp = Window;
+        AmplitudeSampleProcessing(inAmp);
 
-        outAmp = Window;
-        
-        Audio::ArrayMultiplyByConstantInPlace(outAmp, 1.f / FMath::Sqrt(static_cast<float>(1)));
-       cqtProcessing(outAmp);
-      
+        if (eventSpectrum.Num() != outCQT.Num())
+        {
+            eventSpectrum.Reserve(outCQT.Num());
+        }
+        for (int32 i = 0; i < outCQT.Num(); i++)
+        {
+            eventSpectrum[i] = outCQT[i];
+        }
+        CQTProcessing();
+
+        FireOnSpectrumUpdatedEvent(eventSpectrum);
     }
 }
+void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude ){
 
-void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
+        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
+        if(doAbsAmp)
+        {
+            Audio::ArrayAbsInPlace(inAmplitude);
+        }
+        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(1)));
+        if(doLowpassFilter)
+        {
+            ampFilter = inAmplitude; 
+            BiquadFilter.ProcessAudio(ampFilter.GetData(), ampFilter.Num(), inAmplitude.GetData());
+            outAmp = inAmplitude;
+            ConstantQAnalyzer -> CalculateCQT(outAmp.GetData(), outCQT);
+        }
+        else{
+            outAmp = inAmplitude;
+            ConstantQAnalyzer -> CalculateCQT(outAmp.GetData(), outCQT);
+        }
+      
+}
+void ARealTimeCQTManager::CQTProcessing()
 {
 
-        ConstantQAnalyzer -> CalculateCQT(audioData.GetData(), outCQT);
         currentCQT = outCQT;
+        UE_LOG(LogTemp, Error, TEXT("Start of CQT Processiong outCqt is length %d"), outCQT.Num())
         
         currentTime = UGameplayStatics::GetAudioTimeSeconds(GetWorld()) ;
         deltaTime = (currentTime + expandTime) - lastUpdateTime;
@@ -252,12 +217,12 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
                 } 
                 else {
                 // Handle the case when i == 0
-                    oldValue = oldCQT[i - 1]/2; // or some other value
+                    oldValue = oldCQT[i]/2; // or some other value
                 }
                 if (i == currentCQT.Num() - 1) 
                 {
                  // Access the element at i-1 if i > 0
-                    newValue = currentCQT[i + 1]/2;
+                    newValue = currentCQT[i]/2;
                 } 
                 else {
                 // Handle the case when i == 0
@@ -270,11 +235,9 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
         lastUpdateTime = currentTime;
         TArray<float> SmoothedCQT;
 
-        if(doSmooth){
-                
-            SmoothedCQT.SetNumUninitialized(outCQT.Num());
-
-            const int32 WindowSize = initWindowSize; // adjust window size as desired
+        if(doSmooth){                
+        SmoothedCQT.SetNumUninitialized(outCQT.Num());
+            const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
             const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
 
             for (int32 i = 0; i < outCQT.Num(); i++)
@@ -343,3 +306,54 @@ void ARealTimeCQTManager::cqtProcessing(const TArray<float> audioData)
         }
         outCQT = SmoothedCQT;
 }
+
+void ARealTimeCQTManager::ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum)
+{
+
+    OutSpectrum.SetNumUninitialized(InSpectrum.Num());
+    BiquadFilter.ProcessAudio(InSpectrum.GetData(), InSpectrum.Num(), OutSpectrum.GetData());
+}
+
+
+void ARealTimeCQTManager::OverlapAdd(const TArray<float> AudioData){
+
+    UE_LOG(LogTemp, Error, TEXT("Overlapping stream of size %d"), AudioData.Num())
+    TArray<float> OutSpectrum;
+    OutSpectrum.SetNumUninitialized(NumBands);
+    FrameSpectrum.Reset();
+
+    for (int32 i = 0; i < AudioData.Num(); i += NumHopFrames)
+    {
+        TArray<float> FrameData;
+        // Compute the current frame
+        FrameData.SetNumUninitialized(fftSize);
+        FMemory::Memcpy(FrameData.GetData(), &AudioData[i], sizeof(float) * fftSize);
+
+        // Compute the CQT spectrum for the current frame
+        ConstantQAnalyzer->CalculateCQT(FrameData.GetData(), FrameSpectrum);
+        UE_LOG(LogTemp, Error, TEXT("Frame Scpectrum size: %d"), FrameSpectrum.Num())
+        const float ScaleFactor = 1.0f / static_cast<float>(fftSize); 
+
+
+        // Add the frame spectrum to the output buffer using overlap-add
+        for (int32 j = 0; j < FrameSpectrum.Num(); j++)
+        {
+            int32 Index = i + j;
+            if (Index < OutSpectrum.Num())
+            {
+                OutSpectrum[Index] += FrameSpectrum[j];
+            }
+        }
+    }
+
+        outCQT = OutSpectrum;
+        UE_LOG(LogTemp, Error, TEXT("outCqt overlap finished size: %d"), outCQT.Num())
+
+}
+
+
+
+void ARealTimeCQTManager::FireOnSpectrumUpdatedEvent(TArray<float> out){
+     OnSpectrumUpdatedEvent.Broadcast(out);
+}
+// OverlapCQTAnalyzer = MakeShared<ConstantQAnalyzer>(sampleRate, numBins, initFrequency, numBinsPerOctave, windowSize, 0.5f, -50.f);

@@ -9,10 +9,11 @@
 #include "DSP/AlignedBuffer.h"
 #include "DSP/ConstantQ.h"
 #include "DSP/SlidingWindow.h"
-#include "DSP/EnvelopeFollower.h"
+#include "DSP/Filter.h"
 #include "RealTimeCQTManager.generated.h"
 
-
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumUpdatedDelegate, const TArray<float>&, outCQT);
 UCLASS()
 class SYNRTCQT_API ARealTimeCQTManager : public AActor
 {
@@ -31,11 +32,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
+
 	void anaylze(TArray<uint8> byteArray);
 	void PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes);
-	void PCMToAmplitude(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes);
-	void cqtProcessing(const TArray<float> audioData);
-	TArray<float> combineStream(TArray<uint8> interleavedStream, int numChannels, int bitsPerSample);
+	void CQTProcessing();
+	void AmplitudeSampleProcessing(TArray<float>& inAmplitude); 
+	void OverlapAdd(const TArray<float> AudioData);
+
+	void ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum);
+	TArray<float> combineStream(TArray<uint8> interleavedStream, int numChannels);
 	float ComputePolynomialCurve(float x, const TArray<float>& Coefficients);
 	
 	Audio::FConstantQAnalyzerSettings defaultSettings = Audio::FConstantQAnalyzerSettings();
@@ -45,9 +50,18 @@ public:
 	TUniquePtr<Audio::FConstantQAnalyzer> ConstantQAnalyzer;
 	TUniquePtr<Audio::TSlidingBuffer<uint8> > SlidingBuffer;
 	TUniquePtr<Audio::TSlidingBuffer<float> > SlidingFloatBuffer;
-	TUniquePtr<Audio::FAttackReleaseSmoother> Smoother;
-	Audio::FInlineEnvelopeFollower Envelop;
 
+	Audio::FBiquadFilter BiquadFilter;
+
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumHopFrames;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumHopSamples;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumWindowSamples;
 
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
 	float sampleRate = 48000.0;
@@ -69,6 +83,16 @@ public:
 	float BandWidthStretch = 1.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float NoiseFloorDB = -60.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float cutoffFrequency = 100.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumChannels = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 NumPaddingSamples = 16;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 bitsPerSample = 16;
+
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> outCQT;
@@ -76,18 +100,19 @@ public:
 	TArray<float> currentCQT;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> oldCQT;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> outAmp;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> inAmp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<float> ampFilter;
+
+
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 NumChannels = 2;
+	int32 smoothingWindowSize = 7;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 NumPaddingSamples = 1024;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 initWindowSize = 7;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float analysisPeriod = 0.1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float expandTime = 1.005;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -96,9 +121,10 @@ public:
 	float peakExponentMultiplier = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float scaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<float> outAmp;
 
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool doLowpassFilter = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool doSmooth = true;
 
@@ -107,7 +133,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool doClamp = true;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool doAbsAmp = true;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool doScalePeaks = true;
@@ -120,18 +147,15 @@ public:
 
     TArray<uint8> ChannelBuffer;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 NumHopFrames;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 NumHopSamples;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 NumWindowSamples;
 
     TArray<uint8> WindowBuffer;
     TArray<float> FloatWindowBuffer;
+	TArray<float> FrameSpectrum;
 
+	UPROPERTY(BlueprintAssignable);
+	FOnSpectrumUpdatedDelegate OnSpectrumUpdatedEvent;
+
+	void FireOnSpectrumUpdatedEvent(TArray<float> out);
 
 private:
 
