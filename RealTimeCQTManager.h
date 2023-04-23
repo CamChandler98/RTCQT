@@ -12,8 +12,21 @@
 #include "DSP/Filter.h"
 #include "RealTimeCQTManager.generated.h"
 
+USTRUCT(BlueprintType)
+struct FUpdateData
+{	    
+		GENERATED_BODY();
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int index;
+
+	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float value;
+	};
+
+
 UDELEGATE(BlueprintCallable)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumUpdatedDelegate, const TArray<float>&, outCQT);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumUpdatedDelegate, FUpdateData, updateData);
+
 UCLASS()
 class SYNRTCQT_API ARealTimeCQTManager : public AActor
 {
@@ -29,18 +42,20 @@ protected:
 
 public:	
 	// Called every frame
+
+
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
 
 	void anaylze(TArray<uint8> byteArray);
-	void PCMToFloat(const TArray<uint8>& PCMStream, TArray<float>& OutAmplitudes);
+	void PCMToFloat(const TArray<float>& PCMStream, TArray<float>& OutAmplitudes);
 	void CQTProcessing();
 	void AmplitudeSampleProcessing(TArray<float>& inAmplitude); 
 	void OverlapAdd(const TArray<float> AudioData);
 
 	void ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum);
-	TArray<float> combineStream(TArray<uint8> interleavedStream, int numChannels);
+	TArray<float> combineStream(const TArray<uint8> interleavedStream, int numChannels);
 	float ComputePolynomialCurve(float x, const TArray<float>& Coefficients);
 	
 	Audio::FConstantQAnalyzerSettings defaultSettings = Audio::FConstantQAnalyzerSettings();
@@ -149,13 +164,16 @@ public:
 
 
     TArray<uint8> WindowBuffer;
+    TArray<uint8> TempBuffer;
+
     TArray<float> FloatWindowBuffer;
 	TArray<float> FrameSpectrum;
 
 	UPROPERTY(BlueprintAssignable);
 	FOnSpectrumUpdatedDelegate OnSpectrumUpdatedEvent;
 
-	void FireOnSpectrumUpdatedEvent(TArray<float> out);
+
+void FireOnSpectrumUpdatedEvent(const int index, const int value);
 
 private:
 
