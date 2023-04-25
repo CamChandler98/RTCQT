@@ -66,7 +66,9 @@ public:
 	TUniquePtr<Audio::TSlidingBuffer<uint8> > SlidingBuffer;
 	TUniquePtr<Audio::TSlidingBuffer<float> > SlidingFloatBuffer;
 
-	Audio::FBiquadFilter BiquadFilter;
+	Audio::FBiquadFilter LowPassFilter;
+	Audio::FBiquadFilter HighPassFilter;
+
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -98,7 +100,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	float NoiseFloorDB = -60.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float cutoffFrequency = 100.0;
+	float LowPassCutoffFrequency = 100.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float HighPassCutoffFrequency = 100.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	int32 NumChannels = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -141,6 +145,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
 	bool doLowpassFilter = true;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	bool doHighpassFilter = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
 	bool doSmooth = true;
 

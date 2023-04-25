@@ -41,7 +41,8 @@ void ARealTimeCQTManager::BeginPlay()
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, sampleRate);
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
-    BiquadFilter.Init(sampleRate, NumChannels/NumChannels, Audio::EBiquadFilter::Lowpass, cutoffFrequency, 2.f, 0.f );
+    HighPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::Highpass, HighPassCutoffFrequency, 1.0f, .0f );
+    LowPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , 3.f, .0f );
 }
 
 // Called every frame
@@ -182,24 +183,32 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
 void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude ){
 
         // Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(1)));
-        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         if(doAbsAmp)
         {
             Audio::ArrayAbsInPlace(inAmplitude);
         }
         if(doLowpassFilter)
         {
-            FMemory::Memcpy(ampFilter.GetData(), inAmplitude.GetData(), sizeof(float) * fftSize);
-            ampFilter = inAmplitude; 
-            BiquadFilter.ProcessAudio(ampFilter.GetData(), ampFilter.Num(), inAmplitude.GetData());        }
-        else{
-            outAmp = inAmplitude;
+            TArrayView<const float> AmpView(inAmplitude.GetData(), inAmplitude.Num());
+            LowPassFilter.ProcessAudioFrame(AmpView.GetData(), inAmplitude.GetData());      
         }
+        if(doHighpassFilter)
+        {
+            TArrayView<const float> AmpView(inAmplitude.GetData(), inAmplitude.Num());
+            HighPassFilter.ProcessAudioFrame(AmpView.GetData(), inAmplitude.GetData()); 
+        }
+
+        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
+
       
 }
 void ARealTimeCQTManager::CQTProcessing()
 {
-
+    if(doLowpassFilter)
+    {
+        // TArrayView<const float> lowFliter(outCQT.GetData(), outCQT.Num());
+        // LowPassFilter.ProcessAudioFrame(lowFliter.GetData(), outCQT.GetData());
+    }
     currentCQT = outCQT;
     const int32 NumBins = oldCQT.Num();
 
@@ -328,7 +337,7 @@ void ARealTimeCQTManager::ApplyLowpassFilter(const TArray<float>& InSpectrum, fl
 {
 
     OutSpectrum.SetNumUninitialized(InSpectrum.Num());
-    BiquadFilter.ProcessAudio(InSpectrum.GetData(), InSpectrum.Num(), OutSpectrum.GetData());
+    LowPassFilter.ProcessAudio(InSpectrum.GetData(), InSpectrum.Num(), OutSpectrum.GetData());
 }
 
 
