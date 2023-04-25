@@ -53,6 +53,7 @@ void ARealTimeCQTManager::Tick(float DeltaTime)
 
 void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 {
+    if(canProcesses){
     const int32 SampleSize = sizeof(int32); // 16-bit PCM samples
 
     const int32 SamplesPerChannel = byteArray.Num() / (NumChannels * SampleSize);
@@ -66,10 +67,12 @@ void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
     TArray<float> floatStream= combineStream(PaddedPCMStream, 2);
 
     PCMToFloat(floatStream, inAmp);
+    }
 }
 
 TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleavedStream, int numChannels)
 {
+    canProcesses = false;
 	UE_LOG(LogTemp, Warning, TEXT("The length of the stream is: %d"), interleavedStream.Num());
      // Compute the size of each sample in bytes
     int sampleSize = bitsPerSample / 8;
@@ -118,7 +121,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 float sampleValue = 0.f;
                 for (int k = 0; k < sampleSize; k++)
                 {
-                    sampleValue += static_cast<float>(interleavedStream[sampleOffset + channelOffset + k] - 128) / 128.f * 0.5f;
+                    sampleValue += static_cast<float>(interleavedStream[sampleOffset + channelOffset + k] ) / 128.f * 1.0f;
                 }
 
                 // Add the sample value for the current channel to the sum
@@ -162,32 +165,33 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
     for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, PCMStream , FloatWindowBuffer, true))
     {   
         inAmp = Window;
-        // AmplitudeSampleProcessing(inAmp)
+        AmplitudeSampleProcessing(inAmp);
+	    UE_LOG(LogTemp, Warning, TEXT("HERE"));
 
-        ConstantQAnalyzer -> CalculateCQT(Window.GetData(), OutSpectrum);
-        outCQT=OutSpectrum;
+        ConstantQAnalyzer -> CalculateCQT(inAmp.GetData(), outCQT);
+        CQTProcessing();
         for(int32 i = 0; i < outCQT.Num(); i ++ ){
 
         FireOnSpectrumUpdatedEvent(i,outCQT[i]);
-
+        
         }
     }
+        canProcesses = true;
 
 }
 void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude ){
 
+        // Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(1)));
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         if(doAbsAmp)
         {
             Audio::ArrayAbsInPlace(inAmplitude);
         }
-        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(1)));
         if(doLowpassFilter)
         {
+            FMemory::Memcpy(ampFilter.GetData(), inAmplitude.GetData(), sizeof(float) * fftSize);
             ampFilter = inAmplitude; 
-            BiquadFilter.ProcessAudio(ampFilter.GetData(), ampFilter.Num(), inAmplitude.GetData());
-            outAmp = inAmplitude;
-        }
+            BiquadFilter.ProcessAudio(ampFilter.GetData(), ampFilter.Num(), inAmplitude.GetData());        }
         else{
             outAmp = inAmplitude;
         }
@@ -196,16 +200,56 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 void ARealTimeCQTManager::CQTProcessing()
 {
 
-        currentCQT = outCQT;
+    currentCQT = outCQT;
+    const int32 NumBins = oldCQT.Num();
+
+// Interpolate between the two spectra
+    for (int32 BinIndex = 0; BinIndex < NumBins; BinIndex++)
+    {
+        // Calculate the difference between the two bins
+        const float BinDiff = FMath::Abs(currentCQT[BinIndex] - oldCQT[BinIndex]);
+
+        // Calculate the interpolation factor for this bin
+        const float BinInterpFactor = FMath::Clamp(BinDiff * InterpolationFactor, 0.f, 1.f);
+
+                float oldValue;
+                float newValue; 
+                if (BinIndex > 0) 
+                {
+                 // Access the element at i-1 if i > 0
+                    oldValue = oldCQT[BinIndex - 1];
+                } 
+                else {
+                // Handle the case when i == 0
+                    oldValue = oldCQT[BinIndex]/2; // or some other value
+                }
+                if (BinIndex == currentCQT.Num() - 1) 
+                {
+                 // Access the element at i-1 if i > 0
+                    newValue = currentCQT[BinIndex]/2;
+                } 
+                else {
+                // Handle the case when i == 0
+                    newValue = currentCQT[BinIndex + 1]; // or some other value
+                }
+
+        // Interpolate the bin value
+        // const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex], BinInterpFactor);
+
+        const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
+        // Do something with the interpolated value, e.g. store it in a new array
+        // interpolatedCQT[BinIndex] = InterpolatedValue;
+
+        outCQT[BinIndex] = InterpolatedValue;
+    }
+
+        oldCQT = currentCQT;
 
         UE_LOG(LogTemp, Error, TEXT("Start of CQT Processiong outCqt is length %d"), outCQT.Num())
         
-        currentTime = UGameplayStatics::GetAudioTimeSeconds(GetWorld()) ;
-        deltaTime = (currentTime + expandTime) - lastUpdateTime;
-        
-       
-        lastUpdateTime = currentTime;
         TArray<float> SmoothedCQT;
+
+        
 
         if(doSmooth){                
         SmoothedCQT.SetNumUninitialized(outCQT.Num());
@@ -251,12 +295,12 @@ void ARealTimeCQTManager::CQTProcessing()
 			    Audio::ArrayMultiplyByConstantInPlace(SmoothedCQT, Scaling);
 
             }
-            else{
-                if (SmoothedCQT.Num() > 0)
-                {
-                    FMemory::Memset(SmoothedCQT.GetData(), 0, sizeof(float) * SmoothedCQT.Num());
-                }
-            }
+            // else{
+            //     if (SmoothedCQT.Num() > 0)
+            //     {
+            //         FMemory::Memset(SmoothedCQT.GetData(), 0, sizeof(float) * SmoothedCQT.Num());
+            //     }
+            // }
             // Clamp the values in the SmoothedCQT array between 0 and 1
 		    Audio::ArrayClampInPlace(SmoothedCQT, 0.f, 1.f);
 
