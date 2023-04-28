@@ -21,11 +21,22 @@ struct FUpdateData
 
 	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float value;
+
+		FUpdateData()
+		{
+			index = 0;
+			value = 0.0 ;
+		}
 	};
 
 
 UDELEGATE(BlueprintCallable)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumUpdatedDelegate, FUpdateData, updateData);
+
+
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGiveDifferenceDelegate, int, diffData);
+
 
 UCLASS()
 class SYNRTCQT_API ARealTimeCQTManager : public AActor
@@ -52,8 +63,13 @@ public:
 	void PCMToFloat(const TArray<float>& PCMStream, TArray<float>& OutAmplitudes);
 	void CQTProcessing();
 	void AmplitudeSampleProcessing(TArray<float>& inAmplitude); 
-	void OverlapAdd(const TArray<float> AudioData);
-
+	void SmoothSignal(const TArrayView<float>& InSignal, TArray<float>& OutSignal, int32 WindowSize);
+	void GetCenterFrequencies();
+	void GetSampleIndices();
+	int32 FindDifference(TArray<float>& Original, TArray<float>& Alter); 
+	UFUNCTION(BlueprintCallable)
+	void GetCQT();
+	int32 FindClosestValue(const TArray<int32>& Array, int32 TargetValue);
 	void ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum);
 	TArray<float> combineStream(const TArray<uint8> interleavedStream, int numChannels);
 	float ComputePolynomialCurve(float x, const TArray<float>& Coefficients);
@@ -81,6 +97,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere, Category = "RTCQT|FFT Settings")
 	float sampleRate = 48000.0;
+
+	UPROPERTY(BlueprintReadWrite ,EditAnywhere, Category = "RTCQT|FFT Settings")
+	float NumPeriodFrames = 128;
+
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
 	float deltaTime = 0.0;
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
@@ -133,6 +153,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0") , Category = "RTCQT|CQTProcessing")
 	float InterpolationFactor = .5;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
 	float gainFactor = 1.5;
 
@@ -158,6 +179,8 @@ public:
 	bool doClamp = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|SampleProcessing" )
 	bool doAbsAmp = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|SampleProcessing" )
+	bool doSmoothSignal = true;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
 	bool doScalePeaks = true;
@@ -176,13 +199,24 @@ public:
     TArray<uint8> TempBuffer;
 
     TArray<float> FloatWindowBuffer;
-	TArray<float> FrameSpectrum;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<float> CenterFrequencies;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<int32> SampleIndices;
+	
 
 	UPROPERTY(BlueprintAssignable);
 	FOnSpectrumUpdatedDelegate OnSpectrumUpdatedEvent;
 
+	UPROPERTY(BlueprintAssignable);
+	FOnGiveDifferenceDelegate OnGiveDifferenceEvent;
+
 
 void FireOnSpectrumUpdatedEvent(const int index, const int value);
+void FireOnGiveDifferenceUpdatedEvent(const int index);
+
 
 private:
 
