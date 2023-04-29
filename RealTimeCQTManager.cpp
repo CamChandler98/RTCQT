@@ -122,8 +122,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 }
 
                 // Convert the uint8 sample value to float and normalize it to the range [-1, 1]
-                float normalizedSampleValue = static_cast<float>(sampleValue) / 255.f * 2.f - 1.f;
-
+                float normalizedSampleValue = static_cast<float>(sampleValue) / 127.5f - 1.0f;
                 float absSampleValue = FMath::Abs(normalizedSampleValue);
 
 
@@ -143,7 +142,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
 
                 // Add the sample value for the current channel to the sum
-                sampleSum += gainFactor * sampleValue;
+                sampleSum +=  sampleValue;
                 
             }
         }
@@ -211,7 +210,6 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
 }
 void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude ){
 
-        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2)));
         if(doAbsAmp)
         {
 
@@ -244,7 +242,8 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 
         }
 
-      
+        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
+        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2))); 
 }
 void ARealTimeCQTManager::CQTProcessing()
 {
@@ -287,9 +286,9 @@ void ARealTimeCQTManager::CQTProcessing()
                 }
 
         // Interpolate the bin value
-        // const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
+        const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
 
-        const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
+        // const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
         // Do something with the interpolated value, e.g. store it in a new array
         // interpolatedCQT[BinIndex] = InterpolatedValue;
 
@@ -466,6 +465,24 @@ int32 ARealTimeCQTManager::FindClosestValue(const TArray<int32>& Array, int32 Ta
     
     return ClosestValueIndex;
 }
+
+
+void ARealTimeCQTManager::UpdateHighPassFilter(){
+    HighPassFilter.SetFrequency(HighPassCutoffFrequency);
+    HighPassFilter.SetBandwidth(HighPassBandWidth);
+    HighPassFilter.SetGainDB(HighPassGain);
+
+}
+
+
+void ARealTimeCQTManager::UpdateLowPassFilter(){
+    LowPassFilter.SetFrequency(LowPassCutoffFrequency);
+    LowPassFilter.SetBandwidth(LowPassBandWidth);
+    LowPassFilter.SetGainDB(LowPassGain);
+
+}
+
+
 void ARealTimeCQTManager::FireOnSpectrumUpdatedEvent(const int index, const int value)
 {
      FUpdateData newData;
