@@ -121,6 +121,7 @@ public:
 	float BandWidthStretch = 1.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	float NoiseFloorDB = -60.0;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
 	float HighPassCutoffFrequency = 100.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
@@ -133,6 +134,7 @@ public:
 	float LowPassBandWidth= 2.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
 	float LowPassGain= 0.0;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	int32 NumChannels = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -141,6 +143,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 bitsPerSample = 16;
 
+	float HighPassCutoffFrequency = 100.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float HighPassBandWidth= 2.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float HighPassGain= 0.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float LowPassCutoffFrequency = 100.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float LowPassBandWidth= 2.0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	float LowPassGain= 0.0;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output Arrays")
 	TArray<float> outCQT;
@@ -201,6 +214,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool isFloatFormat = true;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool doAltFloat = true;
+
 	bool canProcesses = true;
     TArray<uint8> ChannelBuffer;
 
@@ -216,6 +232,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
 	TArray<int32> SampleIndices;
 	
+
+
 
 	UPROPERTY(BlueprintAssignable);
 	FOnSpectrumUpdatedDelegate OnSpectrumUpdatedEvent;
