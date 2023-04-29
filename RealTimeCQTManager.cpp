@@ -380,7 +380,12 @@ void ARealTimeCQTManager::CQTProcessing()
             SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i] * scaleMultiplier), peakExponentMultiplier);
         }
         }
+        if(doSupressQuiet)
+        {
+            ScaleArray(SmootheCQT);
+        }
         outCQT = SmoothedCQT;
+
 
 }
 
@@ -392,6 +397,18 @@ void ARealTimeCQTManager::ApplyLowpassFilter(const TArray<float>& InSpectrum, fl
 }
 
 
+
+
+void ARealTimeCQTManager::ScaleArray(TArray<float>& InputArray, float ScalingFactor)
+{
+    for (int i = 0; i < InputArray.Num(); i++)
+    {
+        float CurrentValue = InputArray[i];
+        float DistanceFromZero = FMath::Abs(CurrentValue);
+        float ScaledValue = FMath::Sign(CurrentValue) * FMath::Pow(DistanceFromZero, ScalingFactor);
+        InputArray[i] = ScaledValue;
+    }
+}
 
 void ARealTimeCQTManager::SmoothSignal(const TArrayView<float>& InSignal, TArray<float>& OutSignal, int32 WindowSize)
 {

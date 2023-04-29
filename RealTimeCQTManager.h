@@ -64,6 +64,7 @@ public:
 	void CQTProcessing();
 	void AmplitudeSampleProcessing(TArray<float>& inAmplitude); 
 	void SmoothSignal(const TArrayView<float>& InSignal, TArray<float>& OutSignal, int32 WindowSize);
+	void ScaleArray(TArray<float>& InputArray, float ScalingFactor);
 	void GetCenterFrequencies();
 	void GetSampleIndices();
 	int32 FindDifference(const TArray<float> Original, const TArray<float> Alter); 
@@ -143,17 +144,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 bitsPerSample = 16;
 
-	float HighPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float HighPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float HighPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float LowPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float LowPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
-	float LowPassGain= 0.0;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output Arrays")
 	TArray<float> outCQT;
@@ -183,6 +173,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
 	float scaleMultiplier = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	float QuietMultiplier = 1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
 	float peakExponentMultiplier = 2;
@@ -197,6 +189,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
 	bool doNormalize = true;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
+	bool doSurpressQuiet = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
 	bool doClamp = true;
