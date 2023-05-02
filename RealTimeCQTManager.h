@@ -67,15 +67,14 @@ public:
 	void ScaleArray(TArray<float>& InputArray, float ScalingFactor);
 	void GetCenterFrequencies();
 	void GetSampleIndices();
-	int32 FindDifference(const TArray<float> Original, const TArray<float> Alter); 
+	void FindDifference( const TArray<float>& Original, TArrayView<const float> Alter, float DifferenceThreshold); 
 	UFUNCTION(BlueprintCallable)
 	void GetCQT();
 	int32 FindClosestValue(const TArray<int32>& Array, int32 TargetValue);
 	void ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum);
 	TArray<float> combineStream(const TArray<uint8> interleavedStream, int numChannels);
 	float ComputePolynomialCurve(float x, const TArray<float>& Coefficients);
-	
-
+	int32 GetCOLAHopSizeForWindow(Audio::EWindowType InType, int32 WindowLength);
 
 	Audio::FConstantQAnalyzerSettings defaultSettings = Audio::FConstantQAnalyzerSettings();
 
@@ -95,6 +94,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	int32 NumHopSamples;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	int32 COLAHopSize;
+
 
 	int32 NumWindowSamples;
 
@@ -156,7 +158,16 @@ public:
 		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
 	TArray<float> inAmp;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
-	TArray<float> ampFilter;
+	TArray<float> OriginalAmp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<float> TestAlterAmp;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<float> TestOriginalAmp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<float> AlterAmp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output Arrays" )
+	TArray<bool> DiffIndexes;
 
 
 

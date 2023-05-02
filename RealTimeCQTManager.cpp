@@ -29,18 +29,20 @@ void ARealTimeCQTManager::BeginPlay()
 	defaultSettings.BandWidthStretch = BandWidthStretch;
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
-	defaultSettings.FFTSize = fftSize ;
-	defaultSettings.WindowType = Audio::EWindowType::Hann;
+	defaultSettings.FFTSize = fftSize;
+	defaultSettings.WindowType = Audio::EWindowType::Blackman;
     defaultSettings.NumBands = NumBands;
     NumHopFrames = FMath::Max(1,NumHopSamples);
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
 
-
+	COLAHopSize = GetCOLAHopSizeForWindow(defaultSettings.WindowType, fftSize);
     
     outCQT.AddZeroed(NumBands);
     CenterFrequencies.AddZeroed(NumBands);
     SampleIndices.AddZeroed(NumBands);
+    DiffIndexes.AddZeroed(NumBands);
+
 
     GetCenterFrequencies();
     GetSampleIndices();
@@ -48,8 +50,8 @@ void ARealTimeCQTManager::BeginPlay()
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, sampleRate);
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
-    HighPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Highpass, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
-    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, LowPassGain );
+    HighPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::HighShelf, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
+    LowPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, LowPassGain );
 }
 
 // Called every frame
@@ -88,7 +90,7 @@ void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleavedStream, int numChannels)
 {
     canProcesses = false;
-	UE_LOG(LogTemp, Warning, TEXT("The length of the stream is: %d"), interleavedStream.Num());
+	// UE_LOG(LogTemp, Warning, TEXT("The length of the stream is: %d"), interleavedStream.Num());
      // Compute the size of each sample in bytes
     int sampleSize = bitsPerSample / 8;
 
@@ -145,7 +147,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
 
                 // Add the sample value for the current channel to the sum
 
-                sampleSum +=  sampleValue;
+                sampleSum +=  normalizedSampleValue;
 
               
                 
@@ -153,7 +155,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
         }
 
         // Store the sum of the sample values for all channels in the output array
-        summedSamples.Add(sampleSum/numChannels);
+        summedSamples.Add(sampleSum);
     }
 
     // Return the summed samples
@@ -213,7 +215,8 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
         canProcesses = true;
 
 }
-void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude ){
+void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
+{
 
         if(doAbsAmp)
         {
@@ -228,26 +231,26 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
         if(doHighpassFilter)
         {
             TArrayView<const float> AmpView(inAmplitude.GetData(), inAmplitude.Num());
-            const TArray<float> TestView = inAmplitude;
 
+            OriginalAmp = AmpView;
             HighPassFilter.ProcessAudio(AmpView.GetData(), AmpView.Num(), inAmplitude.GetData());
+            TArrayView<const float> Alter(inAmplitude.GetData(), inAmplitude.Num());
+            AlterAmp = Alter;
 
-            int32 DiffIndex = FindDifference(TestView, inAmplitude);
-            UE_LOG(LogTemp, Warning, TEXT("DiffIndex %d"),  DiffIndex);
-            if(DiffIndex > -1){
-                int32 IndexInSpectrum = FindClosestValue(SampleIndices, DiffIndex);
-            UE_LOG(LogTemp, Warning, TEXT("SpecIndex %d"),  IndexInSpectrum);
-                FireOnGiveDifferenceUpdatedEvent(IndexInSpectrum);
-            }
-            else
-            {
-                FireOnGiveDifferenceUpdatedEvent(DiffIndex);
 
-            }
+            // FindDifference(OriginalAmp, Alter, .1 );
+            // if(DiffIndex > -1){
+            //     int32 IndexInSpectrum = FindClosestValue(SampleIndices, DiffIndex);
+            // UE_LOG(LogTemp, Warning, TEXT("SpecIndex %d"),  IndexInSpectrum);
+            //     FireOnGiveDifferenceUpdatedEvent(IndexInSpectrum);
+            // }
+            // else
+            // {
+            //     FireOnGiveDifferenceUpdatedEvent(DiffIndex);
+
+            // }
 
         }
-
-
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2))); 
 
@@ -373,16 +376,16 @@ void ARealTimeCQTManager::CQTProcessing()
                 SmoothedCQT[i] = FMath::Clamp(SmoothedCQT[i], 0.0f, 1.0f);
             }
         }
+        if(doSurpressQuiet)
+        {
+            ScaleArray(SmoothedCQT, QuietMultiplier);
+        }
         if(doScalePeaks){
 
         for (int32 i = 0; i < SmoothedCQT.Num(); i++)
         {
             SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i] * scaleMultiplier), peakExponentMultiplier);
         }
-        }
-        if(doSupressQuiet)
-        {
-            ScaleArray(SmootheCQT);
         }
         outCQT = SmoothedCQT;
 
@@ -440,6 +443,7 @@ void ARealTimeCQTManager::SmoothSignal(const TArrayView<float>& InSignal, TArray
 
 void ARealTimeCQTManager::GetCenterFrequencies()
 {
+
     for(int32 i = 0; i < NumBands; i++){
         // UE_LOG(LogTemp, Warning, TEXT("Band Index: %d"), i);
         // UE_LOG(LogTemp, Warning, TEXT("NumBands: %f"), NumBandsPerOctave);
@@ -450,10 +454,11 @@ void ARealTimeCQTManager::GetCenterFrequencies()
 
 void ARealTimeCQTManager::GetSampleIndices()
 {
+    float duration = ((((COLAHopSize/2) + 1) - (1 >> Audio::CeilLog2(NumHopFrames))) / 4) /(sampleRate *  1000 * 2);
     for(int32 i = 0; i < NumBands; i++){
         float CenterFrequency = CenterFrequencies[i];
 
-        int32 SampleIndex = CenterFrequency * (((fftSize - NumHopFrames) )/sampleRate) * (sampleRate/1000) * 2;
+        int32 SampleIndex = CenterFrequency * duration * (sampleRate);
 
         SampleIndices[i] = SampleIndex;
 
@@ -461,21 +466,30 @@ void ARealTimeCQTManager::GetSampleIndices()
     }
 }
 
-int32 ARealTimeCQTManager::FindDifference(const TArray<float> Original, const TArray<float> Alter)
-{
-    for(int32 i = 0; i < Original.Num(); i++)
-    {
-        if(FMath::RoundFromZero(Original[i]) != FMath::RoundFromZero(Alter[i]))
+void ARealTimeCQTManager::FindDifference( const TArray<float>&  Original,   TArrayView<const float>  Alter, float DifferenceThreshold)
+{   
+
+    TestOriginalAmp = Original;
+    TestAlterAmp = Alter;
+
+    TArray<bool> FrameDiffs;
+    FrameDiffs.Init(false, SampleIndices.Num());
+
+    for(int32 i = 0; i < SampleIndices.Num(); i++)
+    {   
+        int32 SampleIndex = SampleIndices[i];
+        UE_LOG(LogTemp, Warning, TEXT("i: %d"), SampleIndex);
+        UE_LOG(LogTemp, Warning, TEXT("Sample Index: %d"), SampleIndex);
+        UE_LOG(LogTemp, Warning, TEXT("Original Length %d"), Original.Num());
+        float OriginalValue = Original[SampleIndex];
+        float AlterValue = Alter[SampleIndex];
+
+        if(!FMath::IsNearlyEqual( OriginalValue, AlterValue, DifferenceThreshold))
         {
-            UE_LOG(LogTemp, Warning, TEXT("Origin %f"), Original[4000]);
-            UE_LOG(LogTemp, Warning, TEXT("Alter %f"), Alter[4000]);
-
-
-            return i;
+            FrameDiffs[i] = true;
         }
     }
-
-    return -1;
+    DiffIndexes = FrameDiffs;
 }
 
 int32 ARealTimeCQTManager::FindClosestValue(const TArray<int32>& Array, int32 TargetValue)
@@ -499,6 +513,25 @@ int32 ARealTimeCQTManager::FindClosestValue(const TArray<int32>& Array, int32 Ta
     return ClosestValueIndex;
 }
 
+int32 ARealTimeCQTManager::GetCOLAHopSizeForWindow(Audio::EWindowType InType, int32 WindowLength)
+	{
+		switch (InType)
+		{
+		case Audio::EWindowType::Hann:
+		case Audio::EWindowType::Hamming:
+			return FMath::FloorToInt((0.5f) * WindowLength);
+			break;
+		case Audio::EWindowType::Blackman:
+			// Optimal overlap for any Blackman window is derived in this paper:
+			// http://edoc.mpg.de/395068
+			return FMath::FloorToInt((0.339f) * WindowLength);
+			break;
+		case Audio::EWindowType::None:
+		default:
+			return WindowLength;
+			break;
+		}
+	}
 
 void ARealTimeCQTManager::UpdateHighPassFilter(){
     HighPassFilter.SetFrequency(HighPassCutoffFrequency);
