@@ -3,7 +3,7 @@
 
 #include "RealTimeCQTManager.h"
 #include "ConstantQAnalyzer.h"
-#include "DSP/ConstantQ.h"
+#include "ConstantQ.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
 #include "SampleBuffer.h"
@@ -30,8 +30,17 @@ void ARealTimeCQTManager::BeginPlay()
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize;
-	defaultSettings.WindowType = Audio::EWindowType::Blackman;
+	defaultSettings.WindowType = Audio::EWindowType::Hann;
     defaultSettings.NumBands = NumBands;
+
+    focusSettings.FocusStart = FocusStart;						
+    focusSettings.FocusMin = FocusMin;
+    focusSettings.FocusMax = FocusMax;
+
+    focusSettings.LogNormal = LogNormal;
+    focusSettings.LogFast = LogFast;
+    focusSettings.LogSlow = LogSlow;
+
     NumHopFrames = FMath::Max(1,NumHopSamples);
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
@@ -41,17 +50,21 @@ void ARealTimeCQTManager::BeginPlay()
     outCQT.AddZeroed(NumBands);
     CenterFrequencies.AddZeroed(NumBands);
     SampleIndices.AddZeroed(NumBands);
-    DiffIndexes.AddZeroed(NumBands);
+    FocusIndices.AddZeroed(NumBands);
 
 
+
+	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, focusSettings, sampleRate);
+    SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
+    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
+    HighPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::HighShelf, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
+    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, gainFactor );
     GetCenterFrequencies();
     GetSampleIndices();
 
-	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, sampleRate);
-    SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
-    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
-    HighPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::HighShelf, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
-    LowPassFilter.Init(sampleRate, 2, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, LowPassGain );
+    MaxSampleIndex = getMaxValue(SampleIndices);
+    MaxCenterFreq = getMaxValue(CenterFrequencies);
+    MeanCenterFreq = getMeanValue(CenterFrequencies);
 }
 
 // Called every frame
@@ -238,18 +251,6 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
             AlterAmp = Alter;
 
 
-            // FindDifference(OriginalAmp, Alter, .1 );
-            // if(DiffIndex > -1){
-            //     int32 IndexInSpectrum = FindClosestValue(SampleIndices, DiffIndex);
-            // UE_LOG(LogTemp, Warning, TEXT("SpecIndex %d"),  IndexInSpectrum);
-            //     FireOnGiveDifferenceUpdatedEvent(IndexInSpectrum);
-            // }
-            // else
-            // {
-            //     FireOnGiveDifferenceUpdatedEvent(DiffIndex);
-
-            // }
-
         }
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2))); 
@@ -259,11 +260,7 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 }
 void ARealTimeCQTManager::CQTProcessing()
 {
-    if(doLowpassFilter)
-    {
-        // TArrayView<const float> lowFliter(outCQT.GetData(), outCQT.Num());
-        // LowPassFilter.ProcessAudioFrame(lowFliter.GetData(), outCQT.GetData());
-    }
+
     currentCQT = outCQT;
     const int32 NumBins = oldCQT.Num();
 
@@ -310,11 +307,13 @@ void ARealTimeCQTManager::CQTProcessing()
         oldCQT = currentCQT;
 
         
-        TArray<float> SmoothedCQT;
-
+        TArray<float> SmoothedCQT = outCQT;
+        
         
 
-        if(doSmooth){                
+
+        if(doSmooth)
+        {                
         SmoothedCQT.SetNumUninitialized(outCQT.Num());
             const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
             const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
@@ -338,7 +337,8 @@ void ARealTimeCQTManager::CQTProcessing()
             SmoothedCQT = outCQT;
         }
 
-        if(doNormalize){
+        if(doNormalize)
+        {
             float MinValue = TNumericLimits<float>::Max();
             float MaxValue = TNumericLimits<float>::Min();
 
@@ -368,30 +368,46 @@ void ARealTimeCQTManager::CQTProcessing()
 		    Audio::ArrayClampInPlace(SmoothedCQT, 0.f, 1.f);
 
         }
-
-        // Clamp the values in the SmoothedCQT array between 0 and 1
-        if(doClamp){
-            for (int32 i = 0; i < SmoothedCQT.Num(); i++)
-            {
-                SmoothedCQT[i] = FMath::Clamp(SmoothedCQT[i], 0.0f, 1.0f);
-            }
-        }
         if(doSurpressQuiet)
         {
             ScaleArray(SmoothedCQT, QuietMultiplier);
         }
-        if(doScalePeaks){
-
-        for (int32 i = 0; i < SmoothedCQT.Num(); i++)
+        if(doScale)
         {
-            SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i] * scaleMultiplier), peakExponentMultiplier);
+            for (int32 i = 0; i < SmoothedCQT.Num(); i++)
+            {
+                SmoothedCQT[i] = SmoothedCQT[i] * scaleMultiplier;
+            }
+
         }
+        if(doFocusExp)
+        {
+            FocusExponentiation(SmoothedCQT, FocusExponentMultiplier);
         }
+        if(doScalePeaks)
+        {
+
+            for (int32 i = 0; i < SmoothedCQT.Num(); i++)
+            {
+                SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i]), peakExponentMultiplier);
+            }
+
+        }
+
         outCQT = SmoothedCQT;
 
 
 }
+void ARealTimeCQTManager::FocusExponentiation(TArray<float>& InputArray, float ScalingFactor )
+{
+    float InflectionPoint =  InputArray.Num() - InputArray.Num()/4;
 
+    for(int32 i = 0 ; i < InputArray.Num(); i++){
+        if(FocusIndices[i] == true){
+            InputArray[i] = FMath::Pow(InputArray[i], ScalingFactor);
+        }
+    }
+}
 void ARealTimeCQTManager::ApplyLowpassFilter(const TArray<float>& InSpectrum, float CutoffFrequency, float SampleRate, TArray<float>& OutSpectrum)
 {
 
@@ -443,24 +459,55 @@ void ARealTimeCQTManager::SmoothSignal(const TArrayView<float>& InSignal, TArray
 
 void ARealTimeCQTManager::GetCenterFrequencies()
 {
+        float LogBase = LogNormal ;
+		bool CanSwitch = true; 
+		bool CanSlow = true;
+
 
     for(int32 i = 0; i < NumBands; i++){
-        // UE_LOG(LogTemp, Warning, TEXT("Band Index: %d"), i);
-        // UE_LOG(LogTemp, Warning, TEXT("NumBands: %f"), NumBandsPerOctave);
-        float CenterFrequency =  KernelLowestCenterFreq * FMath::Pow(2.f, static_cast<float>(i) / NumBandsPerOctave);
+
+        UE_LOG(LogTemp, Warning, TEXT("Band Index: %d"), i);
+
+        float CenterFrequency = Audio::FPseudoConstantQ::GetStupidConstantQCenterFrequency(i, KernelLowestCenterFreq, NumBandsPerOctave, LogBase, NumBands);
+        if(CenterFrequency < FocusStart && CanSlow)
+        {
+				LogBase = LogFast;
+                CanSlow = false;
+        }
+        else if(CenterFrequency >= FocusMin && CanSwitch)
+        {
+				LogBase = LogSlow;
+				CanSwitch = false;
+        }
+        if(CenterFrequency > FocusMax)
+        {
+            LogBase = LogNormal;
+        }
+        if(i > 0 && CenterFrequency < CenterFrequencies[i - 1])
+        {
+            CenterFrequency = CenterFrequencies[i-1] + 50.0;
+        }
+
+        if(LogBase == LogSlow)
+        {
+            FocusIndices[i] = true;
+        }
+
+        // float CenterFrequency =  KernelLowestCenterFreq * FMath::Pow(2.f, static_cast<float>(i) / NumBandsPerOctave);
+
         CenterFrequencies[i] = CenterFrequency;
     }
 }
 
 void ARealTimeCQTManager::GetSampleIndices()
 {
-    float duration = ((((COLAHopSize/2) + 1) - (1 >> Audio::CeilLog2(NumHopFrames))) / 4) /(sampleRate *  1000 * 2);
+    float duration = ((((COLAHopSize) + 1) - (1 >> Audio::CeilLog2(NumHopFrames)))) /(sampleRate *  1000 * 2);
     for(int32 i = 0; i < NumBands; i++){
         float CenterFrequency = CenterFrequencies[i];
 
         int32 SampleIndex = CenterFrequency * duration * (sampleRate);
 
-        SampleIndices[i] = SampleIndex;
+        SampleIndices[i] = SampleIndex/4;
 
 
     }
@@ -472,24 +519,15 @@ void ARealTimeCQTManager::FindDifference( const TArray<float>&  Original,   TArr
     TestOriginalAmp = Original;
     TestAlterAmp = Alter;
 
-    TArray<bool> FrameDiffs;
-    FrameDiffs.Init(false, SampleIndices.Num());
 
     for(int32 i = 0; i < SampleIndices.Num(); i++)
     {   
         int32 SampleIndex = SampleIndices[i];
-        UE_LOG(LogTemp, Warning, TEXT("i: %d"), SampleIndex);
-        UE_LOG(LogTemp, Warning, TEXT("Sample Index: %d"), SampleIndex);
-        UE_LOG(LogTemp, Warning, TEXT("Original Length %d"), Original.Num());
         float OriginalValue = Original[SampleIndex];
         float AlterValue = Alter[SampleIndex];
 
-        if(!FMath::IsNearlyEqual( OriginalValue, AlterValue, DifferenceThreshold))
-        {
-            FrameDiffs[i] = true;
-        }
+
     }
-    DiffIndexes = FrameDiffs;
 }
 
 int32 ARealTimeCQTManager::FindClosestValue(const TArray<int32>& Array, int32 TargetValue)
@@ -532,7 +570,32 @@ int32 ARealTimeCQTManager::GetCOLAHopSizeForWindow(Audio::EWindowType InType, in
 			break;
 		}
 	}
+float ARealTimeCQTManager::getMaxValue(const TArray<float>& arr){
+    float maxVal = arr[0];
+    for (int i = 1; i < arr.Num(); i++) {
+        if (arr[i] > maxVal) {
+            maxVal = arr[i];
+        }
+    }
+    return maxVal;
+}
+int ARealTimeCQTManager::getMaxValue(const TArray<int>& arr){
+    int maxVal = arr[0];
+    for (int i = 1; i < arr.Num(); i++) {
+        if (arr[i] > maxVal) {
+            maxVal = arr[i];
+        }
+    }
+    return maxVal;
+}
 
+float ARealTimeCQTManager::getMeanValue(const TArray<float>& arr) {
+    float sum = 0.0f;
+    for (int i = 0; i < arr.Num(); i++) {
+        sum += arr[i];
+    }
+    return sum / arr.Num();
+}
 void ARealTimeCQTManager::UpdateHighPassFilter(){
     HighPassFilter.SetFrequency(HighPassCutoffFrequency);
     HighPassFilter.SetBandwidth(HighPassBandWidth);
