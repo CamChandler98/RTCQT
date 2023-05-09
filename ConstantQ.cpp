@@ -197,27 +197,27 @@ namespace Audio
 		for (int32 CQTBandIndex = 0; CQTBandIndex < InSettings.NumBands; CQTBandIndex++)
 		{
 			// Determine band center and width for this CQT band
-			BandSettings.CenterFreq = FPseudoConstantQ::GetConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave);
+			// BandSettings.CenterFreq = FPseudoConstantQ::GetConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave);
 			
-			// BandSettings.CenterFreq = FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands);
+			BandSettings.CenterFreq = FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands);
 
-			// if(BandSettings.CenterFreq < FocusSettings.FocusStart && CanSlow)
-			// {
-			// 	LogBase = FocusSettings.LogFast;
-			// 	CanSlow = false;
-			// }
-			// else if(BandSettings.CenterFreq >=  FocusSettings.FocusMin && CanSwitch){
-			// 	LogBase = FocusSettings.LogSlow;
-			// 	CanSwitch = false;
-			// }
+			if(BandSettings.CenterFreq < FocusSettings.FocusStart && CanSlow)
+			{
+				LogBase = FocusSettings.LogFast;
+				CanSlow = false;
+			}
+			else if(BandSettings.CenterFreq >=  FocusSettings.FocusMin && CanSwitch){
+				LogBase = FocusSettings.LogSlow;
+				CanSwitch = false;
+			}
 
-			// if(BandSettings.CenterFreq >  FocusSettings.FocusMax){
-			// 	LogBase = FocusSettings.LogNormal;
-			// }
-			// if(CQTBandIndex > 0 && BandSettings.CenterFreq < FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex - 1, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands))
-			// {
-			// 	BandSettings.CenterFreq = BandSettings.CenterFreq + 50.0;
-			// }
+			if(BandSettings.CenterFreq >  FocusSettings.FocusMax){
+				LogBase = FocusSettings.LogNormal;
+			}
+			if(CQTBandIndex > 0 && BandSettings.CenterFreq < FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex - 1, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands))
+			{
+				BandSettings.CenterFreq = BandSettings.CenterFreq + 50.0;
+			}
 
 			BandSettings.BandWidth = FPseudoConstantQ::GetConstantQBandWidth(BandSettings.CenterFreq, InSettings.NumBandsPerOctave, InSettings.BandWidthStretch);
 
@@ -230,11 +230,6 @@ namespace Audio
 			{
 				continue;
 			}
-
-			UE_LOG(LogTemp, Warning, TEXT("Index: %d"), CQTBandIndex);
-			UE_LOG(LogTemp, Warning, TEXT("Log: %f"), LogBase);
-			UE_LOG(LogTemp, Warning, TEXT("Value: %f"), BandSettings.CenterFreq);
-
 
 
 

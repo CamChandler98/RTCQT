@@ -160,7 +160,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
 
                 // Add the sample value for the current channel to the sum
 
-                sampleSum +=  normalizedSampleValue;
+                sampleSum +=  sampleValue;
 
               
                 
@@ -168,7 +168,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
         }
 
         // Store the sum of the sample values for all channels in the output array
-        summedSamples.Add(sampleSum);
+        summedSamples.Add(sampleSum/numChannels);
     }
 
     // Return the summed samples
