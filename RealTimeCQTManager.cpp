@@ -19,18 +19,18 @@ ARealTimeCQTManager::ARealTimeCQTManager()
 	
 
 
-
 }  
 // Called when the game starts or when spawned
 void ARealTimeCQTManager::BeginPlay()
 {
+    FocusIndices.AddZeroed(NumBands);
 	Super::BeginPlay();
 
 	defaultSettings.BandWidthStretch = BandWidthStretch;
 	defaultSettings.NumBandsPerOctave = NumBandsPerOctave;
 	defaultSettings.KernelLowestCenterFreq = KernelLowestCenterFreq;
 	defaultSettings.FFTSize = fftSize;
-	defaultSettings.WindowType = Audio::EWindowType::Hann;
+	defaultSettings.WindowType = Audio::EWindowType::Blackman;
     defaultSettings.NumBands = NumBands;
 
     focusSettings.FocusStart = FocusStart;						
@@ -41,6 +41,8 @@ void ARealTimeCQTManager::BeginPlay()
     focusSettings.LogFast = LogFast;
     focusSettings.LogSlow = LogSlow;
 
+    focusSettings.doStupid = doStupid;
+
     NumHopFrames = FMath::Max(1,NumHopSamples);
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
@@ -50,7 +52,6 @@ void ARealTimeCQTManager::BeginPlay()
     outCQT.AddZeroed(NumBands);
     CenterFrequencies.AddZeroed(NumBands);
     SampleIndices.AddZeroed(NumBands);
-    FocusIndices.AddZeroed(NumBands);
 
 
 
@@ -84,17 +85,17 @@ void ARealTimeCQTManager::GetCQT()
 void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 {
     if(canProcesses){
-    const int32 SampleSize = sizeof(int32); // 16-bit PCM samples
+    // const int32 SampleSize = sizeof(int32); // 16-bit PCM samples
 
-    const int32 SamplesPerChannel = byteArray.Num() / (NumChannels * SampleSize);
-    const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
+    // const int32 SamplesPerChannel = byteArray.Num() / (NumChannels * SampleSize);
+    // const int32 PaddedSamplesPerChannel = SamplesPerChannel + NumPaddingSamples;
 
-    TArray<uint8> PaddedPCMStream;
-    PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
-    PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
-    PaddedPCMStream.Append(byteArray);
+    // TArray<uint8> PaddedPCMStream;
+    // PaddedPCMStream.Reserve(PaddedSamplesPerChannel * NumChannels * SampleSize);
+    // PaddedPCMStream.AddZeroed(NumPaddingSamples * NumChannels * SampleSize);
+    // PaddedPCMStream.Append(byteArray);
 
-    TArray<float> floatStream= combineStream(PaddedPCMStream, 2);
+    TArray<float> floatStream= combineStream(byteArray, 2);
 
     PCMToFloat(floatStream, inAmp);
     }
@@ -156,11 +157,13 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 // Normalize the sample value to the range [-1, 1]
                 // sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
 
-                float normalizedSampleValue = static_cast<float>(sampleValue) / 127.5f - 1.0f;
+                // float normalizedSampleValue = static_cast<float>(sampleValue) / 127.5f - 1.0f;
+                float normalizedSampleValue = (static_cast<float>(sampleValue) * gainFactor) /  127.5f - 1.0f;
+
 
                 // Add the sample value for the current channel to the sum
 
-                sampleSum +=  sampleValue;
+                sampleSum +=  normalizedSampleValue;
 
               
                 
@@ -168,7 +171,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
         }
 
         // Store the sum of the sample values for all channels in the output array
-        summedSamples.Add(sampleSum/numChannels);
+        summedSamples.Add(sampleSum);
     }
 
     // Return the summed samples
@@ -252,7 +255,7 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 
 
         }
-        Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
+        // Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2))); 
 
 
@@ -468,7 +471,21 @@ void ARealTimeCQTManager::GetCenterFrequencies()
 
         UE_LOG(LogTemp, Warning, TEXT("Band Index: %d"), i);
 
-        float CenterFrequency = Audio::FPseudoConstantQ::GetStupidConstantQCenterFrequency(i, KernelLowestCenterFreq, NumBandsPerOctave, LogBase, NumBands);
+        float CenterFrequency;
+
+        if(doStupid)
+        {
+
+            CenterFrequency = Audio::FPseudoConstantQ::GetStupidConstantQCenterFrequency(i, KernelLowestCenterFreq, NumBandsPerOctave, LogBase, NumBands);
+        
+        }
+        else
+        {
+            CenterFrequency = Audio::FPseudoConstantQ::GetConstantQCenterFrequency(i, KernelLowestCenterFreq, NumBandsPerOctave);
+        }
+
+
+
         if(CenterFrequency < FocusStart && CanSlow)
         {
 				LogBase = LogFast;
@@ -488,7 +505,7 @@ void ARealTimeCQTManager::GetCenterFrequencies()
             CenterFrequency = CenterFrequencies[i-1] + 50.0;
         }
 
-        if(LogBase == LogSlow)
+        if(CenterFrequency >= FocusMin && CenterFrequency < FocusMax )
         {
             FocusIndices[i] = true;
         }

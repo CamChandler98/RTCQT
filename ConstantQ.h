@@ -53,6 +53,8 @@ namespace Audio
 		float LogFast;
 		float LogSlow;
 
+		bool doStupid;
+
 
 		EPseudoConstantQNormalization Normalization;	//< Normalization scheme for bands.
 
@@ -68,6 +70,7 @@ namespace Audio
 		,   LogNormal(2)
 		,   LogFast(2.5)
 		,   LogSlow(.975)
+		,	doStupid(false)
 		,	Normalization(EPseudoConstantQNormalization::EqualEnergy)
 		{}
 	};

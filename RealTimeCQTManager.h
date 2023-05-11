@@ -136,7 +136,8 @@ public:
 	float NoiseFloorDB = -60.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	int32 NumChannels = 2;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	bool doStupid = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
 	float FocusStart = 140.0;						
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")

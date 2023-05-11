@@ -197,9 +197,20 @@ namespace Audio
 		for (int32 CQTBandIndex = 0; CQTBandIndex < InSettings.NumBands; CQTBandIndex++)
 		{
 			// Determine band center and width for this CQT band
-			// BandSettings.CenterFreq = FPseudoConstantQ::GetConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave);
+
+			if(FocusSettings.doStupid)
+			{
+
+				BandSettings.CenterFreq = FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands);
 			
-			BandSettings.CenterFreq = FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands);
+			}
+			else
+			{
+			
+				BandSettings.CenterFreq = FPseudoConstantQ::GetConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave);
+
+			}
+			
 
 			if(BandSettings.CenterFreq < FocusSettings.FocusStart && CanSlow)
 			{
