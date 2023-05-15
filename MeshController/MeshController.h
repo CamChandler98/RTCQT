@@ -5,8 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
-#include "../../RealTimeCQTManager.h"
-#include "../Mesh/SoundMesh.h"
+#include "../RealTimeCQTManager.h"
+#include "./Mesh/SoundMesh.h"
 #include "MeshController.generated.h"
 
 UCLASS()
@@ -33,7 +33,7 @@ public:
 	void TestDecreasePadding();
 
 	UFUNCTION(BlueprintCallable)
-	void ChangePadding(float InPadding);
+	void ChangePadding(float InPadding, bool SetPadding = true);
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnMeshesInLine(int32 Number, float InPadding);
@@ -41,6 +41,9 @@ public:
 		/** Please add a function description */
 	UFUNCTION(BlueprintCallable)
 	void UpdateMesh(int32 Index, double Value);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateMeshZ(int32 Index, float Value);
 
 
 	float CalculateTotalLength(int NumberOfObjects, float Scale, float InPadding);
@@ -63,9 +66,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
 	float Padding = 10; 
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
+	bool doFocus = false; 
+
 		/** Please add a variable description */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
-	double ScaleFactor;
+	double ScaleFactor = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
+	double MinScale = .1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
 	TObjectPtr<UMaterialInterface>  Material;
@@ -81,7 +89,7 @@ public:
 
 		/** Please add a variable description */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
-	TArray<double> BandStrengths;
+	TArray<bool> FocusIndices;
 
 		/** Please add a variable description */
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
@@ -98,6 +106,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	// virtual void PreEditChange(FProperty* ChangedProperty) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& e) override;
+
+
+
 
 public:	
 	// Called every frame

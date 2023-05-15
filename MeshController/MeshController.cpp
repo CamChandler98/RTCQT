@@ -3,6 +3,7 @@
 
 #include "MeshController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AMeshController::AMeshController()
@@ -35,14 +36,55 @@ AMeshController::AMeshController()
 	Arrow -> bIsScreenSizeScaled = false;
 	Arrow -> bIsEditorOnly = true;
 	Arrow -> ArrowLength = CalculateTotalLength(NumberOfMeshes, MeshScale, Padding);
+	FVector ArrowScale = Arrow -> GetRelativeScale3D();
+	ArrowScale.Z = 8.0;
+	Arrow -> SetRelativeScale3D(ArrowScale);
 	Arrow -> ArrowColor = Color.QuantizeRound();
 
 	Arrow -> SetupAttachment(RootComponent);
 }
 
+// void AMeshController::PreEditChange(FProperty* ChangedProperty) 
+// {
+// 	FName PropertyName = (ChangedProperty != NULL) ? ChangedProperty -> GetFName() : NAME_None;
+
+// 	if(PropertyName == GET_MEMBER_NAME_CHECKED(AMeshController, Padding)){
+// 		FFloatProperty* Prop = static_cast<FFloatProperty*>(ChangedProperty);
+
+// 		if(Prop -> GetFloatingPointPropertyValue(Prop))
+// 		{
+// 			float TargetPadding = Prop -> GetFloatingPointPropertyValue(Prop);
+// 			UE_LOG(LogTemp, Warning, TEXT("Value %f"), TargetPadding);
+
+// 			ChangePadding(TargetPadding, false);
+// 		}
+// 	}
+
+// 	Super::PreEditChange(ChangedProperty) ;
+// }
+
+void AMeshController::PostEditChangeProperty(struct FPropertyChangedEvent& e)
+{
+	Super::PostEditChangeProperty(e) ;
+
+	FName PropertyName = (e.Property != NULL) ? e.Property -> GetFName() : NAME_None;
+
+	if(
+		PropertyName == GET_MEMBER_NAME_CHECKED(AMeshController, Padding) || 
+		PropertyName == GET_MEMBER_NAME_CHECKED(AMeshController, NumberOfMeshes) ||
+		PropertyName == GET_MEMBER_NAME_CHECKED(AMeshController, MeshScale)
+	 )
+	 {
+		Arrow -> ArrowLength = CalculateTotalLength(NumberOfMeshes, MeshScale, Padding);
+	 }
+
+}
+
+
 // Called when the game starts or when spawned
 void AMeshController::BeginPlay()
 {
+	FocusIndices = CQTManager -> FocusIndices;
 	Super::BeginPlay();
 	
 }
@@ -96,15 +138,25 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 
 			CurrentMesh -> Init(Mesh, Material, SpawnScale);
 
-			CurrentMesh -> SetColor(Color);
-			
 			VisualizationMeshes.Add(CurrentMesh);
 
 			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
+			if(doFocus && FocusIndices[i - 1])
+			{
+				CurrentMesh -> SetColor(FocusColor);
+
+			}
+			else
+			{
+
+				CurrentMesh -> SetColor(Color);
+
+			}
 	}
+
 }
 
-void AMeshController::ChangePadding(float InPadding)
+void AMeshController::ChangePadding(float InPadding, bool SetPadding)
 {
 	if(InPadding == Padding){
 		return;
@@ -150,7 +202,10 @@ void AMeshController::ChangePadding(float InPadding)
 		CurrentMesh -> SetRelativeLocation(NewLocation);
 	}
 
-	Padding = InPadding;
+	if(SetPadding)
+	{
+		Padding = InPadding;
+	}
 }
 
 void AMeshController::UpdateMesh(int32 Index, double Value)
@@ -158,6 +213,18 @@ void AMeshController::UpdateMesh(int32 Index, double Value)
 
 }
 
+void AMeshController::UpdateMeshZ(int32 Index, float Value)
+{
+	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
+
+	float NewZScale = FMath::Max(Value * ScaleFactor, MinScale);
+	float SpectrumMax = CQTManager -> getMaxSpectrum();
+	
+	float NewBrightness = UKismetMathLibrary::MapRangeClamped(NewZScale, 0, SpectrumMax, .1, 3.0);
+
+	CurrentMesh -> SetZScale(NewZScale);
+	CurrentMesh -> SetBrightness(NewBrightness);
+}
 void AMeshController::TestSpawn()
 {
 	SpawnMeshesInLine(NumberOfMeshes, Padding);

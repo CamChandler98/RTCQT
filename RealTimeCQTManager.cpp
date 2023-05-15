@@ -14,11 +14,32 @@
 // Sets default values
 ARealTimeCQTManager::ARealTimeCQTManager()
 {
+
+    #if WITH_EDITOR
+	#define LOCTEXT_NAMESPACE "Custom Detail"
+	static const FName PropertyEditor("PropertyEditor");
+	FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>(PropertyEditor);
+
+	//Change "Actor" for the type of your Class(eg. Actor, Pawn, CharacterMovementComponent)
+	//Change "MySection" to the name of Desired Section
+	TSharedRef<FPropertySection> FFTSection = PropertyModule.FindOrCreateSection("Actor", "FFT", LOCTEXT("FFT", "FFT"));
+	TSharedRef<FPropertySection> PeakSection = PropertyModule.FindOrCreateSection("Actor", "Peak", LOCTEXT("Peak", "Peak"));
+	TSharedRef<FPropertySection> ProcessingSection = PropertyModule.FindOrCreateSection("Actor", "Processing", LOCTEXT("Processing", "Processing"));
+	TSharedRef<FPropertySection> OutputSection = PropertyModule.FindOrCreateSection("Actor", "Output", LOCTEXT("Output", "Output"));
+
+	//You can add multiples categories to be tracked by this section
+	FFTSection->AddCategory("FFT Settings");
+    PeakSection -> AddCategory("Peak Settings");
+    ProcessingSection -> AddCategory("Sample Processing");
+    ProcessingSection -> AddCategory("Spectrum Processing");
+    OutputSection->AddCategory("Values");
+    OutputSection->AddCategory("Array");
+
+	#undef LOCTEXT_NAMESPACE
+	#endif
+
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-
-
 }  
 // Called when the game starts or when spawned
 void ARealTimeCQTManager::BeginPlay()
@@ -43,7 +64,19 @@ void ARealTimeCQTManager::BeginPlay()
 
     focusSettings.doStupid = doStupid;
 
-    NumHopFrames = FMath::Max(1,NumHopSamples);
+    PeakPickerSettings.NumPreMax = NumPreMax;
+    PeakPickerSettings.NumPostMax = NumPostMax;
+    PeakPickerSettings.NumPreMean = NumPreMean;
+    PeakPickerSettings.NumPostMean = NumPostMean;
+    PeakPickerSettings.NumWait = NumWait;
+    PeakPickerSettings.MeanDelta = MeanDelta;
+
+
+
+
+
+
+    NumHopFrames = FMath::Max(1,NumHopFrames);
     NumHopSamples = NumHopFrames * NumChannels;
     NumWindowSamples = fftSize * NumChannels;
 
@@ -58,8 +91,10 @@ void ARealTimeCQTManager::BeginPlay()
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(defaultSettings, focusSettings, sampleRate);
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
+    PeakPicker = MakeUnique<Audio::FPeakPicker>(PeakPickerSettings);
     HighPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::HighShelf, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
-    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, gainFactor );
+    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::LowShelf, LowPassCutoffFrequency , LowPassBandWidth, gainFactor );
+    
     GetCenterFrequencies();
     GetSampleIndices();
 
@@ -222,6 +257,7 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
 
         ConstantQAnalyzer -> CalculateCQT(inAmp.GetData(), outCQT);
         CQTProcessing();
+        MaxSpectrum =  getMaxValue(outCQT);
         for(int32 i = 0; i < outCQT.Num(); i ++ ){
 
             FireOnSpectrumUpdatedEvent(i,outCQT[i]);
@@ -234,11 +270,6 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
 void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 {
 
-        if(doAbsAmp)
-        {
-
-            Audio::ArrayAbsInPlace(inAmplitude);
-        }
         if(doLowpassFilter)
         {
             TArrayView<const float> AmpView(inAmplitude.GetData(), inAmplitude.Num());
@@ -254,6 +285,11 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
             AlterAmp = Alter;
 
 
+        }
+        if(doAbsAmp)
+        {
+
+            Audio::ArrayAbsInPlace(inAmplitude);
         }
         // Audio::ArrayMultiplyByConstantInPlace(inAmplitude, gainFactor);
         Audio::ArrayMultiplyByConstantInPlace(inAmplitude, 1.f / FMath::Sqrt(static_cast<float>(2))); 
@@ -285,12 +321,12 @@ void ARealTimeCQTManager::CQTProcessing()
                 } 
                 else {
                 // Handle the case when i == 0
-                    oldValue = oldCQT[BinIndex]/2; // or some other value
+                    oldValue = oldCQT[BinIndex]/1.1; // or some other value
                 }
                 if (BinIndex == currentCQT.Num() - 1) 
                 {
                  // Access the element at i-1 if i > 0
-                    newValue = currentCQT[BinIndex]/2;
+                    newValue = currentCQT[BinIndex]/1.1;
                 } 
                 else {
                 // Handle the case when i == 0
@@ -298,15 +334,20 @@ void ARealTimeCQTManager::CQTProcessing()
                 }
 
         // Interpolate the bin value
-        const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
+        // const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
 
-        // const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
+        const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
         // Do something with the interpolated value, e.g. store it in a new array
         // interpolatedCQT[BinIndex] = InterpolatedValue;
 
         outCQT[BinIndex] = InterpolatedValue;
     }
 
+
+        if(doPeakDetection)
+        {
+            PeakPicker -> PickPeaks(outCQT, PeakIndices);
+        }
         oldCQT = currentCQT;
 
         
@@ -315,30 +356,7 @@ void ARealTimeCQTManager::CQTProcessing()
         
 
 
-        if(doSmooth)
-        {                
-        SmoothedCQT.SetNumUninitialized(outCQT.Num());
-            const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
-            const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
 
-            for (int32 i = 0; i < outCQT.Num(); i++)
-            {
-                float Sum = 0.0f;
-                int32 Count = 0;
-
-                for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
-                {
-                    int32 Index = FMath::Clamp(i + j, 0, outCQT.Num() - 1);
-                    Sum += outCQT[Index];
-                    Count++;
-                }
-
-                SmoothedCQT[i] = Sum * ScaleFactor;
-            }
-        }
-        else{
-            SmoothedCQT = outCQT;
-        }
 
         if(doNormalize)
         {
@@ -387,7 +405,7 @@ void ARealTimeCQTManager::CQTProcessing()
         {
             FocusExponentiation(SmoothedCQT, FocusExponentMultiplier);
         }
-        if(doScalePeaks)
+        if(doPeakExp)
         {
 
             for (int32 i = 0; i < SmoothedCQT.Num(); i++)
@@ -396,6 +414,28 @@ void ARealTimeCQTManager::CQTProcessing()
             }
 
         }
+        if(doSmooth)
+        {                
+        SmoothedCQT.SetNumUninitialized(outCQT.Num());
+            const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
+            const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
+
+            for (int32 i = 0; i < outCQT.Num(); i++)
+            {
+                float Sum = 0.0f;
+                int32 Count = 0;
+
+                for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
+                {
+                    int32 Index = FMath::Clamp(i + j, 0, outCQT.Num() - 1);
+                    Sum += outCQT[Index];
+                    Count++;
+                }
+
+                SmoothedCQT[i] = Sum * ScaleFactor;
+            }
+        }
+
 
         outCQT = SmoothedCQT;
 
@@ -587,6 +627,12 @@ int32 ARealTimeCQTManager::GetCOLAHopSizeForWindow(Audio::EWindowType InType, in
 			break;
 		}
 	}
+
+float ARealTimeCQTManager::getMaxSpectrum()
+{
+   float max = MaxSpectrum;
+    return max;
+}
 float ARealTimeCQTManager::getMaxValue(const TArray<float>& arr){
     float maxVal = arr[0];
     for (int i = 1; i < arr.Num(); i++) {
@@ -627,7 +673,7 @@ void ARealTimeCQTManager::UpdateLowPassFilter(){
 
 }
 
-void ARealTimeCQTManager::FireOnSpectrumUpdatedEvent(const int index, const int value)
+void ARealTimeCQTManager::FireOnSpectrumUpdatedEvent(const int index, const float value)
 {
      FUpdateData newData;
      newData.index = index;

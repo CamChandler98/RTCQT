@@ -10,6 +10,7 @@
 #include "ConstantQ.h"
 #include "DSP/SlidingWindow.h"
 #include "DSP/Filter.h"
+#include "PeakPicker.h"
 #include "RealTimeCQTManager.generated.h"
 
 USTRUCT(BlueprintType)
@@ -69,6 +70,7 @@ public:
 	void FindDifference( const TArray<float>& Original, TArrayView<const float> Alter, float DifferenceThreshold);
 
 	float getMaxValue(const TArray<float>& arr);
+	float getMaxSpectrum();
 	int getMaxValue(const TArray<int>& arr);
 
 	float getMeanValue(const TArray<float>& arr);
@@ -87,9 +89,11 @@ public:
 	int32 GetCOLAHopSizeForWindow(Audio::EWindowType InType, int32 WindowLength);
 
 	Audio::FConstantQAnalyzerSettings defaultSettings = Audio::FConstantQAnalyzerSettings();
-
+	Audio::FPeakPickerSettings PeakPickerSettings = Audio::FPeakPickerSettings();
 	Audio::FFocusSettings focusSettings = Audio::FFocusSettings();
 
+
+	TUniquePtr<Audio::FPeakPicker> PeakPicker;
 	TUniquePtr<Audio::FConstantQAnalyzer> ConstantQAnalyzer;
 	TUniquePtr<Audio::TSlidingBuffer<uint8> > SlidingBuffer;
 	TUniquePtr<Audio::TSlidingBuffer<float> > SlidingFloatBuffer;
@@ -99,22 +103,20 @@ public:
 
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FFT Settings")
 	int32 NumHopFrames;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere )
 	int32 NumHopSamples;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	int32 COLAHopSize;
 
 
 	int32 NumWindowSamples;
 
-	UPROPERTY(BlueprintReadWrite ,EditAnywhere, Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite ,EditAnywhere, Category = "FFT Settings")
 	float sampleRate = 48000.0;
 
-	UPROPERTY(BlueprintReadWrite ,EditAnywhere, Category = "RTCQT|FFT Settings")
-	float NumPeriodFrames = 128;
 
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
 	float deltaTime = 0.0;
@@ -122,129 +124,148 @@ public:
 	float currentTime = 0.0;
 	UPROPERTY(BlueprintReadWrite ,EditAnywhere)
 	float lastUpdateTime = 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings" )
 	int32 fftSize = 8192;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	int32 NumBands = 96;	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float NumBandsPerOctave = 24;	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float KernelLowestCenterFreq = 40.0 ;		
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float BandWidthStretch = 1.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float NoiseFloorDB = -60.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	int32 NumChannels = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	bool doStupid = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float FocusStart = 140.0;						
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float FocusMin = 2000.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float FocusMax = 6000.0;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	int32 NumPreMax = 1440;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	int32 NumPostMax = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	int32 NumPreMean = 4800;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	int32 NumPostMean = 4801;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	int32 NumWait = 1440;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	float MeanDelta = 0.07f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Peak Settings")
+	bool doPeakDetection = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float LogNormal = 2.f ;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float LogFast = 2.5 ;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|FFT Settings")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float LogSlow = .975f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float HighPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float HighPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float HighPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float LowPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float LowPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float LowPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float gainFactor = 1.5;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doLowpassFilter = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|SampleProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doHighpassFilter = true;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|SampleProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Sample Processing" )
 	bool doAbsAmp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|SampleProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Sample Processing" )
 	bool doSmoothSignal = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing" )
 	int32 smoothingWindowSize = 7;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float scaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float sigmoidScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float QuietMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float peakExponentMultiplier = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float FocusExponentMultiplier = 2;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doSmooth = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doFocusExp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doPeakExp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doNormalize = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doScale = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doSurpressQuiet = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doClamp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0") , Category = "RTCQT|CQTProcessing")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0") , Category = "Spectrum Processing")
 	float InterpolationFactor = .5;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|CQTProcessing")
-	bool doScalePeaks = true;
+
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumPaddingSamples = 16;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	int32 bitsPerSample = 16;
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output|KeyValues")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
 	int32 MaxSampleIndex = 0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output|KeyValues")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
 	float MaxCenterFreq = 0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output|KeyValues")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
 	float MeanCenterFreq = 0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
+	float MaxSpectrum = 1.0;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "RTCQT|Output|Arrays")
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Array")
 	TArray<float> outCQT;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> currentCQT;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> oldCQT;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> outAmp;
-		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> inAmp;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> OriginalAmp;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> TestAlterAmp;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> TestOriginalAmp;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> AlterAmp;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<bool> FocusIndices;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> CenterFrequencies;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "RTCQT|Output|Arrays" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<int32> SampleIndices;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
+	TArray<int32> PeakIndices;
 
 
 
@@ -277,13 +298,13 @@ public:
 	UPROPERTY(BlueprintAssignable);
 	FOnGiveDifferenceDelegate OnGiveDifferenceEvent;
 
-	UFUNCTION(CallInEditor, Category="RTCQT|SampleProcessing" )
+	UFUNCTION(CallInEditor, Category="Sample Processing" )
 	void UpdateHighPassFilter();
-	UFUNCTION(CallInEditor, Category="RTCQT|SampleProcessing" )
+	UFUNCTION(CallInEditor, Category="Sample Processing" )
 	void UpdateLowPassFilter();
 
 
-	void FireOnSpectrumUpdatedEvent(const int index, const int value);
+	void FireOnSpectrumUpdatedEvent(const int index, const float value);
 	void FireOnGiveDifferenceUpdatedEvent(const int index);
 
 

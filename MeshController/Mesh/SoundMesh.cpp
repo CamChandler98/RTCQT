@@ -28,13 +28,13 @@ ASoundMesh::ASoundMesh()
 void ASoundMesh::Init(UStaticMesh* NewMesh, UMaterialInterface* NewMaterial, FVector NewScale)
 {   
     Mesh = NewMesh;
+    Material = NewMaterial;
+
     MeshComponent -> SetStaticMesh(Mesh);
 
     MeshComponent -> SetMaterial(0,NewMaterial);
 
     MeshComponent -> SetRelativeScale3D(NewScale);
-
-
 }
 
 
@@ -42,11 +42,14 @@ void ASoundMesh::SetMesh(UStaticMesh* NewMesh)
 {
     Mesh = NewMesh;
     MeshComponent -> SetStaticMesh(NewMesh);
+
 }
 
 void ASoundMesh::SetMaterial(UMaterialInterface* NewMaterial)
 {
     MeshComponent -> SetMaterial(0,NewMaterial);
+
+    // Brightness = MeshComponent -> GetMaterial(0) -> GetScalarParameterValue();
 
 } 
 
@@ -56,13 +59,40 @@ void ASoundMesh::SetScale(FVector NewScale)
 
 }
 
+
+void ASoundMesh::SetZScale(const float NewZScale)
+{
+
+
+    FVector NewScale = GetActorRelativeScale3D();
+    NewScale.Z = NewZScale;
+    
+    MeshComponent -> SetRelativeScale3D(NewScale);
+    
+}
+
+void ASoundMesh::SetBrightness(const float InBrightness)
+{
+    UMaterialInterface* CurrentMaterial = GetStaticMeshComponent() -> GetMaterial(0);
+    UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
+    DynMaterial -> SetVectorParameterValue("Color", Color); 
+
+    DynMaterial -> SetScalarParameterValue("Intensity", InBrightness); 
+
+    SetMaterial(DynMaterial);
+
+
+
+}
+
 void ASoundMesh::SetColor(FLinearColor NewColor)
 {
-    UMaterialInterface* CurrentMaterial = MeshComponent -> GetMaterial(0);
-    UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(CurrentMaterial, this);
+    Color = NewColor;
+    UMaterialInterface* CurrentMaterial = GetStaticMeshComponent()-> GetMaterial(0);
 
+    UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
     DynMaterial -> SetVectorParameterValue("Color", NewColor);
-
+    Color = NewColor;
     SetMaterial(DynMaterial);
 
 }

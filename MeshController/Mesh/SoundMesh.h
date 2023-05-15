@@ -31,15 +31,29 @@ class SYNRTCQT_API ASoundMesh : public AStaticMeshActor
 	void SetScale(FVector NewScale);
 
 	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
+	void SetZScale(const float NewZScale);
+
+	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
+	void SetBrightness(const float InBrightness);
+
+	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
 	void SetColor(FLinearColor NewColor);
 
 	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
 	void Init(UStaticMesh* NewMesh, UMaterialInterface* NewMaterial, FVector NewScale);
 	
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 	
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="Default")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
 	TObjectPtr<UStaticMesh> Mesh;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
+	TObjectPtr<UMaterialInterface>  Material;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
+	FLinearColor Color;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")
+	float Brightness = 1.0;
 };
