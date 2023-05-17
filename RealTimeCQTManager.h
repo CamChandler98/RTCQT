@@ -130,8 +130,12 @@ public:
 	int32 NumBands = 96;	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float NumBandsPerOctave = 24;	
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
-	float KernelLowestCenterFreq = 40.0 ;		
+	float KernelLowestCenterFreq = 40.0 ;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
+	float KernelHighestCenterFreq = 9000.0 ;	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float BandWidthStretch = 1.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
@@ -229,11 +233,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	int32 bitsPerSample = 16;
 
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
-	int32 MaxSampleIndex = 0;
+	float MinCenterFreq = 0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
 	float MaxCenterFreq = 0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
+	int32 MaxSampleIndex = 0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")
 	float MeanCenterFreq = 0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Values")

@@ -92,12 +92,13 @@ void ARealTimeCQTManager::BeginPlay()
     SlidingBuffer = MakeUnique<Audio::TSlidingBuffer<uint8> >(NumWindowSamples + NumPaddingSamples,NumHopSamples);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(fftSize, NumHopFrames);
     PeakPicker = MakeUnique<Audio::FPeakPicker>(PeakPickerSettings);
-    HighPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::HighShelf, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
-    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::LowShelf, LowPassCutoffFrequency , LowPassBandWidth, gainFactor );
+    HighPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Highpass, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain );
+    LowPassFilter.Init(sampleRate, 1, Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency , LowPassBandWidth, LowPassGain);
     
     GetCenterFrequencies();
     GetSampleIndices();
 
+    MinCenterFreq = CenterFrequencies[0];
     MaxSampleIndex = getMaxValue(SampleIndices);
     MaxCenterFreq = getMaxValue(CenterFrequencies);
     MeanCenterFreq = getMeanValue(CenterFrequencies);
@@ -209,18 +210,9 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
         summedSamples.Add(sampleSum);
     }
 
-    // Return the summed samples
-	//(LogTemp, Warning, TEXT("The length is: %d"), summedSamples.Num());
-    if(doSmoothSignal)
-        {
 
-            const TArrayView< float> SampleView(summedSamples.GetData(), summedSamples.Num());
-            float avg = Audio::ArrayGetAverageValue(SampleView);
-            if(avg > SMALL_NUMBER){
-                
-                SmoothSignal(SampleView, summedSamples, summedSamples.Num()/4);
-            }
-        }
+
+    AmplitudeSampleProcessing(summedSamples);
     return summedSamples;
 
 }
@@ -252,7 +244,7 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
     {   
 
         inAmp = Window;
-        AmplitudeSampleProcessing(inAmp);
+        // AmplitudeSampleProcessing(inAmp);
 
 
         ConstantQAnalyzer -> CalculateCQT(inAmp.GetData(), outCQT);
@@ -261,7 +253,6 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
         for(int32 i = 0; i < outCQT.Num(); i ++ ){
 
             FireOnSpectrumUpdatedEvent(i,outCQT[i]);
-        
         }
     }
         canProcesses = true;
@@ -297,6 +288,7 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 
 
 }
+
 void ARealTimeCQTManager::CQTProcessing()
 {
 
@@ -334,9 +326,9 @@ void ARealTimeCQTManager::CQTProcessing()
                 }
 
         // Interpolate the bin value
-        // const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
+        const float InterpolatedValue = FMath::Lerp(oldCQT[BinIndex], currentCQT[BinIndex],   BinInterpFactor);
 
-        const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
+        // const float InterpolatedValue = FMath::CubicInterp(oldValue, oldCQT[BinIndex], currentCQT[BinIndex], newValue, BinInterpFactor);
         // Do something with the interpolated value, e.g. store it in a new array
         // interpolatedCQT[BinIndex] = InterpolatedValue;
 
@@ -356,6 +348,27 @@ void ARealTimeCQTManager::CQTProcessing()
         
 
 
+        if(doSmooth)
+        {                
+        SmoothedCQT.SetNumUninitialized(outCQT.Num());
+            const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
+            const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
+
+            for (int32 i = 0; i < outCQT.Num(); i++)
+            {
+                float Sum = 0.0f;
+                int32 Count = 0;
+
+                for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
+                {
+                    int32 Index = FMath::Clamp(i + j, 0, outCQT.Num() - 1);
+                    Sum += outCQT[Index];
+                    Count++;
+                }
+
+                SmoothedCQT[i] = Sum * ScaleFactor;
+            }
+        }
 
 
         if(doNormalize)
@@ -401,41 +414,26 @@ void ARealTimeCQTManager::CQTProcessing()
             }
 
         }
-        if(doFocusExp)
-        {
-            FocusExponentiation(SmoothedCQT, FocusExponentMultiplier);
-        }
+
         if(doPeakExp)
         {
-
             for (int32 i = 0; i < SmoothedCQT.Num(); i++)
             {
-                SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i]), peakExponentMultiplier);
-            }
+                float Bonus = 0;
 
-        }
-        if(doSmooth)
-        {                
-        SmoothedCQT.SetNumUninitialized(outCQT.Num());
-            const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
-            const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
-
-            for (int32 i = 0; i < outCQT.Num(); i++)
+            if(doFocusExp)
             {
-                float Sum = 0.0f;
-                int32 Count = 0;
 
-                for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
+                if(FocusIndices[i] == true)
                 {
-                    int32 Index = FMath::Clamp(i + j, 0, outCQT.Num() - 1);
-                    Sum += outCQT[Index];
-                    Count++;
+                    Bonus += FocusExponentMultiplier;
                 }
+            }   
 
-                SmoothedCQT[i] = Sum * ScaleFactor;
+                SmoothedCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((SmoothedCQT[i]), peakExponentMultiplier + Bonus);
             }
-        }
 
+        }
 
         outCQT = SmoothedCQT;
 
@@ -447,7 +445,9 @@ void ARealTimeCQTManager::FocusExponentiation(TArray<float>& InputArray, float S
 
     for(int32 i = 0 ; i < InputArray.Num(); i++){
         if(FocusIndices[i] == true){
+
             InputArray[i] = FMath::Pow(InputArray[i], ScalingFactor);
+
         }
     }
 }

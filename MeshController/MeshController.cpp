@@ -37,7 +37,7 @@ AMeshController::AMeshController()
 	Arrow -> bIsEditorOnly = true;
 	Arrow -> ArrowLength = CalculateTotalLength(NumberOfMeshes, MeshScale, Padding);
 	FVector ArrowScale = Arrow -> GetRelativeScale3D();
-	ArrowScale.Z = 8.0;
+	// ArrowScale.Z = 8.0;
 	Arrow -> SetRelativeScale3D(ArrowScale);
 	Arrow -> ArrowColor = Color.QuantizeRound();
 
@@ -251,7 +251,7 @@ float AMeshController::CalculateTotalLength(int NumberOfObjects, float Scale, fl
     // Add padding. There will be one less padding space than the number of objects.
     if (NumberOfObjects > 1) 
     {
-        TotalLength += Padding * (NumberOfObjects - 1);
+        TotalLength += Padding * (NumberOfObjects + 1);
     }
 
     return TotalLength;
