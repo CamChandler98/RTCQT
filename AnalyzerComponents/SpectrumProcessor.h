@@ -56,7 +56,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doScale = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
-	bool doSurpressQuiet = true;
+	bool doSupressQuiet = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool doClamp = true;
 
@@ -66,5 +66,14 @@ public:
 	void SmoothSpectrum(TArray<float>& CurrentCQT);
 
 	void NormalizeSpectrum(TArray<float>& CurrentCQT, float NoiseFloorDB);
+
+	void SupressQuiet(TArray<float>& CurrentCQT, float ScalingFactor);
+
+
+	void ScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor);
+
+	void ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent);
+
+	void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& FocusIndices, float Exponent, float Focus);
 
 };

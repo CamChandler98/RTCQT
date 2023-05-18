@@ -3,6 +3,8 @@
 
 #include "SpectrumProcessor.h"
 #include "DSP/FloatArrayMath.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 // Sets default values for this component's properties
 USpectrumProcessor::USpectrumProcessor()
@@ -147,4 +149,48 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float Noi
 	}
 	// Clamp the values in the CurrentCQT array between 0 and 1
 	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.f);
+}
+
+
+void USpectrumProcessor::SupressQuiet(TArray<float>& CurrentCQT, float ScalingFactor)
+{
+	for (int i = 0; i < CurrentCQT.Num(); i++)
+	{
+		float CurrentValue = CurrentCQT[i];
+		float DistanceFromZero = FMath::Abs(CurrentValue);
+		float ScaledValue = FMath::Sign(CurrentValue) * FMath::Pow(DistanceFromZero, ScalingFactor);
+		CurrentCQT[i] = ScaledValue;
+	}
+}
+
+
+void USpectrumProcessor::ScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor)
+{
+		Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, ScalingFactor);
+}
+
+void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent)
+{
+			for (int32 i = 0; i < CurrentCQT.Num(); i++)
+            {
+                CurrentCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((CurrentCQT[i]), Exponent);
+            }
+}
+
+void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& FocusIndices, float Exponent, float Focus)
+{
+	float Bonus = Exponent + Focus;
+
+	for (int32 i = 0; i < CurrentCQT.Num(); i++)
+	{
+		if(FocusIndices[i] == true)
+		{
+			CurrentCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((CurrentCQT[i]), Bonus);
+		}
+		else
+		{
+
+			CurrentCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((CurrentCQT[i]), Exponent);
+		}
+	}
 }
