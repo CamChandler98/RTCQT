@@ -289,6 +289,7 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 
 }
 
+
 void ARealTimeCQTManager::CQTProcessing()
 {
 
@@ -349,7 +350,8 @@ void ARealTimeCQTManager::CQTProcessing()
 
 
         if(doSmooth)
-        {                
+        {           
+                 
         SmoothedCQT.SetNumUninitialized(outCQT.Num());
             const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
             const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
