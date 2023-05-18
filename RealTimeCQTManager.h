@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQ.h"
 #include "DSP/AlignedBuffer.h"
-#include "ConstantQ.h"
 #include "DSP/SlidingWindow.h"
 #include "DSP/Filter.h"
 #include "PeakPicker.h"
@@ -28,7 +28,7 @@ struct FUpdateData
 			index = 0;
 			value = 0.0 ;
 		}
-	};
+};
 
 
 UDELEGATE(BlueprintCallable)
@@ -130,7 +130,7 @@ public:
 	int32 NumBands = 96;	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float NumBandsPerOctave = 24;	
-	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")
 	float KernelLowestCenterFreq = 40.0 ;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "FFT Settings")

@@ -2,8 +2,8 @@
 
 
 #include "RealTimeCQTManager.h"
-#include "ConstantQAnalyzer.h"
-#include "ConstantQ.h"
+#include "./CoreDSP/ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQ.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
 #include "SampleBuffer.h"
