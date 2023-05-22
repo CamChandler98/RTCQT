@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DSP/Filter.h"
+
+#include "SampleProcessorSettings.h"
 #include "SampleProcessor.generated.h"
 
 
@@ -38,12 +40,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	float LowPassGain= 0.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
-	float gainFactor = 1.5;
+	float GainFactor = 1.5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doLowpassFilter = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doHighpassFilter = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
+	bool doAbsAmp = true;
 
+
+    TObjectPtr<USampleSettings> Settings;
 
 	TUniquePtr<Audio::FBiquadFilter> LowPassFilter;
 	TUniquePtr<Audio::FBiquadFilter> HighPassFilter;
@@ -51,5 +57,10 @@ public:
 	TUniquePtr<Audio::FBiquadFilter> HighShelfFilter;
 
 
+	void SetParams();
+
+	void SetSettings(USampleSettings* InSettings);
 	void GetFilters(float SampleRate);
+
+	void ProcessAudio(TArray<float>& AudioData, FSampleToggles& Toggles);
 };

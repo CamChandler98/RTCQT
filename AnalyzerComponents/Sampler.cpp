@@ -33,7 +33,7 @@ void USampler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 }
 
 
-TArray<float> USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor)
+void USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor)
 {
     int SampleSize = BitsPerSample / 8;
 
@@ -73,6 +73,10 @@ TArray<float> USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream,
 		}
 		
 	OutAudioData = SummedSamples;
-	return SummedSamples;
+}
+
+TArray<float> USampler::GetAudioData()
+{
+	return OutAudioData;
 }
 

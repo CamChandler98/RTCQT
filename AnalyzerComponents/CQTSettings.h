@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, EditInlineNew)
 class SYNRTCQT_API UCQTSettings : public UConstantQNRTSettings
 {
 
@@ -18,7 +18,7 @@ public:
 	UCQTSettings();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "Proportion", ClampMin = "0.0", ClampMax = "1.0"))
 	float Proportion;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "Proportion", ClampMin = "0.0", ClampMax = "1.0"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer )
 	float SampleRate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "End Center Frequency"))
 	float EndingFrequency;

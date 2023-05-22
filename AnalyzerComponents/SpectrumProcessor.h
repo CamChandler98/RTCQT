@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "SpectrumProcessorSettings.h"
 #include "SpectrumProcessor.generated.h"
 
 
@@ -27,6 +28,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> PreviousCQT;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
+	TArray<bool> FocusIndices;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing" )
 	int32 SmoothingWindowSize = 7;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0") , Category = "Spectrum Processing")
@@ -34,13 +37,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float ScaleMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
-	float sigmoidScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float QuietMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
-	float PeakExponentMultiplier = 2;
+	float PeakExponentMultiplier = 1.25;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
-	float FocusExponentMultiplier = 2;
+	float FocusExponentMultiplier = .01;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	float NoiseFloorDB = -60;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doInterpolate = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
@@ -61,11 +64,19 @@ public:
 	bool doClamp = true;
 
 
-	void InterpolateSpectrum(TArray<float>& CurrentCQT);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+    TObjectPtr<USpectrumSettings> Settings;
+
+	void SetSettings(USpectrumSettings* InSettings);
+    void SetParams();
+
+	void ProcessSpectrum(TArray<float>& CurrentCQT, FSpectrumToggles Toggles);
+
+	void InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDoCubicInterpolation = true);
 
 	void SmoothSpectrum(TArray<float>& CurrentCQT);
 
-	void NormalizeSpectrum(TArray<float>& CurrentCQT, float NoiseFloorDB);
+	void NormalizeSpectrum(TArray<float>& CurrentCQT, float InNoiseFloorDB);
 
 	void SupressQuiet(TArray<float>& CurrentCQT, float ScalingFactor);
 
@@ -74,6 +85,6 @@ public:
 
 	void ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent);
 
-	void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& FocusIndices, float Exponent, float Focus);
+	void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& InFocusIndices, float Exponent, float Focus);
 
 };

@@ -11,12 +11,78 @@ USpectrumProcessor::USpectrumProcessor()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
+
 	PrimaryComponentTick.bCanEverTick = true;
+	Settings =  CreateDefaultSubobject<USpectrumSettings>(TEXT("Settings"));
 
 	// ...
 }
 
+void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT, FSpectrumToggles Toggles)
+{
+	if(Toggles.DoInterpolate)
+	{
+		InterpolateSpectrum(CurrentCQT, Toggles.DoCubicInterpolation);
+	}
+	if(Toggles.DoSmooth)
+	{
+		SmoothSpectrum(CurrentCQT);
+	}
+	if(Toggles.DoNormalize)
+	{
+		NormalizeSpectrum(CurrentCQT, NoiseFloorDB);
+	}
+	if(Toggles.DoSupressQuiet)
+	{
+		SupressQuiet(CurrentCQT, QuietMultiplier);
+	}
+	if(Toggles.DoScale)
+	{
+		ScaleSpectrum(CurrentCQT, ScaleMultiplier);
+	}
+	if(Toggles.DoFocusExp)
+	{
+		ExponentiateFocusedSpectrum(CurrentCQT, FocusIndices, PeakExponentMultiplier, FocusExponentMultiplier);
+	}
+	else if(Toggles.DoPeakExp)
+	{
+		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
+	}
 
+
+}
+
+void USpectrumProcessor::SetSettings(USpectrumSettings* InSettings)
+{
+	
+	Settings -> SmoothingWindowSize = InSettings -> SmoothingWindowSize;
+	
+	Settings -> InterpolationFactor = InSettings -> InterpolationFactor ;
+	
+	Settings -> ScaleMultiplier = InSettings -> ScaleMultiplier;
+	
+	Settings -> QuietMultiplier = InSettings -> QuietMultiplier;
+	
+	Settings ->  PeakExponentMultiplier = InSettings -> PeakExponentMultiplier;
+	
+	Settings -> FocusExponentMultiplier = InSettings -> FocusExponentMultiplier;
+}
+
+void USpectrumProcessor::SetParams()
+{
+	
+	SmoothingWindowSize = Settings -> SmoothingWindowSize;
+	
+	InterpolationFactor =  Settings -> InterpolationFactor;
+	
+	ScaleMultiplier = Settings -> ScaleMultiplier;
+	
+	QuietMultiplier = Settings -> QuietMultiplier;
+	
+	PeakExponentMultiplier = Settings ->  PeakExponentMultiplier;
+	
+	FocusExponentMultiplier = Settings -> FocusExponentMultiplier;
+}
 // Called when the game starts
 void USpectrumProcessor::BeginPlay()
 {
@@ -35,7 +101,7 @@ void USpectrumProcessor::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	// ...
 }
 
-void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT)
+void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDoCubicInterpolation)
 {
 
     const int32 NumBins = PreviousCQT.Num();
@@ -77,7 +143,7 @@ void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT)
         // Do something with the interpolated value, e.g. store it in a new array
         // interpolatedCQT[BinIndex] = InterpolatedValue;
 
-		if(doCubicInterpolation)
+		if(bDoCubicInterpolation)
 		{
        	 CurrentCQT[BinIndex] = CubicInterpolatedValue;
 		}
@@ -119,7 +185,7 @@ void USpectrumProcessor::SmoothSpectrum(TArray<float>& CurrentCQT)
 	}
 }
 
-void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float NoiseFloorDB)
+void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InNoiseFloorDB)
 {
 	float MinValue = TNumericLimits<float>::Max();
 	float MaxValue = TNumericLimits<float>::Min();
@@ -177,13 +243,13 @@ void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float E
             }
 }
 
-void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& FocusIndices, float Exponent, float Focus)
+void USpectrumProcessor::ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& InFocusIndices, float Exponent, float Focus)
 {
 	float Bonus = Exponent + Focus;
 
 	for (int32 i = 0; i < CurrentCQT.Num(); i++)
 	{
-		if(FocusIndices[i] == true)
+		if(InFocusIndices[i] == true)
 		{
 			CurrentCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((CurrentCQT[i]), Bonus);
 		}

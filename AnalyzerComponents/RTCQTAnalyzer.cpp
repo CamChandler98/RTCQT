@@ -73,12 +73,18 @@
 
 		return ConvertType(NormalizationMap, InNormalization, Audio::EPseudoConstantQNormalization::EqualEnergy);
 	}
+UAnalyzerSettings::UAnalyzerSettings()
+{
+	 CQTSettings =  CreateDefaultSubobject<UCQTSettings>(TEXT("CQT Settings"));
+}
 
 // Sets default values for this component's properties
 URTCQTAnalyzer::URTCQTAnalyzer()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
+
+
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
@@ -108,7 +114,8 @@ Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 {
 	 int32 NumBands = GetNumBands(TotalBands, ParameterSettings -> Proportion, CeilProportion);
 	 float BandsPerOctave = GetBandsPerOctave(ParameterSettings -> StartingFrequency, ParameterSettings -> EndingFrequency, NumBands );
-
+	
+	 OutCQT.AddZeroed(NumBands);
 	 ConstantQSettings.BandWidthStretch = ParameterSettings -> BandWidthStretch;
 	 ConstantQSettings.NumBands = NumBands;
 	 ConstantQSettings.NumBandsPerOctave = BandsPerOctave;
@@ -121,6 +128,44 @@ Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 
 
 	return ConstantQSettings;
+}
+
+void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, FName InName)
+{
+	FString NameString = InName.ToString();
+	FString Suffix = "Spectrum";
+
+	FString ComponentNameString = NameString + Suffix;
+
+	FName ComponentName = FName(*ComponentNameString);
+	SpectrumProcessor = NewObject<USpectrumProcessor>(this, USpectrumProcessor::StaticClass(), ComponentName);
+
+
+
+	SpectrumProcessor -> SetSettings(InSettings);
+
+	SpectrumProcessor -> SetParams();
+}
+
+void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings , FName InName)
+{
+	FString NameString = InName.ToString();
+	FString Suffix = "Sample";
+
+	FString ComponentNameString = NameString + Suffix;
+
+	FName ComponentName = FName(*ComponentNameString);
+
+	SampleProcessor = NewObject<USampleProcessor>(this, USampleProcessor::StaticClass(), ComponentName);
+
+	SampleProcessor -> SetSettings(InSettings);
+
+	SampleProcessor -> SetParams();
+}
+
+void URTCQTAnalyzer::GetParams(UCQTSettings* InSettings)
+{
+	ParameterSettings = InSettings;
 }
 
 int32 URTCQTAnalyzer::GetNumBands(int32 BandTotal, float Proportion, bool doCeil)
@@ -152,10 +197,21 @@ float URTCQTAnalyzer::GetBandsPerOctave(float BaseFrequency, float EndFrequency,
 void URTCQTAnalyzer::GenerateAnalyzer()
 {
 	Audio::FFocusSettings focusSettings = Audio::FFocusSettings();
+
 	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(ConstantQSettings, focusSettings, ParameterSettings -> SampleRate);
 }
 
-void URTCQTAnalyzer::Analyze(TArray<float> AudioData)
-{
-        ConstantQAnalyzer -> CalculateCQT(AudioData.GetData(), OutCQT);
+void URTCQTAnalyzer::Analyze(TArray<float> AudioData, bool bProcessSamples, bool bProcessSpectrum)
+{		
+	if(bProcessSamples)
+	{
+		SampleProcessor -> ProcessAudio(AudioData, SampleToggles);
+	}
+
+	ConstantQAnalyzer -> CalculateCQT(AudioData.GetData(), OutCQT);
+
+	if(bProcessSpectrum)
+	{
+		SpectrumProcessor -> ProcessSpectrum(AudioData, SpectrumToggles);
+	}
 }

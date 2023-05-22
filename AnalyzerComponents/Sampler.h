@@ -16,7 +16,11 @@ public:
 	// Sets default values for this component's properties
 	USampler();
 
-	TArray<float> ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor);
+	UFUNCTION(BlueprintCallable)
+	void ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor);
+	
+	UFUNCTION(BlueprintCallable)
+	TArray<float> GetAudioData();
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<float> OutAudioData;
