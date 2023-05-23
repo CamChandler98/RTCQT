@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "AudioRadialSlider.h"
 #include "SpectrumProcessorSettings.h"
+#include "../Widget/Utility/FloatPropertyInterface.h"
 #include "SpectrumProcessor.generated.h"
 
 
@@ -69,6 +71,7 @@ public:
 
 	void SetSettings(USpectrumSettings* InSettings);
     void SetParams();
+	void SetArraySize(int32 InSize);
 
 	void ProcessSpectrum(TArray<float>& CurrentCQT, FSpectrumToggles Toggles);
 
@@ -85,6 +88,6 @@ public:
 
 	void ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent);
 
-	void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& InFocusIndices, float Exponent, float Focus);
+	void ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, TArray<bool>& InFocusIndices, float Exponent, float Focus);
 
 };

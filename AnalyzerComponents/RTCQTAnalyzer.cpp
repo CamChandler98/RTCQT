@@ -76,6 +76,9 @@
 UAnalyzerSettings::UAnalyzerSettings()
 {
 	 CQTSettings =  CreateDefaultSubobject<UCQTSettings>(TEXT("CQT Settings"));
+	 SpectrumProcessorSettings =  CreateDefaultSubobject<USpectrumSettings>(TEXT("Spectrum Settings"));
+	 SampleProcessorSettings =  CreateDefaultSubobject<USampleSettings>(TEXT("Sample Settings"));
+
 }
 
 // Sets default values for this component's properties
@@ -116,6 +119,7 @@ Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 	 float BandsPerOctave = GetBandsPerOctave(ParameterSettings -> StartingFrequency, ParameterSettings -> EndingFrequency, NumBands );
 	
 	 OutCQT.AddZeroed(NumBands);
+	 
 	 ConstantQSettings.BandWidthStretch = ParameterSettings -> BandWidthStretch;
 	 ConstantQSettings.NumBands = NumBands;
 	 ConstantQSettings.NumBandsPerOctave = BandsPerOctave;
@@ -140,6 +144,8 @@ void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, FName I
 	FName ComponentName = FName(*ComponentNameString);
 	SpectrumProcessor = NewObject<USpectrumProcessor>(this, USpectrumProcessor::StaticClass(), ComponentName);
 
+
+	SpectrumProcessor -> SetArraySize(OutCQT.Num());
 
 
 	SpectrumProcessor -> SetSettings(InSettings);

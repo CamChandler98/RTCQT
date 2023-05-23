@@ -54,6 +54,12 @@ public:
 	int32 FFTSize = 8192;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool DoSpectrumProcessing = true;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool DoSampleProcessing = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> CompiledSpectrum;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)

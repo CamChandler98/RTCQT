@@ -84,7 +84,7 @@ void AMeshController::PostEditChangeProperty(struct FPropertyChangedEvent& e)
 // Called when the game starts or when spawned
 void AMeshController::BeginPlay()
 {
-	FocusIndices = CQTManager -> FocusIndices;
+	// FocusIndices = CQTManager -> FocusIndices;
 	Super::BeginPlay();
 	
 }
@@ -218,12 +218,12 @@ void AMeshController::UpdateMeshZ(int32 Index, float Value)
 	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
 
 	float NewZScale = FMath::Max(Value * ScaleFactor, MinScale);
-	float SpectrumMax = CQTManager -> getMaxSpectrum();
+	// float SpectrumMax = CQTManager -> getMaxSpectrum();
 	
-	float NewBrightness = UKismetMathLibrary::MapRangeClamped(NewZScale, 0, SpectrumMax, .1, 3.0);
+	// float NewBrightness = UKismetMathLibrary::MapRangeClamped(NewZScale, 0, SpectrumMax, .1, 3.0);
 
 	CurrentMesh -> SetZScale(NewZScale);
-	CurrentMesh -> SetBrightness(NewBrightness);
+	// CurrentMesh -> SetBrightness(NewBrightness);
 }
 void AMeshController::TestSpawn()
 {

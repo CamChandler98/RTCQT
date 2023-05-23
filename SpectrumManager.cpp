@@ -41,16 +41,19 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 
 	for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, AudioData, FloatWindowBuffer, false))
     {   
+		CCompiledSpectrum.Reset();
+		
 		for(int32 i = 0; i < SpectrumAnalyzers.Num(); i++)
 		{
 			TObjectPtr<URTCQTAnalyzer> CurrentAnalyzer = SpectrumAnalyzers[i];
 
 
-			CurrentAnalyzer -> Analyze(Window, true, true);
+			CurrentAnalyzer -> Analyze(Window, DoSampleProcessing, DoSpectrumProcessing);
 
 			CCompiledSpectrum.Append(CurrentAnalyzer -> OutCQT);
 		}
 
+		CompiledSpectrum = CCompiledSpectrum;
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ ){
 
@@ -95,11 +98,10 @@ void ASpectrumManager::CreateAnalyzers()
 		
 		CurrentAnalyzer -> SpectrumToggles = SpectrumToggles;
 		CurrentAnalyzer -> SampleToggles = SampleToggles;
-
-		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings , CurrentAnalyzerName);
-		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, CurrentAnalyzerName);
 		CurrentAnalyzer -> GetParams(CQTSettings);
 		CurrentAnalyzer -> GetCQTSettings();
+		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings , CurrentAnalyzerName);
+		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, CurrentAnalyzerName);
 		CurrentAnalyzer -> GenerateAnalyzer();
 
 		SpectrumAnalyzers[i] = CurrentAnalyzer;

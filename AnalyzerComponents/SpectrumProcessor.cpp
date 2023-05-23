@@ -83,6 +83,13 @@ void USpectrumProcessor::SetParams()
 	
 	FocusExponentMultiplier = Settings -> FocusExponentMultiplier;
 }
+
+void USpectrumProcessor::SetArraySize(int32 InSize)
+{
+	FocusIndices.AddZeroed(InSize);
+	PreviousCQT.AddZeroed(InSize);
+}
+
 // Called when the game starts
 void USpectrumProcessor::BeginPlay()
 {
@@ -243,11 +250,11 @@ void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float E
             }
 }
 
-void USpectrumProcessor::ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, const TArray<bool>& InFocusIndices, float Exponent, float Focus)
+void USpectrumProcessor::ExponentiateFocusedSpectrum(TArray<float>& CurrentCQT, TArray<bool>& InFocusIndices, float Exponent, float Focus)
 {
 	float Bonus = Exponent + Focus;
 
-	for (int32 i = 0; i < CurrentCQT.Num(); i++)
+	for (int32 i = 0; i < InFocusIndices.Num(); i++)
 	{
 		if(InFocusIndices[i] == true)
 		{
