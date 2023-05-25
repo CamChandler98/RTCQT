@@ -90,7 +90,6 @@ URTCQTAnalyzer::URTCQTAnalyzer()
 
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -151,7 +150,10 @@ void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, FName I
 	SpectrumProcessor -> SetSettings(InSettings);
 
 	SpectrumProcessor -> SetParams();
+	GetNumericWidgets(SpectrumProcessor, InName);
+
 }
+
 
 void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings , FName InName)
 {
@@ -167,7 +169,93 @@ void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings , FName InNa
 	SampleProcessor -> SetSettings(InSettings);
 
 	SampleProcessor -> SetParams();
+
+	GetNumericWidgets(SampleProcessor, InName);
 }
+
+TObjectPtr<FBoolProperty> URTCQTAnalyzer::GetBoolPropertyFName(FName InPropertyName)
+{
+	UClass* CQTClass = URTCQTAnalyzer::StaticClass();
+
+	FProperty* Property = CQTClass -> FindPropertyByName(InPropertyName);
+
+	TObjectPtr<FBoolProperty> BoolProperty = static_cast<FBoolProperty*>(Property);
+
+	return BoolProperty;
+}
+
+void URTCQTAnalyzer::SetSpectrumToggle(FName InPropertyName, bool InValue)
+{
+	UScriptStruct* SpectrumToggleClass = FSpectrumToggles::StaticStruct();
+
+
+	FProperty* Property = SpectrumToggleClass -> FindPropertyByName(InPropertyName);
+
+	TObjectPtr<FBoolProperty> BoolProperty = static_cast<FBoolProperty*>(Property);
+
+    // void *Data = Property->ContainerPtrToValuePtr<void>(SampleToggles*);
+
+	// BoolProperty -> SetPropertyValue(Data, InValue);
+
+
+}
+
+
+void URTCQTAnalyzer::GetNumericWidgets(USpectrumProcessor* InProcessor,  FName InName)
+{
+	UClass* SpectrumClass = USpectrumProcessor::StaticClass();
+
+	TArray<FName> Names = FSpectrumPropertyNames().Names;
+
+	 for(int32 i = 0; i < Names.Num(); i++)
+	 {
+		FProperty* Property = SpectrumClass -> FindPropertyByName(Names[i]);
+		FName PropertyName = Property -> GetFName();
+
+		FString Suffix = InName.ToString();
+		FString PropertyNameString = PropertyName.ToString();
+		FString FPName = PropertyNameString + Suffix;
+
+		FNumericProperty* NumericProperty = static_cast<FNumericProperty*>(Property);
+
+		UFloatPropertyInterface* FPInterface = NewObject<UFloatPropertyInterface>(InProcessor, UFloatPropertyInterface::StaticClass());
+
+		FPInterface -> Init(InProcessor, NumericProperty, FPName);
+
+		InProcessor -> WidgetInterfaces.Add(FPInterface);
+	 }
+
+}
+
+void URTCQTAnalyzer::GetNumericWidgets(USampleProcessor* InProcessor, FName InName)
+{
+
+	UClass* SampleClass = USampleProcessor::StaticClass();
+
+	TArray<FName> Names = FSamplePropertyNames().Names;
+
+	for(int32 i = 0; i < Names.Num(); i++)
+	{
+		FProperty* Property = SampleClass -> FindPropertyByName(Names[i]);
+		FName PropertyName = Property -> GetFName();
+
+		FString Suffix = InName.ToString();
+		FString PropertyNameString = PropertyName.ToString();
+		FString FPName = PropertyNameString + Suffix;
+
+
+		FNumericProperty* NumericProperty = static_cast<FNumericProperty*>(Property);
+
+		UFloatPropertyInterface* FPInterface = NewObject<UFloatPropertyInterface>(InProcessor, UFloatPropertyInterface::StaticClass());
+
+		FPInterface -> Init(InProcessor, NumericProperty, FPName);
+
+
+
+		InProcessor -> WidgetInterfaces.Add(FPInterface);
+	}
+}
+
 
 void URTCQTAnalyzer::GetParams(UCQTSettings* InSettings)
 {

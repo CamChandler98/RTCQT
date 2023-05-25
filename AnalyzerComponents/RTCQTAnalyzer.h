@@ -4,13 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "UObject/PropertyIterator.h"
+#include "UObject/UnrealType.h"
+
+
 #include "CQTSettings.h"
 #include "SampleProcessorSettings.h"
 #include "SampleProcessor.h"
 #include "SpectrumProcessor.h"
 #include "SampleProcessorSettings.h"
+#include "../Widget/Utility/FloatPropertyInterface.h"
+#include "../Widget/RadialSliderWidget.h"
 #include "../CoreDSP/ConstantQAnalyzer.h"
 #include "../CoreDSP/ConstantQ.h"
+
 #include "RTCQTAnalyzer.generated.h"
 
 UCLASS(Blueprintable, EditInlineNew)
@@ -79,6 +86,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> OutCQT; 
 
+
 	int32 GetNumBands(int32 BandTotal, float Proportion, bool doCiel);
 
 	float GetBandsPerOctave(float BaseFrequency, float EndFrequency, int32 NumBands);
@@ -95,6 +103,15 @@ public:
 	void GetSampleProcessor(USampleSettings* InSettings, FName InName);
 
 	void GetParams(UCQTSettings* InSettings);
+
+
+	TObjectPtr<FBoolProperty> GetBoolPropertyFName(FName InPropertyName);
+
+	void SetSpectrumToggle(FName InPropertyName, bool InValue);
+
+	void GetNumericWidgets(USampleProcessor* InProcessor, FName InName);
+	void GetNumericWidgets(USpectrumProcessor*  InProcessor, FName InName);
+
 
 
 

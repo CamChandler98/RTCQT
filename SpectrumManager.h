@@ -9,6 +9,7 @@
 
 #include "./AnalyzerComponents/RTCQTAnalyzer.h"
 #include "./AnalyzerComponents/Sampler.h"
+#include "./Widget/RadialSliderWidget.h"
 #include "SpectrumManager.generated.h"
 
 USTRUCT(BlueprintType)
@@ -61,6 +62,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> CompiledSpectrum;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	URadialSliderWidget* SliderWidget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<URTCQTAnalyzer*> SpectrumAnalyzers;

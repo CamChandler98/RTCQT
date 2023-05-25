@@ -32,19 +32,19 @@ public:
 	TArray<float> PreviousCQT;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<bool> FocusIndices;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing",  meta = (ClampMin = "0", ClampMax = "15"))
 	int32 SmoothingWindowSize = 7;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1.0") , Category = "Spectrum Processing")
 	float InterpolationFactor = .5;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = "0.0", ClampMax = "100.0"))
 	float ScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = "-2.0", ClampMax = "2.0") )
 	float QuietMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = "1.0", ClampMax = "50.0"))
 	float PeakExponentMultiplier = 1.25;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = "0.0", ClampMax = "1.0"))
 	float FocusExponentMultiplier = .01;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = "-80.0", ClampMax = "80.0"))
 	float NoiseFloorDB = -60;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doInterpolate = true;
@@ -68,6 +68,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
     TObjectPtr<USpectrumSettings> Settings;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  Instanced)
+	TArray<UFloatPropertyInterface*> WidgetInterfaces;
 
 	void SetSettings(USpectrumSettings* InSettings);
     void SetParams();

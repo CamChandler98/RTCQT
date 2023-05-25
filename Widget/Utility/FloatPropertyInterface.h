@@ -1,6 +1,8 @@
+#pragma once
+
 #include "CoreMinimal.h"
 #include "AudioRadialSlider.h"
-
+#include "../RadialSliderWidget.h"
 #include "FloatPropertyInterface.generated.h"
 
 UCLASS(Blueprintable, EditInlineNew)
@@ -16,11 +18,16 @@ public:
 
     UObject* PropertyParent;
 
-    UAudioRadialSlider* RadialSlider;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Instanced)
+    URadialSliderWidget* RadialSlider;
 
-    FFloatProperty* PropertyPtr;
+    FNumericProperty* PropertyPtr;
+    
+    void Init(UObject* InParent, FNumericProperty* InPropertyPtr, FString InName);
 
-    void Init(UObject* InParent, FFloatProperty* InPropertyPtr, FString InName);
+
+
+    UFUNCTION()
     void SetValue(float Value);
 	
 };

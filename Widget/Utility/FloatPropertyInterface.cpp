@@ -5,10 +5,11 @@ UFloatPropertyInterface::UFloatPropertyInterface()
 {
 }
 
-void  UFloatPropertyInterface::Init(UObject* InParent, FFloatProperty* InPropertyPtr, FString InName)
+void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPropertyPtr, FString InName)
 {
 
     Name = InName;
+    FName WidgetName = FName(*InName);
     PropertyParent = InParent;
 
     PropertyPtr = InPropertyPtr;
@@ -24,16 +25,44 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FFloatProperty* InPropert
     float MaxValue = FCString::Atof(**MaxString);
 
 
+
     FVector2D Range = FVector2D(MinValue,MaxValue);
 
-    RadialSlider -> OutputRange = Range;
+    UUserWidget* SpectrumWidget = UUserWidget::CreateWidgetInstance(*this -> GetWorld(), URadialSliderWidget::StaticClass(), WidgetName );
+    
+    RadialSlider = static_cast<URadialSliderWidget*>(SpectrumWidget);
 
-    RadialSlider -> OnValueChanged.AddDynamic(this, &UFloatPropertyInterface::SetValue);
+    RadialSlider -> AddSlider();
+
+
+    if(!RadialSlider -> Slider)
+    {
+        UE_LOG(LogTemp, Error, TEXT("No Slider Found"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Slider is here"));
+        RadialSlider -> Slider -> SetOutputRange(Range);
+        RadialSlider -> Slider -> OnValueChanged.AddDynamic(this, &UFloatPropertyInterface::SetValue);
+    }
+
 
 }
 
+
+
 void UFloatPropertyInterface::SetValue(float Value)
-{
+{   
+
+    float OutputValue = RadialSlider -> Slider -> GetOutputValue(Value);
     void *Data = PropertyPtr ->ContainerPtrToValuePtr<void>(PropertyParent);
-    PropertyPtr->SetFloatingPointPropertyValue(Data, Value);
+    if(PropertyPtr -> IsInteger())
+    {
+        PropertyPtr->SetIntPropertyValue(Data, static_cast<int64>(OutputValue));   
+    }
+    else
+    {
+
+        PropertyPtr->SetFloatingPointPropertyValue(Data, OutputValue);
+    }
 }

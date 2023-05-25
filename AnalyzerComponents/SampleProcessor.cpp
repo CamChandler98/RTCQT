@@ -65,6 +65,7 @@ void USampleProcessor::SetSettings(USampleSettings* InSettings)
 	 Settings -> GainFactor = InSettings -> GainFactor;
 }
 
+
 void USampleProcessor::SetParams()
 {
 	

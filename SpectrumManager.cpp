@@ -19,9 +19,9 @@ ASpectrumManager::ASpectrumManager()
 // Called when the game starts or when spawned
 void ASpectrumManager::BeginPlay()
 {
+	CreateAnalyzers();
 	Super::BeginPlay();
 
-	CreateAnalyzers();
 	
 }
 
@@ -86,6 +86,7 @@ void ASpectrumManager::CreateAnalyzers()
 
 		FName CurrentAnalyzerName = CurrentSettings -> Name;
 
+		// FString WidgetString = CurrentAnalyzerName.ToString() + ""
 		FString NameString = CurrentAnalyzerName.ToString() + "CQT";
 
 		FName UpdatedName = FName(*NameString);
@@ -103,6 +104,7 @@ void ASpectrumManager::CreateAnalyzers()
 		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings , CurrentAnalyzerName);
 		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, CurrentAnalyzerName);
 		CurrentAnalyzer -> GenerateAnalyzer();
+
 
 		SpectrumAnalyzers[i] = CurrentAnalyzer;
 

@@ -36,7 +36,85 @@ struct FSpectrumToggles
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
 	bool DoClamp = true;
 
+
+	void SetToggle(FName InPropertyName, bool InValue);
+
 };
+
+
+USTRUCT(BlueprintType)
+struct FSpectrumToggleNames
+{
+	GENERATED_BODY();
+
+	
+	FName DoInterpolateName = FName(TEXT("DoInterpolate"));
+	
+	FName DoCubicInterpolationName = FName(TEXT("DoCubicInterpolation"));
+	
+	FName DoSmoothName = FName(TEXT("DoSmooth"));
+	
+	FName DoFocusExpName = FName(TEXT("DoFocusExp"));
+	
+	FName DoPeakExpName = FName(TEXT("DoPeakExp"));
+	
+	FName DoNormalizeName = FName(TEXT("DoNormalize"));
+	
+	FName DoScaleName = FName(TEXT("DoScale"));
+	
+	FName DoSupressQuietName = FName(TEXT("DoSupressQuiet"));
+	
+	FName DoClampName = FName(TEXT("DoClamp"));
+
+	TArray<FName> Names;
+
+	FSpectrumToggleNames()
+	{
+		Names.Add(DoInterpolateName);
+		Names.Add(DoCubicInterpolationName);
+		Names.Add(DoSmoothName);
+		Names.Add(DoFocusExpName);
+		Names.Add(DoPeakExpName);
+		Names.Add(DoNormalizeName);
+		Names.Add(DoScaleName);
+		Names.Add(DoSupressQuietName);
+		Names.Add(DoClampName);
+	}
+
+};
+
+
+USTRUCT(BlueprintType)
+struct FSpectrumPropertyNames
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FName SmoothingWindowSizeName = FName(TEXT("SmoothingWindowSize"));
+	
+	FName InterpolationFactorName =  FName(TEXT("InterpolationFactor"));
+	
+	FName ScaleMultiplierName = FName(TEXT("ScaleMultiplier"));
+	
+	FName QuietMultiplierName = FName(TEXT("QuietMultiplier"));
+	
+	FName PeakExponentMultiplierName = FName(TEXT("PeakExponentMultiplier"));
+	
+	FName FocusExponentMultiplierName = FName(TEXT("FocusExponentMultiplier"));
+
+	TArray<FName> Names;
+
+	FSpectrumPropertyNames()
+	{
+		Names.Add(SmoothingWindowSizeName);
+		Names.Add(InterpolationFactorName);
+		Names.Add(ScaleMultiplierName);
+		Names.Add(QuietMultiplierName);
+		Names.Add(PeakExponentMultiplierName);
+		Names.Add(FocusExponentMultiplierName);
+	}
+
+};
+
 
 UCLASS(Blueprintable, EditInlineNew)
 class SYNRTCQT_API USpectrumSettings : public UObject
