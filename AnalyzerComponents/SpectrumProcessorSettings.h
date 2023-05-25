@@ -66,6 +66,7 @@ struct FSpectrumToggleNames
 	
 	FName DoClampName = FName(TEXT("DoClamp"));
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	TArray<FName> Names;
 
 	FSpectrumToggleNames()
@@ -101,6 +102,7 @@ struct FSpectrumPropertyNames
 	
 	FName FocusExponentMultiplierName = FName(TEXT("FocusExponentMultiplier"));
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	TArray<FName> Names;
 
 	FSpectrumPropertyNames()

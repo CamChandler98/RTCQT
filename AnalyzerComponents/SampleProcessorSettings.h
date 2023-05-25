@@ -40,6 +40,8 @@ struct FSampleToggleNames
 	FName DoHighPassName = FName(TEXT("DoHighPass"));
 	FName DoHighShelfName = FName(TEXT("DoHighShelf"));
 	FName DoAbsAmpName = FName(TEXT("DoAbsAmp"));
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FName> Names;
 
 
@@ -74,6 +76,7 @@ struct FSamplePropertyNames
 	
 	FName GainFactorName = FName(TEXT("GainFactor"));
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FName> Names;
 
 	FSamplePropertyNames()

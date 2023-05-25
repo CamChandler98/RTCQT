@@ -17,16 +17,26 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
     const FString* MinString = PropertyPtr -> FindMetaData("ClampMin");
     const FString* MaxString = PropertyPtr -> FindMetaData("ClampMax");
 
+    MinText = MinString -> Left(MinString -> Len());
+    MaxText = MaxString -> Left(MaxString -> Len());
+
+    IsMinNumeric = MinString -> IsNumeric();
+    IsMaxNumeric = MaxString -> IsNumeric();
+
+
+    
     // FString* MinString;
     // MinString -> Append(MinStringPtr, MinStringPtr -> Len());
     // FString* MaxString;
 
-    float MinValue = FCString::Atof(**MinString);
-    float MaxValue = FCString::Atof(**MaxString);
+     MinValue = FCString::Atof(*MinText);
+     MaxValue = FCString::Atof(*MaxText);
 
 
 
     FVector2D Range = FVector2D(MinValue,MaxValue);
+
+    ControlRange = Range;
 
     UUserWidget* SpectrumWidget = UUserWidget::CreateWidgetInstance(*this -> GetWorld(), URadialSliderWidget::StaticClass(), WidgetName );
     
@@ -42,7 +52,18 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
     else
     {
         UE_LOG(LogTemp, Error, TEXT("Slider is here"));
-        RadialSlider -> Slider -> SetOutputRange(Range);
+        // RadialSlider -> Slider -> SetOutputRange(Range);
+        
+        void *Data = PropertyPtr ->ContainerPtrToValuePtr<void>(PropertyParent);
+        if(PropertyPtr -> IsInteger())
+        {
+            int64 IntValue = PropertyPtr -> GetSignedIntPropertyValue(Data);
+            Value = static_cast<float>(IntValue);
+        }
+        else
+        {
+            Value = PropertyPtr -> GetFloatingPointPropertyValue(Data);
+        }
         RadialSlider -> Slider -> OnValueChanged.AddDynamic(this, &UFloatPropertyInterface::SetValue);
     }
 
@@ -51,18 +72,19 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
 
 
 
-void UFloatPropertyInterface::SetValue(float Value)
+void UFloatPropertyInterface::SetValue(float InValue)
 {   
 
-    float OutputValue = RadialSlider -> Slider -> GetOutputValue(Value);
+    // float OutputValue = RadialSlider -> Slider -> GetValue(Value);
+
     void *Data = PropertyPtr ->ContainerPtrToValuePtr<void>(PropertyParent);
     if(PropertyPtr -> IsInteger())
     {
-        PropertyPtr->SetIntPropertyValue(Data, static_cast<int64>(OutputValue));   
+        PropertyPtr->SetIntPropertyValue(Data, static_cast<int64>(InValue));   
     }
     else
     {
 
-        PropertyPtr->SetFloatingPointPropertyValue(Data, OutputValue);
+        PropertyPtr->SetFloatingPointPropertyValue(Data, InValue);
     }
 }

@@ -18,7 +18,7 @@ public class SynRTCQT : ModuleRules
 		"SignalProcessing", 
 		"AudioAnalyzer",
 		"UMG", 
-		"AudioWidgets"
+		"AdvancedWidgets",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
