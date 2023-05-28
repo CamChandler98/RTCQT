@@ -5,8 +5,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DSP/Filter.h"
+#include "DSP/FloatArrayMath.h"
+
 
 #include "../Widget/Utility/FloatPropertyInterface.h"
+#include "../Widget/Utility/BoolPropertyInterface.h"
+
 #include "SampleProcessorSettings.h"
 #include "SampleProcessor.generated.h"
 
@@ -28,19 +32,19 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "0.0", ClampMax = "20000.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "0.0", ClampMax = "20000.0", ShortName = "HPCutoff"))
 	float HighPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0", ShortName = "HPBandWidth"))
 	float HighPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "-5.0", ClampMax = "100.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "HPGain"))
 	float HighPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" ,meta = (ClampMin = "0.0", ClampMax = "20000.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" ,meta = (ClampMin = "0.0", ClampMax = "20000.0", ShortName = "LPCutoff"))
 	float LowPassCutoffFrequency = 100.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0")) 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0", ShortName = "LPBandWidth")) 
 	float LowPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "LPGain"))
 	float LowPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "Gain"))
 	float GainFactor = 1.5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doLowpassFilter = true;
@@ -52,7 +56,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	TArray<UFloatPropertyInterface*> WidgetInterfaces;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing",  Instanced)
+	TArray<UBoolPropertyInterface*> ToggleInterfaces;
+
     TObjectPtr<USampleSettings> Settings;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
+	TObjectPtr<USampleToggles> Toggles;
 
 	TUniquePtr<Audio::FBiquadFilter> LowPassFilter;
 	TUniquePtr<Audio::FBiquadFilter> HighPassFilter;
@@ -66,5 +76,5 @@ public:
 
 	void GetFilters(float SampleRate);
 
-	void ProcessAudio(TArray<float>& AudioData, FSampleToggles& Toggles);
+	void ProcessAudio(TArray<float>& AudioData);
 };

@@ -55,16 +55,30 @@ void USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumC
 				int ChannelOffset = j * SampleSize;
 
 				// Extract the sample value for the current channel
-	
-					float SampleValue = 0.0f;
-					FMemory::Memcpy(&SampleValue, &InterleavedStream[SampleOffset + ChannelOffset], sizeof(float));
 
+
+
+						uint8 SampleValue = 0;
+						for (int k = 0; k < SampleSize; k++)
+						{
+							SampleValue += InterleavedStream[SampleOffset + ChannelOffset + k] << (8 * k);
+						}
+
+					// float SampleValue = 0.0f;
+					// FMemory::Memcpy(&SampleValue, &InterleavedStream[SampleOffset + ChannelOffset], sizeof(float));
 					// Convert the uint8 sample value to float and normalize it to the range [-1, 1]
 					// float NormalizedSampleValue = static_cast<float>(SampleValue ) / 127.5f - 1.0f;
 
+					// float NormalizedSampleValue = (static_cast<float>(SampleValue)* GainFactor) / 255.f * 2.f - 1.f;
+
+					float NormalizedSampleValue = (static_cast<float>(SampleValue)* GainFactor) / 127.5f - 1.0f;
+
 
 					// Add the sample value for the current channel to the sum
-					SampleSum += SampleValue;
+					// SampleSum += SampleValue;
+					SampleSum += NormalizedSampleValue;
+
+					
 				
 			}
 

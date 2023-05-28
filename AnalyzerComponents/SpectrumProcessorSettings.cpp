@@ -5,18 +5,9 @@
 
 DEFINE_LOG_CATEGORY(SpectrumSettingsLog);
 
-void FSpectrumToggles::SetToggle(FName InPropertyName, bool InValue)
+
+USpectrumToggles::USpectrumToggles()
 {
-    UScriptStruct* SpectrumToggleClass = FSpectrumToggles::StaticStruct();
-	
-	FProperty* Property = SpectrumToggleClass -> FindPropertyByName(InPropertyName);
-
-	TObjectPtr<FBoolProperty> BoolProperty = static_cast<FBoolProperty*>(Property);
-
-    void *Data = Property->ContainerPtrToValuePtr<void>(this);
-
-	BoolProperty -> SetPropertyValue(Data, InValue);
-    
 }
 
 USpectrumSettings::USpectrumSettings()

@@ -18,6 +18,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString Name;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    FString ShortName;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString MinText;
 

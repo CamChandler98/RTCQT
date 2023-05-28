@@ -14,6 +14,7 @@
 #include "SpectrumProcessor.h"
 #include "SampleProcessorSettings.h"
 #include "../Widget/Utility/FloatPropertyInterface.h"
+#include "../Widget/Utility/BoolPropertyInterface.h"
 #include "../Widget/RadialSliderWidget.h"
 #include "../CoreDSP/ConstantQAnalyzer.h"
 #include "../CoreDSP/ConstantQ.h"
@@ -30,6 +31,7 @@ class SYNRTCQT_API UAnalyzerSettings : public UObject
 	UAnalyzerSettings();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TObjectPtr<UCQTSettings> CQTSettings;
 
@@ -39,11 +41,11 @@ class SYNRTCQT_API UAnalyzerSettings : public UObject
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TObjectPtr<USpectrumSettings> SpectrumProcessorSettings;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FSpectrumToggles SpectrumToggles;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
+	TObjectPtr<USpectrumToggles> SpectrumToggles;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FSampleToggles SampleToggles;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
+	TObjectPtr<USampleToggles> SampleToggles;
 
 
 };
@@ -69,12 +71,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
 	TObjectPtr<USpectrumProcessor> SpectrumProcessor;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
-	FSpectrumToggles SpectrumToggles;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
-	FSampleToggles SampleToggles;
-
 	Audio::FConstantQAnalyzerSettings ConstantQSettings = Audio::FConstantQAnalyzerSettings();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -98,9 +94,9 @@ public:
 	Audio::FConstantQAnalyzerSettings GetCQTSettings();
 
 
-	void GetSpectrumProcessor(USpectrumSettings* InSettings , FName InName);
+	void GetSpectrumProcessor(USpectrumSettings* InSettings, USpectrumToggles* InToggles, FName InName);
 
-	void GetSampleProcessor(USampleSettings* InSettings, FName InName);
+	void GetSampleProcessor(USampleSettings* InSettings, USampleToggles* InToggles, FName InName);
 
 	void GetParams(UCQTSettings* InSettings);
 
@@ -111,6 +107,9 @@ public:
 
 	void GetNumericWidgets(USampleProcessor* InProcessor, FName InName);
 	void GetNumericWidgets(USpectrumProcessor*  InProcessor, FName InName);
+
+	void GetToggleInterfaces(USpectrumProcessor* InProcessor, FName InName);
+	void GetToggleInterfaces(USampleProcessor* InProcessor, FName InName);
 
 
 

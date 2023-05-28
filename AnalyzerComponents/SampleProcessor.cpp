@@ -85,33 +85,39 @@ void USampleProcessor::SetParams()
 }
 
 
-void USampleProcessor::ProcessAudio(TArray<float>& AudioData, FSampleToggles& Toggles)
-{
-	if(Toggles.DoLowPass)
+void USampleProcessor::ProcessAudio(TArray<float>& AudioData)
+
+
+{	
+	if(GainFactor != 1)
+	{
+		Audio::ArrayMultiplyByConstantInPlace(AudioData, GainFactor); 
+	}
+	if(Toggles -> DoLowPass)
 	{
 		
 		TArrayView<const float> AudioView(AudioData.GetData(), AudioData.Num());
 		LowPassFilter -> ProcessAudio(AudioView.GetData(), AudioView.Num(), AudioData.GetData());      
 	}
-	if(Toggles.DoLowShelf)
+	if(Toggles -> DoLowShelf)
 	{
 
 		TArrayView<const float> AudioView(AudioData.GetData(), AudioData.Num());
 		LowShelfFilter -> ProcessAudio(AudioView.GetData(), AudioView.Num(), AudioData.GetData());   
 	}
-	if(Toggles.DoHighPass)
+	if(Toggles -> DoHighPass)
 	{
 
 		TArrayView<const float> AudioView(AudioData.GetData(), AudioData.Num());
 		HighPassFilter -> ProcessAudio(AudioView.GetData(), AudioView.Num(), AudioData.GetData());
 	}
-	if(Toggles.DoHighShelf)
+	if(Toggles -> DoHighShelf)
 	{
 
 		TArrayView<const float> AudioView(AudioData.GetData(), AudioData.Num());
 		HighShelfFilter -> ProcessAudio(AudioView.GetData(), AudioView.Num(), AudioData.GetData());
 	}
-	if(Toggles.DoAbsAmp)
+	if(Toggles -> DoAbsAmp)
 	{
 
 		Audio::ArrayAbsInPlace(AudioData);

@@ -18,33 +18,33 @@ USpectrumProcessor::USpectrumProcessor()
 	// ...
 }
 
-void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT, FSpectrumToggles Toggles)
+void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 {
-	if(Toggles.DoInterpolate)
+	if(Toggles -> DoInterpolate)
 	{
-		InterpolateSpectrum(CurrentCQT, Toggles.DoCubicInterpolation);
+		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
 	}
-	if(Toggles.DoSmooth)
+	if(Toggles -> DoSmooth)
 	{
 		SmoothSpectrum(CurrentCQT);
 	}
-	if(Toggles.DoNormalize)
+	if(Toggles -> DoNormalize)
 	{
 		NormalizeSpectrum(CurrentCQT, NoiseFloorDB);
 	}
-	if(Toggles.DoSupressQuiet)
+	if(Toggles -> DoSupressQuiet)
 	{
 		SupressQuiet(CurrentCQT, QuietMultiplier);
 	}
-	if(Toggles.DoScale)
+	if(Toggles -> DoScale)
 	{
 		ScaleSpectrum(CurrentCQT, ScaleMultiplier);
 	}
-	if(Toggles.DoFocusExp)
+	if(Toggles -> DoFocusExp)
 	{
 		ExponentiateFocusedSpectrum(CurrentCQT, FocusIndices, PeakExponentMultiplier, FocusExponentMultiplier);
 	}
-	else if(Toggles.DoPeakExp)
+	else if(Toggles -> DoPeakExp)
 	{
 		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
 	}

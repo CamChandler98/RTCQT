@@ -12,32 +12,32 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(SpectrumSettingsLog, Log, All);
 
-USTRUCT(BlueprintType)
-struct FSpectrumToggles
+UCLASS(Blueprintable, EditInlineNew)
+class SYNRTCQT_API USpectrumToggles : public UObject
 {
-	GENERATED_BODY();
+	GENERATED_BODY()
+	public:
+		USpectrumToggles();
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Interpolate"))
+		bool DoInterpolate = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "CubicInterp"))
+		bool DoCubicInterpolation = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Smooth"))
+		bool DoSmooth = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Focus"))
+		bool DoFocusExp = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Peak"))
+		bool DoPeakExp = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Norm"))
+		bool DoNormalize = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Scale"))
+		bool DoScale = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Quiet"))
+		bool DoSupressQuiet = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Clamp"))
+		bool DoClamp = true;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
-	bool DoInterpolate = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
-	bool DoCubicInterpolation = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
-	bool DoSmooth = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
-	bool DoFocusExp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
-	bool DoPeakExp = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
-	bool DoNormalize = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
-	bool DoScale = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
-	bool DoSupressQuiet = true;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing")
-	bool DoClamp = true;
 
-
-	void SetToggle(FName InPropertyName, bool InValue);
 
 };
 

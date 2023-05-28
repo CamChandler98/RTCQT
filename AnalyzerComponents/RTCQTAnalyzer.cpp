@@ -73,11 +73,15 @@
 
 		return ConvertType(NormalizationMap, InNormalization, Audio::EPseudoConstantQNormalization::EqualEnergy);
 	}
+
+
 UAnalyzerSettings::UAnalyzerSettings()
 {
 	 CQTSettings =  CreateDefaultSubobject<UCQTSettings>(TEXT("CQT Settings"));
 	 SpectrumProcessorSettings =  CreateDefaultSubobject<USpectrumSettings>(TEXT("Spectrum Settings"));
 	 SampleProcessorSettings =  CreateDefaultSubobject<USampleSettings>(TEXT("Sample Settings"));
+	 SpectrumToggles = CreateDefaultSubobject<USpectrumToggles>(TEXT("Spectrum Toggles"));
+	 SampleToggles = CreateDefaultSubobject<USampleToggles>(TEXT("Sample Toggles"));
 
 }
 
@@ -133,7 +137,7 @@ Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 	return ConstantQSettings;
 }
 
-void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, FName InName)
+void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, USpectrumToggles* InToggles , FName InName)
 {
 	FString NameString = InName.ToString();
 	FString Suffix = "Spectrum";
@@ -146,16 +150,20 @@ void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, FName I
 
 	SpectrumProcessor -> SetArraySize(OutCQT.Num());
 
+	SpectrumProcessor -> Toggles = InToggles;
 
 	SpectrumProcessor -> SetSettings(InSettings);
 
 	SpectrumProcessor -> SetParams();
+
 	GetNumericWidgets(SpectrumProcessor, InName);
+	GetToggleInterfaces(SpectrumProcessor, InName);
+
 
 }
 
 
-void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings , FName InName)
+void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings, USampleToggles* InToggles, FName InName)
 {
 	FString NameString = InName.ToString();
 	FString Suffix = "Sample";
@@ -166,11 +174,14 @@ void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings , FName InNa
 
 	SampleProcessor = NewObject<USampleProcessor>(this, USampleProcessor::StaticClass(), ComponentName);
 
+	SampleProcessor -> Toggles = InToggles;
+
 	SampleProcessor -> SetSettings(InSettings);
 
 	SampleProcessor -> SetParams();
 
 	GetNumericWidgets(SampleProcessor, InName);
+	GetToggleInterfaces(SampleProcessor, InName);
 }
 
 TObjectPtr<FBoolProperty> URTCQTAnalyzer::GetBoolPropertyFName(FName InPropertyName)
@@ -186,17 +197,16 @@ TObjectPtr<FBoolProperty> URTCQTAnalyzer::GetBoolPropertyFName(FName InPropertyN
 
 void URTCQTAnalyzer::SetSpectrumToggle(FName InPropertyName, bool InValue)
 {
-	UScriptStruct* SpectrumToggleClass = FSpectrumToggles::StaticStruct();
+	// UScriptStruct* SpectrumToggleClass = USpectrumToggles::StaticStruct();
 
 
-	FProperty* Property = SpectrumToggleClass -> FindPropertyByName(InPropertyName);
+	// FProperty* Property = SpectrumToggleClass -> FindPropertyByName(InPropertyName);
 
-	TObjectPtr<FBoolProperty> BoolProperty = static_cast<FBoolProperty*>(Property);
+	// TObjectPtr<FBoolProperty> BoolProperty = static_cast<FBoolProperty*>(Property);
 
-    // void *Data = Property->ContainerPtrToValuePtr<void>(SampleToggles*);
+    // void *Data = Property->ContainerPtrToValuePtr<void>(SpectrumToggles);
 
 	// BoolProperty -> SetPropertyValue(Data, InValue);
-
 
 }
 
@@ -257,6 +267,64 @@ void URTCQTAnalyzer::GetNumericWidgets(USampleProcessor* InProcessor, FName InNa
 }
 
 
+void URTCQTAnalyzer::GetToggleInterfaces(USpectrumProcessor* InProcessor, FName InName)
+{
+	UClass* SpectrumClass = USpectrumToggles::StaticClass();
+	TArray<FName> Names = FSpectrumToggleNames().Names;
+
+
+	for(int32 i = 0; i < Names.Num(); i++)
+	{
+		FProperty* Property = SpectrumClass -> FindPropertyByName(Names[i]);
+		FName PropertyName = Property -> GetFName();
+
+		FString Suffix = InName.ToString();
+		FString PropertyNameString = PropertyName.ToString();
+		FString FPName = PropertyNameString + Suffix;
+
+
+		FBoolProperty* BoolProperty = static_cast<FBoolProperty*>(Property);
+
+		UBoolPropertyInterface* FPInterface = NewObject<UBoolPropertyInterface>(InProcessor, UBoolPropertyInterface::StaticClass());
+
+		FPInterface -> Init(InProcessor -> Toggles, BoolProperty, FPName);
+
+
+		InProcessor -> ToggleInterfaces.Add(FPInterface);
+	}
+
+
+}
+
+
+void URTCQTAnalyzer::GetToggleInterfaces(USampleProcessor* InProcessor, FName InName)
+{
+	UClass* SampleClass = USampleToggles::StaticClass();
+	TArray<FName> Names = FSampleToggleNames().Names;
+
+	for(int32 i = 0; i < Names.Num(); i++)
+	{
+		FProperty* Property = SampleClass -> FindPropertyByName(Names[i]);
+		FName PropertyName = Property -> GetFName();
+
+		FString Suffix = InName.ToString();
+		FString PropertyNameString = PropertyName.ToString();
+		FString FPName = PropertyNameString + Suffix;
+
+
+		FBoolProperty* BoolProperty = static_cast<FBoolProperty*>(Property);
+
+		UBoolPropertyInterface* FPInterface = NewObject<UBoolPropertyInterface>(InProcessor, UBoolPropertyInterface::StaticClass());
+
+		FPInterface -> Init(InProcessor -> Toggles, BoolProperty, FPName);
+
+
+
+		InProcessor -> ToggleInterfaces.Add(FPInterface);
+	}
+}
+
+
 void URTCQTAnalyzer::GetParams(UCQTSettings* InSettings)
 {
 	ParameterSettings = InSettings;
@@ -299,13 +367,13 @@ void URTCQTAnalyzer::Analyze(TArray<float> AudioData, bool bProcessSamples, bool
 {		
 	if(bProcessSamples)
 	{
-		SampleProcessor -> ProcessAudio(AudioData, SampleToggles);
+		SampleProcessor -> ProcessAudio(AudioData);
 	}
 
 	ConstantQAnalyzer -> CalculateCQT(AudioData.GetData(), OutCQT);
 
 	if(bProcessSpectrum)
 	{
-		SpectrumProcessor -> ProcessSpectrum(AudioData, SpectrumToggles);
+		SpectrumProcessor -> ProcessSpectrum(AudioData);
 	}
 }

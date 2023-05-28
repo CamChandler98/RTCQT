@@ -17,6 +17,8 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
     const FString* MinString = PropertyPtr -> FindMetaData("ClampMin");
     const FString* MaxString = PropertyPtr -> FindMetaData("ClampMax");
 
+    const FString* ShortNameString = PropertyPtr -> FindMetaData("ShortName");
+
     MinText = MinString -> Left(MinString -> Len());
     MaxText = MaxString -> Left(MaxString -> Len());
 
@@ -24,6 +26,9 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
     IsMaxNumeric = MaxString -> IsNumeric();
 
 
+    ShortName = ShortNameString -> Left(ShortNameString -> Len());
+
+    
     
     // FString* MinString;
     // MinString -> Append(MinStringPtr, MinStringPtr -> Len());

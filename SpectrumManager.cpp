@@ -8,9 +8,7 @@ ASpectrumManager::ASpectrumManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Sampler = CreateDefaultSubobject<USampler>(TEXT("Sampler"));
-	FloatWindowBuffer.AddZeroed(FFTSize);
 	CompiledSpectrum.AddZeroed(NumBands);
-    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize, NumHopFrames);
 
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -18,7 +16,11 @@ ASpectrumManager::ASpectrumManager()
 
 // Called when the game starts or when spawned
 void ASpectrumManager::BeginPlay()
-{
+{	
+	CompiledSpectrum.AddZeroed(NumBands);
+	FloatWindowBuffer.AddZeroed(FFTSize);
+    SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize, NumHopFrames);
+	
 	CreateAnalyzers();
 	Super::BeginPlay();
 
@@ -37,7 +39,7 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 {
 
 	TArray<float> CCompiledSpectrum;
-	CCompiledSpectrum.AddZeroed(CompiledSpectrum.Num());
+	CCompiledSpectrum.AddZeroed(NumBands);
 
 	for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, AudioData, FloatWindowBuffer, false))
     {   
@@ -75,8 +77,8 @@ void ASpectrumManager::CreateAnalyzers()
 		TObjectPtr<USampleSettings> SampleSettings = CurrentSettings -> SampleProcessorSettings;
 		TObjectPtr<UCQTSettings> CQTSettings = CurrentSettings -> CQTSettings;
 
-		FSpectrumToggles SpectrumToggles = CurrentSettings -> SpectrumToggles;
-		FSampleToggles SampleToggles = CurrentSettings -> SampleToggles;
+		TObjectPtr<USpectrumToggles> SpectrumToggles = CurrentSettings -> SpectrumToggles;
+		TObjectPtr<USampleToggles> SampleToggles = CurrentSettings -> SampleToggles;
 
 		
 		CQTSettings -> SampleRate = SampleRate;
@@ -97,12 +99,12 @@ void ASpectrumManager::CreateAnalyzers()
 
 		CurrentAnalyzer -> TotalBands = NumBands;
 		
-		CurrentAnalyzer -> SpectrumToggles = SpectrumToggles;
-		CurrentAnalyzer -> SampleToggles = SampleToggles;
+		// CurrentAnalyzer -> SpectrumToggles = SpectrumToggles;
+		// CurrentAnalyzer -> SampleToggles = SampleToggles;
 		CurrentAnalyzer -> GetParams(CQTSettings);
 		CurrentAnalyzer -> GetCQTSettings();
-		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings , CurrentAnalyzerName);
-		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, CurrentAnalyzerName);
+		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings, SpectrumToggles, CurrentAnalyzerName);
+		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, SampleToggles, CurrentAnalyzerName);
 		CurrentAnalyzer -> GenerateAnalyzer();
 
 
@@ -125,6 +127,7 @@ void ASpectrumManager::CheckLength()
 
 	CompiledSpectrum.Empty();
 	CompiledSpectrum.AddZeroed(TargetLength);
+	NumBands = TargetLength; 
 }
 
 void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float value)

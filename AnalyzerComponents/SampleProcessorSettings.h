@@ -10,23 +10,25 @@
  * 
  */
 
-USTRUCT(BlueprintType)
-struct FSampleToggles
+UCLASS(Blueprintable, EditInlineNew)
+class SYNRTCQT_API USampleToggles : public UObject
 {
-	GENERATED_BODY();
+	GENERATED_BODY()
+	public:
+	
+		USampleToggles();
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool DoLowPass = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool DoLowShelf = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool DoHighPass = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool DoHighShelf = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool DoAbsAmp = false;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ShortName = "LowPass"))
+		bool DoLowPass = false;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ShortName = "LowShelf"))
+		bool DoLowShelf = false;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ShortName = "HighPass"))
+		bool DoHighPass = false;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ShortName = "HighShelf"))
+		bool DoHighShelf = false;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (ShortName = "AbsAmp"))
+		bool DoAbsAmp = false;
 
-	void SetToggle(FName InPropertyName, bool InValue);
 
 };
 
