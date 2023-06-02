@@ -64,6 +64,13 @@ public:
 	TArray<float> CompiledSpectrum;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<int32, float> StartAndEnds;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<int32> BoundaryKeys;
+
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	URadialSliderWidget* SliderWidget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
@@ -81,6 +88,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CreateAnalyzers();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<int32> GetStartEndKeys();
 
 	UFUNCTION(BlueprintCallable)
 	void CheckLength();

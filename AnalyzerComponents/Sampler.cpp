@@ -33,8 +33,11 @@ void USampler::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 }
 
 
-void USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor)
+TArray<float> USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor)
 {
+
+    CanProcess= false;
+
     int SampleSize = BitsPerSample / 8;
 
     int NumSamples = InterleavedStream.Num() / (NumChannels * SampleSize);
@@ -58,35 +61,49 @@ void USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumC
 
 
 
-						uint8 SampleValue = 0;
-						for (int k = 0; k < SampleSize; k++)
-						{
-							SampleValue += InterleavedStream[SampleOffset + ChannelOffset + k] << (8 * k);
-						}
+				/*
+				uint8 SampleValue = 0;
+				for (int k = 0; k < SampleSize; k++)
+				{
+					SampleValue += InterleavedStream[SampleOffset + ChannelOffset + k] << (8 * k);
+				}
+				*/
 
-					// float SampleValue = 0.0f;
-					// FMemory::Memcpy(&SampleValue, &InterleavedStream[SampleOffset + ChannelOffset], sizeof(float));
-					// Convert the uint8 sample value to float and normalize it to the range [-1, 1]
-					// float NormalizedSampleValue = static_cast<float>(SampleValue ) / 127.5f - 1.0f;
+			
+				/*
+				float SampleValue = 0.0f;
+				FMemory::Memcpy(&SampleValue, &InterleavedStream[SampleOffset + ChannelOffset], sizeof(float));
+				float NormalizedSampleValue = (static_cast<float>(SampleValue)* GainFactor) / 127.5f - 1.0f;
+				SampleSum += NormalizedSampleValue;
+				*/
 
-					// float NormalizedSampleValue = (static_cast<float>(SampleValue)* GainFactor) / 255.f * 2.f - 1.f;
-
-					float NormalizedSampleValue = (static_cast<float>(SampleValue)* GainFactor) / 127.5f - 1.0f;
 
 
-					// Add the sample value for the current channel to the sum
-					// SampleSum += SampleValue;
-					SampleSum += NormalizedSampleValue;
+
+
+				float SampleValue = 0.f;
+                for (int k = 0; k < SampleSize; k++)
+                {
+                    SampleValue += InterleavedStream[SampleOffset + ChannelOffset + k] << (8 * k);
+                }
+
+				SampleValue *= GainFactor;
+                // Normalize the sample value to the range [-1, 1]
+                SampleValue /= ((1 << (BitsPerSample - 1)) - 1);
+
+                // Add the sample value for the current channel to the sum
+                SampleSum += SampleValue;
 
 					
 				
 			}
-
 			// Store the sum of the sample values for all channels in the output array
 			SummedSamples.Add(SampleSum);
 		}
 		
 	OutAudioData = SummedSamples;
+
+	return SummedSamples;
 }
 
 TArray<float> USampler::GetAudioData()

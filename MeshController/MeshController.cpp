@@ -108,6 +108,8 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 	FVector SpawnScale(MeshScale);
 	FQuat SpawnRotation = GetActorQuat();
 
+	VisualizationMeshes.AddUninitialized(Number);
+
 	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	FVector PaddingVector(Padding);
@@ -138,7 +140,7 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 
 			CurrentMesh -> Init(Mesh, Material, SpawnScale);
 
-			VisualizationMeshes.Add(CurrentMesh);
+			VisualizationMeshes[i - 1] = CurrentMesh;
 
 			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
 			if(doFocus && FocusIndices[i - 1])

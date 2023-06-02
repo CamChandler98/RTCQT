@@ -78,6 +78,8 @@ void ASoundMesh::SetBrightness(const float InBrightness)
 
     DynMaterial -> SetVectorParameterValue("Color", Color); 
 
+    Brightness = InBrightness;
+
     DynMaterial -> SetScalarParameterValue("Intensity", InBrightness); 
 
     SetMaterial(DynMaterial);
@@ -90,6 +92,8 @@ void ASoundMesh::SetColor(FLinearColor NewColor)
     Color = NewColor;
     UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
     DynMaterial -> SetVectorParameterValue("Color", NewColor);
+    DynMaterial -> SetScalarParameterValue("Intensity", Brightness); 
+
     Color = NewColor;
     SetMaterial(DynMaterial);
 

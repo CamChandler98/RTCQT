@@ -112,6 +112,7 @@ void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDo
 {
 
     const int32 NumBins = PreviousCQT.Num();
+	TArray<float> WorkCQT = CurrentCQT;
 
 	// Interpolate between the two spectra
     for (int32 BinIndex = 0; BinIndex < NumBins; BinIndex++)
@@ -133,22 +134,21 @@ void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDo
                 // Handle the case when i == 0
                     OldValue = PreviousCQT[BinIndex]/1.1; // or some other value
                 }
-                if (BinIndex == CurrentCQT.Num() - 1) 
+                if (BinIndex == WorkCQT.Num() - 1) 
                 {
                  // Access the element at i-1 if i > 0
-                    NewValue = CurrentCQT[BinIndex]/1.1;
+                    NewValue = WorkCQT[BinIndex]/1.1;
                 } 
                 else {
                 // Handle the case when i == 0
-                    NewValue = CurrentCQT[BinIndex + 1]; // or some other value
+                    NewValue = WorkCQT[BinIndex + 1]; // or some other value
                 }
 
         // Interpolate the bin value
-        const float LinearInterpolatedValue = FMath::Lerp(PreviousCQT[BinIndex], CurrentCQT[BinIndex],   BinInterpFactor);
+        const float LinearInterpolatedValue = FMath::Lerp(PreviousCQT[BinIndex], WorkCQT[BinIndex],   BinInterpFactor);
 
-        const float CubicInterpolatedValue = FMath::CubicInterp(OldValue, PreviousCQT[BinIndex], CurrentCQT[BinIndex], NewValue, BinInterpFactor);
-        // Do something with the interpolated value, e.g. store it in a new array
-        // interpolatedCQT[BinIndex] = InterpolatedValue;
+        const float CubicInterpolatedValue = FMath::CubicInterp(OldValue, PreviousCQT[BinIndex], WorkCQT[BinIndex], NewValue, BinInterpFactor);
+
 
 		if(bDoCubicInterpolation)
 		{
@@ -161,7 +161,7 @@ void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDo
 		}
     }
 
-	PreviousCQT = CurrentCQT;
+	PreviousCQT = WorkCQT;
 }
 
 void USpectrumProcessor::SmoothSpectrum(TArray<float>& CurrentCQT)

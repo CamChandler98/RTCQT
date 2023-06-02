@@ -36,15 +36,15 @@ public:
 	float HighPassCutoffFrequency = 100.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0", ShortName = "HPBandWidth"))
 	float HighPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "HPGain"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  meta = (ClampMin = "-5.0", ClampMax = "10.0", ShortName = "HPGain"))
 	float HighPassGain= 0.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" ,meta = (ClampMin = "0.0", ClampMax = "20000.0", ShortName = "LPCutoff"))
 	float LowPassCutoffFrequency = 100.0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing" , meta = (ClampMin = "-5.0", ClampMax = "5.0", ShortName = "LPBandWidth")) 
 	float LowPassBandWidth= 2.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "LPGain"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "10.0", ShortName = "LPGain"))
 	float LowPassGain= 0.0;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "100.0", ShortName = "Gain"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",   meta = (ClampMin = "-5.0", ClampMax = "10.0", ShortName = "Gain"))
 	float GainFactor = 1.5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doLowpassFilter = true;
@@ -56,12 +56,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	TArray<UFloatPropertyInterface*> WidgetInterfaces;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing",  Instanced)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing",  Instanced)
 	TArray<UBoolPropertyInterface*> ToggleInterfaces;
 
     TObjectPtr<USampleSettings> Settings;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor",  Instanced)
 	TObjectPtr<USampleToggles> Toggles;
 
 	TUniquePtr<Audio::FBiquadFilter> LowPassFilter;

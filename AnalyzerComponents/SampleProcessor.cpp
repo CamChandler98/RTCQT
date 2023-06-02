@@ -89,10 +89,6 @@ void USampleProcessor::ProcessAudio(TArray<float>& AudioData)
 
 
 {	
-	if(GainFactor != 1)
-	{
-		Audio::ArrayMultiplyByConstantInPlace(AudioData, GainFactor); 
-	}
 	if(Toggles -> DoLowPass)
 	{
 		
@@ -116,6 +112,10 @@ void USampleProcessor::ProcessAudio(TArray<float>& AudioData)
 
 		TArrayView<const float> AudioView(AudioData.GetData(), AudioData.Num());
 		HighShelfFilter -> ProcessAudio(AudioView.GetData(), AudioView.Num(), AudioData.GetData());
+	}
+	if(GainFactor != 1)
+	{
+		Audio::ArrayMultiplyByConstantInPlace(AudioData, GainFactor); 
 	}
 	if(Toggles -> DoAbsAmp)
 	{

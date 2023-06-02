@@ -119,7 +119,10 @@ void URTCQTAnalyzer::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 {
 	 int32 NumBands = GetNumBands(TotalBands, ParameterSettings -> Proportion, CeilProportion);
+
+	 _NumBands = NumBands;
 	 float BandsPerOctave = GetBandsPerOctave(ParameterSettings -> StartingFrequency, ParameterSettings -> EndingFrequency, NumBands );
+	 _NumBandsPerOctave = BandsPerOctave ;
 	
 	 OutCQT.AddZeroed(NumBands);
 	 
@@ -180,8 +183,11 @@ void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings, USampleTogg
 
 	SampleProcessor -> SetParams();
 
+	SampleProcessor -> GetFilters(ParameterSettings -> SampleRate);
+
 	GetNumericWidgets(SampleProcessor, InName);
 	GetToggleInterfaces(SampleProcessor, InName);
+	
 }
 
 TObjectPtr<FBoolProperty> URTCQTAnalyzer::GetBoolPropertyFName(FName InPropertyName)
@@ -246,6 +252,7 @@ void URTCQTAnalyzer::GetNumericWidgets(USampleProcessor* InProcessor, FName InNa
 
 	for(int32 i = 0; i < Names.Num(); i++)
 	{
+
 		FProperty* Property = SampleClass -> FindPropertyByName(Names[i]);
 		FName PropertyName = Property -> GetFName();
 
@@ -259,8 +266,6 @@ void URTCQTAnalyzer::GetNumericWidgets(USampleProcessor* InProcessor, FName InNa
 		UFloatPropertyInterface* FPInterface = NewObject<UFloatPropertyInterface>(InProcessor, UFloatPropertyInterface::StaticClass());
 
 		FPInterface -> Init(InProcessor, NumericProperty, FPName);
-
-
 
 		InProcessor -> WidgetInterfaces.Add(FPInterface);
 	}
@@ -348,11 +353,13 @@ int32 URTCQTAnalyzer::GetNumBands(int32 BandTotal, float Proportion, bool doCeil
 float URTCQTAnalyzer::GetBandsPerOctave(float BaseFrequency, float EndFrequency, int32 NumBands)
 {
 
+	_SFreq = BaseFrequency;
+	_EFreq = EndFrequency;
 	int32 Index = NumBands - 1;
-	float LogBase =  FGenericPlatformMath::LogX(2.0f,10.0f);
-	float LogFactor = FGenericPlatformMath::LogX((EndFrequency/BaseFrequency), 10.0f);
+	float LogBase =  FGenericPlatformMath::LogX(10.0f, 2.0f);
+	float LogFactor = FGenericPlatformMath::LogX(10.0f,((EndFrequency * 2)/(BaseFrequency * 2)));
 
-	float BandsPerOctave = static_cast<float>(Index) * (LogBase/LogFactor);
+	float BandsPerOctave = (static_cast<float>(Index) * LogBase)/(LogFactor);
 	return BandsPerOctave;
 }
 
@@ -374,6 +381,6 @@ void URTCQTAnalyzer::Analyze(TArray<float> AudioData, bool bProcessSamples, bool
 
 	if(bProcessSpectrum)
 	{
-		SpectrumProcessor -> ProcessSpectrum(AudioData);
+		SpectrumProcessor -> ProcessSpectrum(OutCQT);
 	}
 }

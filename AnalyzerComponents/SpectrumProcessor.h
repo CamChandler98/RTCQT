@@ -68,10 +68,10 @@ public:
 	bool doClamp = true;
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , Instanced)
     TObjectPtr<USpectrumSettings> Settings;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processor", Instanced)
 	TObjectPtr<USpectrumToggles> Toggles;
 
 

@@ -17,11 +17,14 @@ ASpectrumManager::ASpectrumManager()
 // Called when the game starts or when spawned
 void ASpectrumManager::BeginPlay()
 {	
+	StartAndEnds.Reset();
+	BoundaryKeys.Reset();
 	CompiledSpectrum.AddZeroed(NumBands);
 	FloatWindowBuffer.AddZeroed(FFTSize);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize, NumHopFrames);
-	
+
 	CreateAnalyzers();
+
 	Super::BeginPlay();
 
 	
@@ -62,6 +65,8 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
             FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i]);
         }
     }
+
+	Sampler -> CanProcess = true;
 }
 
 
@@ -69,8 +74,12 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 void ASpectrumManager::CreateAnalyzers()
 {
 	SpectrumAnalyzers.SetNum(AnalyzersSettings.Num());
+
+	int32 RunningTracker = 0;
+
 	for(int32 i = 0; i < AnalyzersSettings.Num(); i++)
 	{	
+
 		TObjectPtr<UAnalyzerSettings> CurrentSettings = AnalyzersSettings[i];
 
 		TObjectPtr<USpectrumSettings> SpectrumSettings = CurrentSettings -> SpectrumProcessorSettings;
@@ -110,11 +119,38 @@ void ASpectrumManager::CreateAnalyzers()
 
 		SpectrumAnalyzers[i] = CurrentAnalyzer;
 
+		float StartFreq = CurrentAnalyzer -> _SFreq;
+		float EndFreq = CurrentAnalyzer -> _EFreq;
+		int32 ANumBands = CurrentAnalyzer -> _NumBands;
+
+		StartAndEnds.FindOrAdd(RunningTracker, StartFreq);
+
+		if(i == AnalyzersSettings.Num() - 1)
+		{
+
+			StartAndEnds.FindOrAdd(RunningTracker + (ANumBands - 1), EndFreq);
+		}
+
+
+		RunningTracker += ANumBands;
+
+
+
 		AddOwnedComponent(CurrentAnalyzer);
 	}
 
+
+
 	CheckLength();
 }
+
+
+TArray<int32> ASpectrumManager::GetStartEndKeys()
+{
+	StartAndEnds.GetKeys(BoundaryKeys);
+	return BoundaryKeys;
+}
+
 
 void ASpectrumManager::CheckLength()
 {
@@ -128,6 +164,7 @@ void ASpectrumManager::CheckLength()
 	CompiledSpectrum.Empty();
 	CompiledSpectrum.AddZeroed(TargetLength);
 	NumBands = TargetLength; 
+
 }
 
 void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float value)
@@ -136,4 +173,5 @@ void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float v
      NewData.index = index;
      NewData.value = value;
      OnSpectrumUpdatedEvent.Broadcast(NewData);
+
 }

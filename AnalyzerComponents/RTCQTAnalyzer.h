@@ -60,8 +60,20 @@ public:
 	// Sets default values for this component's properties
 	URTCQTAnalyzer();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, instanced)
 	TObjectPtr<UCQTSettings> ParameterSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 _NumBands;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _NumBandsPerOctave;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _SFreq;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float _EFreq;
+
 
 	TUniquePtr<Audio::FConstantQAnalyzer> ConstantQAnalyzer;
 
