@@ -84,7 +84,9 @@ void ASpectrumManager::CreateAnalyzers()
 
 		TObjectPtr<USpectrumSettings> SpectrumSettings = CurrentSettings -> SpectrumProcessorSettings;
 		TObjectPtr<USampleSettings> SampleSettings = CurrentSettings -> SampleProcessorSettings;
+
 		TObjectPtr<UCQTSettings> CQTSettings = CurrentSettings -> CQTSettings;
+
 
 		TObjectPtr<USpectrumToggles> SpectrumToggles = CurrentSettings -> SpectrumToggles;
 		TObjectPtr<USampleToggles> SampleToggles = CurrentSettings -> SampleToggles;
@@ -92,6 +94,9 @@ void ASpectrumManager::CreateAnalyzers()
 		
 		CQTSettings -> SampleRate = SampleRate;
 		CQTSettings -> UnrestrictedFFTSize = FFTSize;
+		CQTSettings -> StartingFrequency *= 2;
+		CQTSettings -> EndingFrequency *= 2;
+
 
 
 

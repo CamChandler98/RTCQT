@@ -84,6 +84,28 @@ void USampleProcessor::SetParams()
 	GainFactor = Settings -> GainFactor;
 }
 
+void USampleProcessor::UpdateLowPassFilter()
+{
+	LowPassFilter -> SetParams(Audio::EBiquadFilter::Lowpass, LowPassCutoffFrequency, LowPassBandWidth, LowPassGain);
+	
+}
+
+void USampleProcessor::UpdateHighPassFilter()
+{
+	HighPassFilter -> SetParams(Audio::EBiquadFilter::Highpass, HighPassCutoffFrequency, HighPassBandWidth, HighPassGain);
+
+}
+
+void USampleProcessor::UpdateLowShelfFilter()
+{
+
+}
+
+void USampleProcessor::UpdateHighShelfFilter()
+{
+
+}
+
 
 void USampleProcessor::ProcessAudio(TArray<float>& AudioData)
 

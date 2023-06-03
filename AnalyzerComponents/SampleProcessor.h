@@ -74,6 +74,19 @@ public:
 
 	void SetSettings(USampleSettings* InSettings);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateLowPassFilter();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateHighPassFilter();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateLowShelfFilter();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateHighShelfFilter();
+
+
 	void GetFilters(float SampleRate);
 
 	void ProcessAudio(TArray<float>& AudioData);

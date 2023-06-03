@@ -97,7 +97,7 @@ public:
 
 	int32 GetNumBands(int32 BandTotal, float Proportion, bool doCiel);
 
-	float GetBandsPerOctave(float BaseFrequency, float EndFrequency, int32 NumBands);
+	float GetBandsPerOctave(const float BaseFrequency, const float EndFrequency, int32 NumBands);
 	
 	void GenerateAnalyzer();
 

@@ -56,7 +56,7 @@
 	{
 		static const TMap<EAudioSpectrumType, Audio::ESpectrumType> SpectrumTypeMap = {
 			{EAudioSpectrumType::MagnitudeSpectrum,	Audio::ESpectrumType::MagnitudeSpectrum},
-			{EAudioSpectrumType::PowerSpectrum, 	Audio::ESpectrumType::PowerSpectrum}
+			{EAudioSpectrumType::PowerSpectrum, 	Audio::ESpectrumType::PowerSpectrum},
 		};
 
 		return ConvertType(SpectrumTypeMap, InSpectrumType, Audio::ESpectrumType::PowerSpectrum);
@@ -135,6 +135,8 @@ Audio::FConstantQAnalyzerSettings URTCQTAnalyzer::GetCQTSettings()
 			
 	 ConstantQSettings.SpectrumType =  BPSpectrumTypeToAudioSpectrumType(ParameterSettings -> SpectrumType);
 	 ConstantQSettings.Normalization = BPCQTNormalizationToAudioCQTNormalization(ParameterSettings -> CQTNormalization);
+
+	//  ConstantQSettings.Scaling = Audio::EConstantQScaling::Linear;
 
 
 	return ConstantQSettings;
@@ -350,14 +352,14 @@ int32 URTCQTAnalyzer::GetNumBands(int32 BandTotal, float Proportion, bool doCeil
 	}
 }
 
-float URTCQTAnalyzer::GetBandsPerOctave(float BaseFrequency, float EndFrequency, int32 NumBands)
+float URTCQTAnalyzer::GetBandsPerOctave(const float BaseFrequency, const float EndFrequency, int32 NumBands)
 {
 
 	_SFreq = BaseFrequency;
 	_EFreq = EndFrequency;
 	int32 Index = NumBands - 1;
 	float LogBase =  FGenericPlatformMath::LogX(10.0f, 2.0f);
-	float LogFactor = FGenericPlatformMath::LogX(10.0f,((EndFrequency * 2)/(BaseFrequency * 2)));
+	float LogFactor = FGenericPlatformMath::LogX(10.0f,((EndFrequency )/(BaseFrequency )));
 
 	float BandsPerOctave = (static_cast<float>(Index) * LogBase)/(LogFactor);
 	return BandsPerOctave;
