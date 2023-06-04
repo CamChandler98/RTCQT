@@ -164,6 +164,8 @@ void URTCQTAnalyzer::GetSpectrumProcessor(USpectrumSettings* InSettings, USpectr
 	GetNumericWidgets(SpectrumProcessor, InName);
 	GetToggleInterfaces(SpectrumProcessor, InName);
 
+	SpectrumProcessor -> NoiseFloorDB = ParameterSettings -> NoiseFloorDb;
+
 
 }
 
@@ -186,6 +188,8 @@ void URTCQTAnalyzer::GetSampleProcessor(USampleSettings* InSettings, USampleTogg
 	SampleProcessor -> SetParams();
 
 	SampleProcessor -> GetFilters(ParameterSettings -> SampleRate);
+
+
 
 	GetNumericWidgets(SampleProcessor, InName);
 	GetToggleInterfaces(SampleProcessor, InName);

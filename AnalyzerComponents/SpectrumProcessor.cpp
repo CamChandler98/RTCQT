@@ -24,17 +24,9 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	{
 		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
 	}
-	if(Toggles -> DoSmooth)
-	{
-		SmoothSpectrum(CurrentCQT);
-	}
 	if(Toggles -> DoNormalize)
 	{
 		NormalizeSpectrum(CurrentCQT, NoiseFloorDB);
-	}
-	if(Toggles -> DoSupressQuiet)
-	{
-		SupressQuiet(CurrentCQT, QuietMultiplier);
 	}
 	if(Toggles -> DoScale)
 	{
@@ -47,6 +39,14 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	else if(Toggles -> DoPeakExp)
 	{
 		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
+	}
+	if(Toggles -> DoSupressQuiet)
+	{
+		SupressQuiet(CurrentCQT, QuietMultiplier);
+	}
+	if(Toggles -> DoSmooth)
+	{
+		SmoothSpectrum(CurrentCQT);
 	}
 
 
@@ -111,7 +111,7 @@ void USpectrumProcessor::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDoCubicInterpolation)
 {
 
-    const int32 NumBins = PreviousCQT.Num();
+    const int32 NumBins = CurrentCQT.Num();
 	TArray<float> WorkCQT = CurrentCQT;
 
 	// Interpolate between the two spectra
@@ -152,11 +152,11 @@ void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDo
 
 		if(bDoCubicInterpolation)
 		{
-       	 CurrentCQT[BinIndex] = CubicInterpolatedValue;
+       		 CurrentCQT[BinIndex] = CubicInterpolatedValue;
 		}
 		else
 		{
-       	 CurrentCQT[BinIndex] = LinearInterpolatedValue;
+       	 	CurrentCQT[BinIndex] = LinearInterpolatedValue;
 
 		}
     }

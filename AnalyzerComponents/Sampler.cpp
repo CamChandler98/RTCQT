@@ -113,7 +113,7 @@ TArray<float> USampler::ConvertPCMToFloat(const TArray<uint8> InterleavedStream,
 
 TArray<float> USampler::UnrealPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, float Gain)
 {
-    int NumSamples = InterleavedStream.Num() / 2;
+    int NumSamples = InterleavedStream.Num()/8;
 
     TArray<float> FloatSamples;
 
