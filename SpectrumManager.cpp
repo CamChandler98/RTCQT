@@ -2,6 +2,8 @@
 
 
 #include "SpectrumManager.h"
+#include "DSP/DeinterleaveView.h"
+
 
 // Sets default values
 ASpectrumManager::ASpectrumManager()
@@ -22,6 +24,8 @@ void ASpectrumManager::BeginPlay()
 	CompiledSpectrum.AddZeroed(NumBands);
 	FloatWindowBuffer.AddZeroed(FFTSize);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize, NumHopFrames);
+    UnrealSlidingBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize * 2, NumHopFrames * 2);
+
 
 	CreateAnalyzers();
 
@@ -69,6 +73,47 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 	Sampler -> CanProcess = true;
 }
 
+void ASpectrumManager::UnrealAnalyzeAudio(const TArray<float>& AudioData)
+{
+
+	TArray<float> CCompiledSpectrum;
+	CCompiledSpectrum.AddZeroed(NumBands);
+
+	TArray<float> MonoBuffer;
+	MonoBuffer.AddZeroed(FFTSize);
+	TArray<float> ChannelBuffer;
+
+	for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*UnrealSlidingBuffer, AudioData, FloatWindowBuffer, false))
+    {   
+
+
+		CCompiledSpectrum.Reset();
+			Audio::TAutoDeinterleaveView<float> DeinterleaveView(Window, ChannelBuffer, 2 );
+			for(auto Channel : DeinterleaveView)
+			{
+				Audio::ArrayMixIn(Channel.Values, MonoBuffer);		
+			}
+
+		for(int32 i = 0; i < SpectrumAnalyzers.Num(); i++)
+		{
+			TObjectPtr<URTCQTAnalyzer> CurrentAnalyzer = SpectrumAnalyzers[i];
+
+
+			CurrentAnalyzer -> Analyze(MonoBuffer, DoSampleProcessing, DoSpectrumProcessing);
+
+			CCompiledSpectrum.Append(CurrentAnalyzer -> OutCQT);
+		}
+
+		CompiledSpectrum = CCompiledSpectrum;
+
+        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ ){
+
+            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i]);
+        }
+    }
+
+	Sampler -> CanProcess = true;
+}
 
 
 void ASpectrumManager::CreateAnalyzers()

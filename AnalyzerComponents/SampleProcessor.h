@@ -52,6 +52,8 @@ public:
 	bool doHighpassFilter = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	bool doAbsAmp = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
+	bool doReverseFade = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Sample Processing")
 	TArray<UFloatPropertyInterface*> WidgetInterfaces;

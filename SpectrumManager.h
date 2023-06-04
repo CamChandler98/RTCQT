@@ -84,6 +84,8 @@ public:
 
 
 	TUniquePtr<Audio::TSlidingBuffer<float>> SlidingFloatBuffer;
+	TUniquePtr<Audio::TSlidingBuffer<float>> UnrealSlidingBuffer;
+
     TArray<float> FloatWindowBuffer;
 
 	UFUNCTION(BlueprintCallable)
@@ -97,6 +99,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AnalyzeAudio(const TArray<float>& AudioData);
+
+	UFUNCTION(BlueprintCallable)
+	void UnrealAnalyzeAudio(const TArray<float>& AudioData);
 
 
 	UPROPERTY(BlueprintAssignable);

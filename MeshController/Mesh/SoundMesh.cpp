@@ -50,7 +50,6 @@ void ASoundMesh::SetMaterial(UMaterialInterface* NewMaterial)
     MeshComponent -> SetMaterial(0,NewMaterial);
 
     // Brightness = MeshComponent -> GetMaterial(0) -> GetScalarParameterValue();
-
 } 
 
 void ASoundMesh::SetScale(FVector NewScale)
@@ -64,7 +63,7 @@ void ASoundMesh::SetZScale(const float NewZScale)
 {
 
 
-    FVector NewScale = GetActorRelativeScale3D();
+    FVector NewScale = MeshComponent -> GetRelativeScale3D();
 
     NewScale.Z = NewZScale;
     
