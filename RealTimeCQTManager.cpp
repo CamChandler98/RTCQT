@@ -309,8 +309,8 @@ void ARealTimeCQTManager::CQTProcessing()
     currentCQT = outCQT;
     const int32 NumBins = oldCQT.Num();
 
-// Interpolate between the two spectra
     for (int32 BinIndex = 0; BinIndex < NumBins; BinIndex++)
+// Interpolate between the two spectra
     {
         // Calculate the difference between the two bins
         const float BinDiff = FMath::Abs(currentCQT[BinIndex] - oldCQT[BinIndex]);

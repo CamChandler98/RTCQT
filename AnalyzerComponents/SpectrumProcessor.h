@@ -37,11 +37,11 @@ public:
 	int32 SmoothingWindowSize = 7;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Spectrum Processing", meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "Interp"))
 	float InterpolationFactor = .5;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 100.0, ShortName = "Scale"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 10.0, ShortName = "Scale"))
 	float ScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -2.0, ClampMax = 2.0, ShortName = "Quiet"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -1.0, ClampMax = 1.0, ShortName = "Quiet"))
 	float QuietMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 1.0, ClampMax = 50.0, ShortName = "Peak"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 1.0, ClampMax = 2.0, ShortName = "Peak"))
 	float PeakExponentMultiplier = 1.25;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "Focus"))
 	float FocusExponentMultiplier = .01;

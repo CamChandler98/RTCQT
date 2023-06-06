@@ -87,7 +87,7 @@ void ASpectrumManager::UnrealAnalyzeAudio(const TArray<float>& AudioData)
     {   
 
 
-		CCompiledSpectrum.Reset();
+			CCompiledSpectrum.Reset();
 			Audio::TAutoDeinterleaveView<float> DeinterleaveView(Window, ChannelBuffer, 2 );
 			for(auto Channel : DeinterleaveView)
 			{

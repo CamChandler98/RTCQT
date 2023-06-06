@@ -20,7 +20,7 @@ public:
 	bool CanProcess  = true;
 
 	UFUNCTION(BlueprintCallable)
-	TArray<float> ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor, bool DoGain = true, bool DirectFloat = false, bool AltFloat = false);
+	TArray<float> ConvertPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, int BitsPerSample, float GainFactor, bool DoGain = true, bool DownMix = true, bool DirectFloat = false, bool AltFloat = false);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<float> UnrealPCMToFloat(const TArray<uint8> InterleavedStream, int NumChannels, float Gain);

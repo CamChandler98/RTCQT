@@ -24,9 +24,17 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	{
 		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
 	}
+	if(Toggles -> DoSmooth)
+	{
+		SmoothSpectrum(CurrentCQT);
+	}
 	if(Toggles -> DoNormalize)
 	{
 		NormalizeSpectrum(CurrentCQT, NoiseFloorDB);
+	}
+	if(Toggles -> DoSupressQuiet)
+	{
+		SupressQuiet(CurrentCQT, QuietMultiplier);
 	}
 	if(Toggles -> DoScale)
 	{
@@ -39,14 +47,6 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	else if(Toggles -> DoPeakExp)
 	{
 		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
-	}
-	if(Toggles -> DoSupressQuiet)
-	{
-		SupressQuiet(CurrentCQT, QuietMultiplier);
-	}
-	if(Toggles -> DoSmooth)
-	{
-		SmoothSpectrum(CurrentCQT);
 	}
 
 
@@ -111,14 +111,14 @@ void USpectrumProcessor::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 void USpectrumProcessor::InterpolateSpectrum(TArray<float>& CurrentCQT, bool bDoCubicInterpolation)
 {
 
-    const int32 NumBins = CurrentCQT.Num();
 	TArray<float> WorkCQT = CurrentCQT;
+    const int32 NumBins = PreviousCQT.Num();
 
 	// Interpolate between the two spectra
     for (int32 BinIndex = 0; BinIndex < NumBins; BinIndex++)
     {
         // Calculate the difference between the two bins
-        const float BinDiff = FMath::Abs(CurrentCQT[BinIndex] - PreviousCQT[BinIndex]);
+        const float BinDiff = FMath::Abs(WorkCQT[BinIndex] - PreviousCQT[BinIndex]);
 
         // Calculate the interpolation factor for this bin
         const float BinInterpFactor = FMath::Clamp(BinDiff * InterpolationFactor, 0.f, 1.f);
@@ -210,7 +210,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 
 	if(CQTRange > SMALL_NUMBER)
 	{
-		const float Scaling = 1.f / CQTRange;
+		const float Scaling = 1.5f / CQTRange;
 		Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, Scaling);
 
 	}
@@ -221,7 +221,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 	    }
 	}
 	// Clamp the values in the CurrentCQT array between 0 and 1
-	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.f);
+	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.5f);
 }
 
 
@@ -246,7 +246,7 @@ void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float E
 {
 			for (int32 i = 0; i < CurrentCQT.Num(); i++)
             {
-                CurrentCQT[i] = UKismetMathLibrary::MultiplyMultiply_FloatFloat((CurrentCQT[i]), Exponent);
+                CurrentCQT[i] = FMath::Pow(CurrentCQT[i], Exponent);
             }
 }
 
