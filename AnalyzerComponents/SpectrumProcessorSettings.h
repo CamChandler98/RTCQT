@@ -34,8 +34,8 @@ class SYNRTCQT_API USpectrumToggles : public UObject
 		bool DoScale = true;
 		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Quiet"))
 		bool DoSupressQuiet = true;
-		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Clamp"))
-		bool DoClamp = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "HiBoost"))
+		bool DoBoostHighFrequency= true;
 
 
 
@@ -64,7 +64,7 @@ struct FSpectrumToggleNames
 	
 	FName DoSupressQuietName = FName(TEXT("DoSupressQuiet"));
 	
-	FName DoClampName = FName(TEXT("DoClamp"));
+	FName DoBoostHighFrequency = FName(TEXT("DoBoostHighFrequency"));
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	TArray<FName> Names;
@@ -79,40 +79,7 @@ struct FSpectrumToggleNames
 		Names.Add(DoNormalizeName);
 		Names.Add(DoScaleName);
 		Names.Add(DoSupressQuietName);
-		Names.Add(DoClampName);
-	}
-
-};
-
-
-USTRUCT(BlueprintType)
-struct FSpectrumPropertyNames
-{
-	GENERATED_USTRUCT_BODY()
-	
-	FName SmoothingWindowSizeName = FName(TEXT("SmoothingWindowSize"));
-	
-	FName InterpolationFactorName =  FName(TEXT("InterpolationFactor"));
-	
-	FName ScaleMultiplierName = FName(TEXT("ScaleMultiplier"));
-	
-	FName QuietMultiplierName = FName(TEXT("QuietMultiplier"));
-	
-	FName PeakExponentMultiplierName = FName(TEXT("PeakExponentMultiplier"));
-	
-	FName FocusExponentMultiplierName = FName(TEXT("FocusExponentMultiplier"));
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
-	TArray<FName> Names;
-
-	FSpectrumPropertyNames()
-	{
-		Names.Add(SmoothingWindowSizeName);
-		Names.Add(InterpolationFactorName);
-		Names.Add(ScaleMultiplierName);
-		Names.Add(QuietMultiplierName);
-		Names.Add(PeakExponentMultiplierName);
-		Names.Add(FocusExponentMultiplierName);
+		Names.Add(DoBoostHighFrequency);
 	}
 
 };
@@ -136,10 +103,59 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float PeakExponentMultiplier = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	float HighFrequencyBoostFactor = .5 ;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float FocusExponentMultiplier = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	float QuietThreshold = .5;
 
 	UFUNCTION(BlueprintCallable)
 	void LogParams();
 	
 
 };
+
+
+USTRUCT(BlueprintType)
+struct FSpectrumPropertyNames
+{
+	GENERATED_USTRUCT_BODY()
+	
+	FName SmoothingWindowSizeName = FName(TEXT("SmoothingWindowSize"));
+	
+	FName InterpolationFactorName =  FName(TEXT("InterpolationFactor"));
+	
+	FName ScaleMultiplierName = FName(TEXT("ScaleMultiplier"));
+	
+	FName QuietMultiplierName = FName(TEXT("QuietMultiplier"));
+	
+	FName PeakExponentMultiplierName = FName(TEXT("PeakExponentMultiplier"));
+	
+	FName FocusExponentMultiplierName = FName(TEXT("FocusExponentMultiplier"));
+
+	FName HighFrequencyBoostFactorName = FName(TEXT("HighFrequencyBoostFactor"));
+
+	FName QuietThresholdName = FName(TEXT("QuietThreshold"));
+
+	
+
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	TArray<FName> Names;
+
+	FSpectrumPropertyNames()
+	{
+		Names.Add(SmoothingWindowSizeName);
+		Names.Add(InterpolationFactorName);
+		Names.Add(ScaleMultiplierName);
+		Names.Add(QuietMultiplierName);
+		Names.Add(PeakExponentMultiplierName);
+		Names.Add(FocusExponentMultiplierName);
+		Names.Add(HighFrequencyBoostFactorName);
+		Names.Add(QuietThresholdName);
+
+	}
+
+};
+
+

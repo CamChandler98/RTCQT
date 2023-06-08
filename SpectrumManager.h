@@ -22,10 +22,14 @@ struct FSpectrumData
 	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float value;
 
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float max;
+
 		FSpectrumData()
 		{
 			index = 0;
-			value = 0.0 ;
+			value = 0.0;
+			max = 0.0;
 		}
 };
 
@@ -108,7 +112,7 @@ public:
 	FOnSpectrumDelegate OnSpectrumUpdatedEvent;
 
 
-	void FireOnSpectrumUpdatedEvent(const int index, const float value);
+	void FireOnSpectrumUpdatedEvent(const int index, const float value, const float max);
 
 
 protected:

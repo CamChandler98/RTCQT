@@ -20,14 +20,6 @@ USpectrumProcessor::USpectrumProcessor()
 
 void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 {
-	if(Toggles -> DoInterpolate)
-	{
-		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
-	}
-	if(Toggles -> DoSmooth)
-	{
-		SmoothSpectrum(CurrentCQT);
-	}
 	if(Toggles -> DoNormalize)
 	{
 		NormalizeSpectrum(CurrentCQT, NoiseFloorDB);
@@ -48,8 +40,14 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	{
 		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
 	}
-
-
+	if(Toggles -> DoSmooth)
+	{
+		SmoothSpectrum(CurrentCQT);
+	}
+	if(Toggles -> DoInterpolate)
+	{
+		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
+	}
 }
 
 void USpectrumProcessor::SetSettings(USpectrumSettings* InSettings)
@@ -66,6 +64,11 @@ void USpectrumProcessor::SetSettings(USpectrumSettings* InSettings)
 	Settings ->  PeakExponentMultiplier = InSettings -> PeakExponentMultiplier;
 	
 	Settings -> FocusExponentMultiplier = InSettings -> FocusExponentMultiplier;
+	Settings -> QuietThreshold = InSettings -> QuietThreshold ;
+
+
+	Settings -> HighFrequencyBoostFactor = InSettings -> HighFrequencyBoostFactor;
+
 }
 
 void USpectrumProcessor::SetParams()
@@ -82,6 +85,11 @@ void USpectrumProcessor::SetParams()
 	PeakExponentMultiplier = Settings ->  PeakExponentMultiplier;
 	
 	FocusExponentMultiplier = Settings -> FocusExponentMultiplier;
+
+	QuietThreshold = Settings -> QuietThreshold ;
+
+
+	HighFrequencyBoostFactor = Settings -> HighFrequencyBoostFactor;
 }
 
 void USpectrumProcessor::SetArraySize(int32 InSize)
@@ -210,7 +218,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 
 	if(CQTRange > SMALL_NUMBER)
 	{
-		const float Scaling = 1.5f / CQTRange;
+		const float Scaling = 1.2f / CQTRange;
 		Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, Scaling);
 
 	}
@@ -221,7 +229,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 	    }
 	}
 	// Clamp the values in the CurrentCQT array between 0 and 1
-	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.5f);
+	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.2f);
 }
 
 
@@ -230,16 +238,33 @@ void USpectrumProcessor::SupressQuiet(TArray<float>& CurrentCQT, float ScalingFa
 	for (int i = 0; i < CurrentCQT.Num(); i++)
 	{
 		float CurrentValue = CurrentCQT[i];
+
 		float DistanceFromZero = FMath::Abs(CurrentValue);
-		float ScaledValue = FMath::Sign(CurrentValue) * FMath::Pow(DistanceFromZero, ScalingFactor);
-		CurrentCQT[i] = ScaledValue;
+		
+		if(DistanceFromZero < QuietThreshold)
+		{
+			float ScaledValue = FMath::Sign(CurrentValue) * FMath::Pow(DistanceFromZero, ScalingFactor);
+			CurrentCQT[i] = ScaledValue;
+			
+		}
+		
 	}
 }
 
 
 void USpectrumProcessor::ScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor)
 {
-		Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, ScalingFactor);
+		if(Toggles -> DoBoostHighFrequency)
+		{
+			float EndScaleFactor = ScalingFactor + (ScalingFactor * HighFrequencyBoostFactor);
+
+
+			Audio::ArrayFade(CurrentCQT, ScalingFactor, EndScaleFactor);
+		}
+		else
+		{
+			Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, ScalingFactor);
+		}
 }
 
 void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent)

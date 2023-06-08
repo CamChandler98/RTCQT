@@ -208,6 +208,8 @@ public:
 	float peakExponentMultiplier = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float FocusExponentMultiplier = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	float QuietThreshold = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doSmooth = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")

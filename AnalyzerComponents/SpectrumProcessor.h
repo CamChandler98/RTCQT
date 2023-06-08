@@ -34,17 +34,21 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Array" )
 	TArray<bool> FocusIndices;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere , Category = "Spectrum Processing",  meta = (ClampMin = 0, ClampMax = 15, ShortName = "Smoothing"))
-	int32 SmoothingWindowSize = 7;
+	int32 SmoothingWindowSize = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "Spectrum Processing", meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "Interp"))
 	float InterpolationFactor = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 10.0, ShortName = "Scale"))
 	float ScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -1.0, ClampMax = 1.0, ShortName = "Quiet"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -1.0, ClampMax = 10.0, ShortName = "Quiet"))
 	float QuietMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 1.0, ClampMax = 2.0, ShortName = "Peak"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 1.0, ClampMax = 10.0, ShortName = "Peak"))
 	float PeakExponentMultiplier = 1.25;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "Focus"))
 	float FocusExponentMultiplier = .01;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "QLimit"))
+	float QuietThreshold = .5;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 0.0, ClampMax = 1.0, ShortName = "HiBoost"))
+	float HighFrequencyBoostFactor = .5 ;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = -80.0, ClampMax = 80.0, ShortName = "NoiseFloor"))
 	float NoiseFloorDB = -60;
 	

@@ -56,12 +56,13 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Slider is here"));
-        // RadialSlider -> Slider -> SetOutputRange(Range);
+
         
         void *Data = PropertyPtr ->ContainerPtrToValuePtr<void>(PropertyParent);
-        if(PropertyPtr -> IsInteger())
+        IsInteger = PropertyPtr -> IsInteger();
+        if(IsInteger)
         {
+
             int64 IntValue = PropertyPtr -> GetSignedIntPropertyValue(Data);
             Value = static_cast<float>(IntValue);
         }

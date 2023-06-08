@@ -2,6 +2,7 @@
 
 
 #include "SpectrumManager.h"
+#include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
 
 
@@ -62,12 +63,14 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 			CCompiledSpectrum.Append(CurrentAnalyzer -> OutCQT);
 		}
 
-		CompiledSpectrum = CCompiledSpectrum;
+		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
+        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
+		{
 
-        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ ){
-
-            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i]);
+            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
         }
+
+		CompiledSpectrum = CCompiledSpectrum;
     }
 
 	Sampler -> CanProcess = true;
@@ -104,12 +107,14 @@ void ASpectrumManager::UnrealAnalyzeAudio(const TArray<float>& AudioData)
 			CCompiledSpectrum.Append(CurrentAnalyzer -> OutCQT);
 		}
 
-		CompiledSpectrum = CCompiledSpectrum;
+		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
+        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
+		{
 
-        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ ){
-
-            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i]);
+            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
         }
+		
+		CompiledSpectrum = CCompiledSpectrum;
     }
 
 	Sampler -> CanProcess = true;
@@ -217,11 +222,13 @@ void ASpectrumManager::CheckLength()
 
 }
 
-void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float value)
+void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float value, const float max)
 {
      FSpectrumData NewData;
      NewData.index = index;
      NewData.value = value;
+     NewData.max = max;
+
      OnSpectrumUpdatedEvent.Broadcast(NewData);
 
 }

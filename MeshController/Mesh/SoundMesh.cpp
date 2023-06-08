@@ -90,9 +90,9 @@ void ASoundMesh::SetColor(FLinearColor NewColor)
 {
     Color = NewColor;
     UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
+    DynMaterial -> K2_CopyMaterialInstanceParameters(Material, true);
     DynMaterial -> SetVectorParameterValue("Color", NewColor);
-    DynMaterial -> SetScalarParameterValue("Intensity", Brightness); 
-
+    // DynMaterial -> SetScalarParameterValue("Intensity", Brightness); 
     Color = NewColor;
     SetMaterial(DynMaterial);
 
