@@ -101,19 +101,20 @@ void AMeshController::SpawnMeshes(int32 Number)
 
 }
 
-void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
+void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding, FName Name)
 {
 	FVector ForwardVector = this -> GetActorForwardVector();
 	FVector Location = this -> GetActorLocation();
 	FVector SpawnScale(MeshScale);
 	FQuat SpawnRotation = GetActorQuat();
 
-	VisualizationMeshes.AddUninitialized(Number);
+	TArray<AMeshAgent*> VisualizationMeshes = MeshAgents[Name].Agents;
 
 	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	FVector PaddingVector(Padding);
 	FActorSpawnParameters Parameters = FActorSpawnParameters(); 
+	
 	for(int32 i = 1; i <= Number; i++)
 	{
 		FVector IndexVector(static_cast<float>(i));
@@ -127,9 +128,9 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 
 		FTransform Transform(SpawnRotation, SpawnLocation,SpawnScale);
 
-		ASoundMesh* CurrentMesh = GetWorld()->SpawnActorDeferred<ASoundMesh>(
+		AMeshAgent* CurrentMesh = GetWorld()->SpawnActorDeferred<AMeshAgent>(
 
-			ASoundMesh::StaticClass()
+			AMeshAgent::StaticClass()
 			, Transform
 			, this
 			, nullptr
@@ -138,27 +139,16 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 
 			CurrentMesh -> AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepWorld, false));
 
-			CurrentMesh -> Init(Mesh, Material, SpawnScale);
-
 			VisualizationMeshes[i - 1] = CurrentMesh;
 
 			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
-			if(doFocus && FocusIndices[i - 1])
-			{
-				CurrentMesh -> SetColor(FocusColor);
 
-			}
-			else
-			{
-
-				CurrentMesh -> SetColor(Color);
-
-			}
+			// 	CurrentMesh -> SetColor(Color);
 	}
 
 }
 
-void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float Radius )
+void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float Radius , FName Analyzer)
 {
 	FVector ForwardVector = this -> GetActorForwardVector();
 	FVector Location = this -> GetActorLocation();
@@ -170,9 +160,8 @@ void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float 
 	float Step = 360.0f / static_cast<float>(Number);
 
 	// Step*=2;
-
-
-	VisualizationMeshes.AddUninitialized(Number);
+	
+	_VisualizationMeshes.AddUninitialized(Number);
 
 	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -183,7 +172,6 @@ void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float 
 	{
 
 		float CurrentStep = static_cast<float>(i) * Step;
-
 
 		float RotatorZ = CurrentStep;
 
@@ -216,7 +204,7 @@ void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float 
 
 			CurrentMesh -> Init(Mesh, Material, SpawnScale);
 
-			VisualizationMeshes[i - 1] = CurrentMesh;
+			_VisualizationMeshes[i - 1] = CurrentMesh;
 
 			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
 			if(doFocus && FocusIndices[i - 1])
@@ -260,7 +248,7 @@ FVector AMeshController::FibSphere(int32 i, int32 Number, float radius)
 }
 
 
-void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
+void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius, FName Name)
 {
 
 	float Step = 360.0f / static_cast<float>(Number);
@@ -268,21 +256,18 @@ void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
 	FVector Location = this -> GetActorLocation();
 
 	FQuat SpawnRotation = GetActorQuat();
+
 	FVector SpawnScale(MeshScale);
-
-
 
 	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	FActorSpawnParameters Parameters = FActorSpawnParameters(); 
 
-	VisualizationMeshes.AddUninitialized(Number);
+	_VisualizationMeshes.AddUninitialized(Number);
 
 	for (int32 i = 0; i < Number; i++)
     {
  		
-
-
         // Calculate the spherical coordinates
         FVector SphereLocation = FibSphere(i,Number,Radius);
 
@@ -306,7 +291,7 @@ void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
 
 		CurrentMesh -> Init(Mesh, Material, SpawnScale);
 
-		VisualizationMeshes[i] = CurrentMesh;
+		_VisualizationMeshes[i] = CurrentMesh;
 
 		UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
 		if(doFocus && FocusIndices[i - 1])
@@ -333,7 +318,6 @@ void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
 
     }
 
-
 }
 
 
@@ -348,9 +332,9 @@ void AMeshController::ChangePadding(float InPadding, bool SetPadding)
 	bool doIncrease = InPadding > Padding;
 
 
-	for(int32 i = 0; i < VisualizationMeshes.Num(); i++)
+	for(int32 i = 0; i < _VisualizationMeshes.Num(); i++)
 	{
-		UStaticMeshComponent* CurrentMesh = VisualizationMeshes[i] -> GetStaticMeshComponent();
+		UStaticMeshComponent* CurrentMesh = _VisualizationMeshes[i] -> GetStaticMeshComponent();
 
 		FVector CurrentLocation = CurrentMesh -> GetRelativeLocation();
 		FVector NewLocation = CurrentLocation;
@@ -396,7 +380,7 @@ void AMeshController::UpdateMesh(int32 Index, double Value)
 
 void AMeshController::UpdateMeshZ(int32 Index, float Value)
 {
-	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
+	ASoundMesh* CurrentMesh = _VisualizationMeshes[Index];
 
 	float NewZScale = FMath::Max(Value * ScaleFactor, MinScale);
 	// float SpectrumMax = CQTManager -> getMaxSpectrum();
@@ -408,7 +392,7 @@ void AMeshController::UpdateMeshZ(int32 Index, float Value)
 }
 void AMeshController::TestSpawn()
 {
-	SpawnMeshesInLine(NumberOfMeshes, Padding);
+	// SpawnMeshesInLine(NumberOfMeshes, Padding);
 }
 
 void AMeshController::TestIncreasePadding()

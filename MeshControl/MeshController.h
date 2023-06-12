@@ -6,8 +6,20 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 #include "../RealTimeCQTManager.h"
-#include "./Mesh/SoundMesh.h"
+#include "./StaticMesh/SoundMesh.h"
+#include "./MeshAgent/MeshAgent.h"
 #include "MeshController.generated.h"
+
+USTRUCT(BlueprintType)
+struct FAgents
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AMeshAgent*> Agents;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<AMeshAgent> AgentBP;
+};
 
 UCLASS()
 class SYNRTCQT_API AMeshController : public AActor
@@ -36,18 +48,16 @@ public:
 	void ChangePadding(float InPadding, bool SetPadding = true);
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnMeshesInLine(int32 Number, float InPadding);
+	void SpawnMeshesInLine(int32 Number, float InPadding, FName Name);
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnMeshesInCircle(int32 Number, float InPadding, float Radius);
+	void SpawnMeshesInCircle(int32 Number, float InPadding, float Radius, FName Name);
 	
 	UFUNCTION(BlueprintCallable)
-	void SpawnMeshesInSphere(int32 Number, float Radius);
+	void SpawnMeshesInSphere(int32 Number, float Radius, FName Name);
 
 	UFUNCTION(BlueprintCallable)
 	FVector FibSphere(int32 i, int32 Number ,float radius);
-
-
 
 	/** Please add a function description */
 	UFUNCTION(BlueprintCallable)
@@ -110,7 +120,10 @@ public:
 	TObjectPtr<UStaticMesh>  Mesh;
 
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
-	TArray<ASoundMesh*> VisualizationMeshes; 
+	TArray<ASoundMesh*> _VisualizationMeshes;
+
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
+	TMap<FName, FAgents> MeshAgents;
 
 
 
