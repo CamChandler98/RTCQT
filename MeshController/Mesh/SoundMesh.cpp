@@ -28,13 +28,15 @@ ASoundMesh::ASoundMesh()
 void ASoundMesh::Init(UStaticMesh* NewMesh, UMaterialInterface* NewMaterial, FVector NewScale)
 {   
     Mesh = NewMesh;
-    Material = NewMaterial;
+
+    Material = UMaterialInstanceDynamic::Create(NewMaterial, this);
 
     MeshComponent -> SetStaticMesh(Mesh);
 
-    MeshComponent -> SetMaterial(0,NewMaterial);
+    MeshComponent -> SetMaterial(0,Material);
 
     MeshComponent -> SetRelativeScale3D(NewScale);
+    
 }
 
 
@@ -45,11 +47,15 @@ void ASoundMesh::SetMesh(UStaticMesh* NewMesh)
 
 }
 
-void ASoundMesh::SetMaterial(UMaterialInterface* NewMaterial)
+void ASoundMesh::SetMaterial(UMaterialInstanceDynamic* NewMaterial)
 {
-    MeshComponent -> SetMaterial(0,NewMaterial);
+    FName ColorName = FName(TEXT("Color"));
+    FName Intensity = FName(TEXT("Intensity"));
 
-    // Brightness = MeshComponent -> GetMaterial(0) -> GetScalarParameterValue();
+    Brightness = NewMaterial -> K2_GetScalarParameterValue(Intensity);
+    Color =  NewMaterial -> K2_GetVectorParameterValue(ColorName);
+
+    MeshComponent -> SetMaterial(0,NewMaterial);
 
 } 
 
@@ -64,7 +70,7 @@ void ASoundMesh::SetZScale(const float NewZScale)
 {
 
 
-    FVector NewScale = GetActorRelativeScale3D();
+    FVector NewScale = MeshComponent -> GetRelativeScale3D();
 
     NewScale.Z = NewZScale;
     
@@ -74,23 +80,22 @@ void ASoundMesh::SetZScale(const float NewZScale)
 
 void ASoundMesh::SetBrightness(const float InBrightness)
 {
-    TObjectPtr<UMaterialInstanceDynamic> DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
 
-    DynMaterial -> SetVectorParameterValue("Color", Color); 
 
-    DynMaterial -> SetScalarParameterValue("Intensity", InBrightness); 
+    Material -> SetScalarParameterValue("Intensity", InBrightness); 
 
-    SetMaterial(DynMaterial);
+    Brightness = InBrightness;
+
 
 
 }
 
 void ASoundMesh::SetColor(FLinearColor NewColor)
 {
+
+    Material -> SetVectorParameterValue("Color", NewColor);
+    Material -> SetScalarParameterValue("Intensity", Brightness); 
+
     Color = NewColor;
-    UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
-    DynMaterial -> SetVectorParameterValue("Color", NewColor);
-    Color = NewColor;
-    SetMaterial(DynMaterial);
 
 }

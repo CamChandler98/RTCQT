@@ -8,9 +8,30 @@ public class SynRTCQT : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AudioSynesthesia" , "AudioSynesthesiaCore", "SignalProcessing"});
+		PublicDependencyModuleNames.AddRange(new string[] { 
+		"Core", 
+		"CoreUObject", 
+		"Engine", 
+		"InputCore", 
+		"AudioSynesthesia" , 
+		"AudioSynesthesiaCore", 
+		"SignalProcessing", 
+		"AudioMixerCore",
+		"AudioMixer",
+		"AudioAnalyzer",
+		"UMG", 
+		"AdvancedWidgets",
+		"AudioSynesthesiaEditor"
+		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {"AudioSynesthesia", "AudioSynesthesiaCore" , "SignalProcessing" });
+		PrivateDependencyModuleNames.AddRange(new string[] {
+		"AudioSynesthesia",
+		"AudioSynesthesiaCore" , 
+		"SignalProcessing",  
+		"AudioAnalyzer",
+		"Slate", 
+		"SlateCore"
+		});
 
 // PrivateDependencyModuleNames.AddRange(new string[] {  "ParallelcubeAudioAnalyzer" });
 

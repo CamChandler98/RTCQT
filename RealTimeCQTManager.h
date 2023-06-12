@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQ.h"
 #include "DSP/AlignedBuffer.h"
-#include "ConstantQ.h"
 #include "DSP/SlidingWindow.h"
 #include "DSP/Filter.h"
 #include "PeakPicker.h"
@@ -208,6 +208,8 @@ public:
 	float peakExponentMultiplier = 2;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float FocusExponentMultiplier = 2;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
+	float QuietThreshold = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")
 	bool doSmooth = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing")

@@ -84,7 +84,7 @@ void AMeshController::PostEditChangeProperty(struct FPropertyChangedEvent& e)
 // Called when the game starts or when spawned
 void AMeshController::BeginPlay()
 {
-	FocusIndices = CQTManager -> FocusIndices;
+	// FocusIndices = CQTManager -> FocusIndices;
 	Super::BeginPlay();
 	
 }
@@ -107,6 +107,8 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 	FVector Location = this -> GetActorLocation();
 	FVector SpawnScale(MeshScale);
 	FQuat SpawnRotation = GetActorQuat();
+
+	VisualizationMeshes.AddUninitialized(Number);
 
 	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -138,7 +140,7 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 
 			CurrentMesh -> Init(Mesh, Material, SpawnScale);
 
-			VisualizationMeshes.Add(CurrentMesh);
+			VisualizationMeshes[i - 1] = CurrentMesh;
 
 			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
 			if(doFocus && FocusIndices[i - 1])
@@ -155,6 +157,185 @@ void AMeshController::SpawnMeshesInLine(int32 Number, float InPadding)
 	}
 
 }
+
+void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float Radius )
+{
+	FVector ForwardVector = this -> GetActorForwardVector();
+	FVector Location = this -> GetActorLocation();
+	FVector SpawnScale(MeshScale);
+
+
+	float RadiusWithPadding = (static_cast<float>(Number) * InPadding ) + Radius;
+
+	float Step = 360.0f / static_cast<float>(Number);
+
+	// Step*=2;
+
+
+	VisualizationMeshes.AddUninitialized(Number);
+
+	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	FVector PaddingVector(InPadding);
+	FActorSpawnParameters Parameters = FActorSpawnParameters(); 
+
+	for(int32 i = 1; i <= Number; i++)
+	{
+
+		float CurrentStep = static_cast<float>(i) * Step;
+
+
+		float RotatorZ = CurrentStep;
+
+		FRotator SpawnRotator = UKismetMathLibrary::MakeRotator(0.0f,RotatorZ, 0.0f);	
+
+
+		FVector RotatedVector =  UKismetMathLibrary::GreaterGreater_VectorRotator(ForwardVector, SpawnRotator);
+
+		FVector CircleVector = UKismetMathLibrary::Multiply_VectorFloat(RotatedVector, RadiusWithPadding);
+
+		FVector SpawnLocation = UKismetMathLibrary::Add_VectorVector(CircleVector,Location);
+
+		FQuat SpawnRotation = GetActorQuat();
+
+
+		FTransform Transform(SpawnRotation, SpawnLocation,SpawnScale);
+
+		ASoundMesh* CurrentMesh = GetWorld()->SpawnActorDeferred<ASoundMesh>(
+
+			ASoundMesh::StaticClass()
+			, Transform
+			, this
+			, nullptr
+			, Collision
+			);
+
+
+			FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+			CurrentMesh -> AttachToActor(this, TransformRules);
+
+			CurrentMesh -> Init(Mesh, Material, SpawnScale);
+
+			VisualizationMeshes[i - 1] = CurrentMesh;
+
+			UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
+			if(doFocus && FocusIndices[i - 1])
+			{
+				CurrentMesh -> SetColor(FocusColor);
+
+			}
+			else
+			{
+
+				CurrentMesh -> SetColor(Color);
+
+			}
+
+			FVector MeshLocation = CurrentMesh -> GetActorLocation();
+			FRotator LookatRotator = UKismetMathLibrary::FindLookAtRotation(MeshLocation, Location);
+			FRotator UpOffset = UKismetMathLibrary::MakeRotator(0.0,90.0,0.0);
+			FRotator NewRotation = UKismetMathLibrary::ComposeRotators(UpOffset, LookatRotator);
+			CurrentMesh -> SetActorRelativeRotation(NewRotation);
+
+
+	}
+}
+
+
+FVector AMeshController::FibSphere(int32 i, int32 Number, float radius)
+{
+
+	// Calculate the azimuth angle based on the current object's index 
+	 float k = i + .5f;
+     float phi = FMath::Acos(1.f - 2.f * k / Number);
+
+
+     float theta = PI * (1 + FMath::Sqrt(5.0f)) * k;
+
+     float x = FMath::Cos(theta) * FMath::Sin(phi);
+     float y = FMath::Sin(theta) * FMath::Sin(phi);
+     float z = FMath::Cos(phi);
+
+     return FVector(x, y, z) * radius;
+}
+
+
+void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
+{
+
+	float Step = 360.0f / static_cast<float>(Number);
+
+	FVector Location = this -> GetActorLocation();
+
+	FQuat SpawnRotation = GetActorQuat();
+	FVector SpawnScale(MeshScale);
+
+
+
+	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	FActorSpawnParameters Parameters = FActorSpawnParameters(); 
+
+	VisualizationMeshes.AddUninitialized(Number);
+
+	for (int32 i = 0; i < Number; i++)
+    {
+ 		
+
+
+        // Calculate the spherical coordinates
+        FVector SphereLocation = FibSphere(i,Number,Radius);
+
+        // Create the spawn location relative to the spawner's location
+        FVector SpawnLocation = UKismetMathLibrary::Add_VectorVector(SphereLocation,Location);
+
+		FTransform Transform(SpawnRotation, SpawnLocation,SpawnScale);
+
+		ASoundMesh* CurrentMesh = GetWorld()->SpawnActorDeferred<ASoundMesh>(
+
+		ASoundMesh::StaticClass()
+		, Transform
+		, this
+		, nullptr
+		, Collision
+		);
+
+
+		FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+		CurrentMesh -> AttachToActor(this, TransformRules);
+
+		CurrentMesh -> Init(Mesh, Material, SpawnScale);
+
+		VisualizationMeshes[i] = CurrentMesh;
+
+		UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
+		if(doFocus && FocusIndices[i - 1])
+		{
+			CurrentMesh -> SetColor(FocusColor);
+
+		}
+		else
+		{
+
+			CurrentMesh -> SetColor(Color);
+
+		}
+
+		FVector MeshLocation = CurrentMesh -> GetActorLocation();
+
+		FRotator LookatRotator = UKismetMathLibrary::FindLookAtRotation(MeshLocation, Location);
+		FRotator UpOffset = UKismetMathLibrary::MakeRotator(0.0,90.0,0.0);
+
+		FRotator NewRotation = UKismetMathLibrary::ComposeRotators(UpOffset, LookatRotator);
+
+		CurrentMesh -> SetActorRelativeRotation(NewRotation);
+		// CurrentMesh -> AddActorLocalRotation(UKismetMathLibrary::MakeRotator(0.0,180.0,0.0));
+
+    }
+
+
+}
+
 
 void AMeshController::ChangePadding(float InPadding, bool SetPadding)
 {
@@ -218,12 +399,12 @@ void AMeshController::UpdateMeshZ(int32 Index, float Value)
 	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
 
 	float NewZScale = FMath::Max(Value * ScaleFactor, MinScale);
-	float SpectrumMax = CQTManager -> getMaxSpectrum();
+	// float SpectrumMax = CQTManager -> getMaxSpectrum();
 	
-	float NewBrightness = UKismetMathLibrary::MapRangeClamped(NewZScale, 0, SpectrumMax, .1, 3.0);
+	// float NewBrightness = UKismetMathLibrary::MapRangeClamped(NewZScale, 0, SpectrumMax, .1, 3.0);
 
 	CurrentMesh -> SetZScale(NewZScale);
-	CurrentMesh -> SetBrightness(NewBrightness);
+	// CurrentMesh -> SetBrightness(NewBrightness);
 }
 void AMeshController::TestSpawn()
 {

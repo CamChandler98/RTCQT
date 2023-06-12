@@ -24,7 +24,7 @@ class SYNRTCQT_API ASoundMesh : public AStaticMeshActor
 
 	// Function to change the material
 	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
-	void SetMaterial(UMaterialInterface* NewMaterial);
+	void SetMaterial(UMaterialInstanceDynamic* NewMaterial);
 
 	// Function to change the scale
 	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
@@ -49,7 +49,7 @@ class SYNRTCQT_API ASoundMesh : public AStaticMeshActor
 	TObjectPtr<UStaticMesh> Mesh;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
-	TObjectPtr<UMaterialInterface>  Material;
+	TObjectPtr<UMaterialInstanceDynamic>  Material;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Default")
 	FLinearColor Color;

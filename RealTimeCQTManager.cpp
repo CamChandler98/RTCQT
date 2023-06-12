@@ -2,8 +2,8 @@
 
 
 #include "RealTimeCQTManager.h"
-#include "ConstantQAnalyzer.h"
-#include "ConstantQ.h"
+#include "./CoreDSP/ConstantQAnalyzer.h"
+#include "./CoreDSP/ConstantQ.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
 #include "SampleBuffer.h"
@@ -110,6 +110,7 @@ void ARealTimeCQTManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 void ARealTimeCQTManager::GetCQT()
 {
         for(int32 i = 0; i < outCQT.Num(); i ++ ){
@@ -118,6 +119,7 @@ void ARealTimeCQTManager::GetCQT()
         
         }
 }
+
 void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
 {
     if(canProcesses){
@@ -134,6 +136,7 @@ void ARealTimeCQTManager::anaylze(TArray<uint8> byteArray)
     TArray<float> floatStream= combineStream(byteArray, 2);
 
     PCMToFloat(floatStream, inAmp);
+    
     }
 }
 
@@ -190,19 +193,30 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 //     sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
                 // }
 
-                // Normalize the sample value to the range [-1, 1]
-                // sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
 
-                // float normalizedSampleValue = static_cast<float>(sampleValue) / 127.5f - 1.0f;
+                // // Normalize the sample value to the range [-1, 1]
+                // // sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
+
+                // // float normalizedSampleValue = static_cast<float>(sampleValue) / 127.5f - 1.0f;
                 // float normalizedSampleValue = (static_cast<float>(sampleValue) * gainFactor) /  127.5f - 1.0f;
-                    float SampleValue = 0.0f;
-					FMemory::Memcpy(&SampleValue , &interleavedStream[sampleOffset + channelOffset] , sizeof(float));
+
+
+                // // Add the sample value for the current channel to the sum
+
+                // sampleSum +=  normalizedSampleValue;
+
+                float sampleValue = 0.f;
+                for (int k = 0; k < sampleSize; k++)
+                {
+                    sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
+                }
+
+                // Normalize the sample value to the range [-1, 1]
+                sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
 
                 // Add the sample value for the current channel to the sum
+                sampleSum += sampleValue;
 
-                    sampleSum +=  SampleValue * gainFactor;
-
-              
                 
             }
         }
@@ -245,7 +259,7 @@ void ARealTimeCQTManager::PCMToFloat(const TArray<float>& PCMStream, TArray<floa
     {   
 
         inAmp = Window;
-        // AmplitudeSampleProcessing(inAmp);
+        AmplitudeSampleProcessing(inAmp);
 
 
         ConstantQAnalyzer -> CalculateCQT(inAmp.GetData(), outCQT);
@@ -290,14 +304,15 @@ void ARealTimeCQTManager::AmplitudeSampleProcessing(TArray<float>& inAmplitude )
 
 }
 
+
 void ARealTimeCQTManager::CQTProcessing()
 {
 
     currentCQT = outCQT;
     const int32 NumBins = oldCQT.Num();
 
-// Interpolate between the two spectra
     for (int32 BinIndex = 0; BinIndex < NumBins; BinIndex++)
+// Interpolate between the two spectra
     {
         // Calculate the difference between the two bins
         const float BinDiff = FMath::Abs(currentCQT[BinIndex] - oldCQT[BinIndex]);
@@ -341,6 +356,7 @@ void ARealTimeCQTManager::CQTProcessing()
         {
             PeakPicker -> PickPeaks(outCQT, PeakIndices);
         }
+        
         oldCQT = currentCQT;
 
         
@@ -350,7 +366,8 @@ void ARealTimeCQTManager::CQTProcessing()
 
 
         if(doSmooth)
-        {                
+        {           
+
         SmoothedCQT.SetNumUninitialized(outCQT.Num());
             const int32 WindowSize = smoothingWindowSize; // adjust window size as desired
             const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
