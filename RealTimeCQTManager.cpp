@@ -193,6 +193,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
                 //     sampleValue += interleavedStream[sampleOffset + channelOffset + k] << (8 * k);
                 // }
 
+
                 // // Normalize the sample value to the range [-1, 1]
                 // // sampleValue /= ((1 << (bitsPerSample - 1)) - 1);
 
@@ -215,6 +216,7 @@ TArray<float>  ARealTimeCQTManager::combineStream(const TArray<uint8> interleave
 
                 // Add the sample value for the current channel to the sum
                 sampleSum += sampleValue;
+
                 
             }
         }
