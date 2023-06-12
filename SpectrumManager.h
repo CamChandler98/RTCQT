@@ -16,20 +16,25 @@ USTRUCT(BlueprintType)
 struct FSpectrumData
 {	    
 		GENERATED_BODY();
+
+
 		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		int index;
+		int Index;
 
 	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float value;
+		float Value;
 
 		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float max;
+		float Max;
+
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FName Name;
 
 		FSpectrumData()
 		{
-			index = 0;
-			value = 0.0;
-			max = 0.0;
+			Index = 0;
+			Value = 0.0;
+			Max = 0.0;
 		}
 };
 
@@ -112,7 +117,7 @@ public:
 	FOnSpectrumDelegate OnSpectrumUpdatedEvent;
 
 
-	void FireOnSpectrumUpdatedEvent(const int index, const float value, const float max);
+	void FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max, const FName Name);
 
 
 protected:

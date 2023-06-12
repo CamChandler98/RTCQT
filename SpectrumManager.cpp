@@ -30,6 +30,8 @@ void ASpectrumManager::BeginPlay()
 
 	CreateAnalyzers();
 
+	GetStartEndKeys();
+
 	Super::BeginPlay();
 
 	
@@ -64,13 +66,26 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 		}
 
 		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
+		
+		FName AnalyzerName = AnalyzersSettings[0] -> Name;
+		int NameIndex = 0;
+
+		int EndPoint = BoundaryKeys[1];
+		int EndPointIndex = 1;
+
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
+			if(i > EndPoint)
+			{
+				EndPointIndex++;
+				EndPoint = BoundaryKeys[EndPointIndex];
 
-            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
+				NameIndex++;
+				AnalyzerName = AnalyzersSettings[NameIndex] -> Name;
+
+			}
+            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax, AnalyzerName);
         }
-
-		CompiledSpectrum = CCompiledSpectrum;
     }
 
 	Sampler -> CanProcess = true;
@@ -108,11 +123,14 @@ void ASpectrumManager::UnrealAnalyzeAudio(const TArray<float>& AudioData)
 		}
 
 		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
-        for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
-		{
 
-            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
-        }
+		// FName AnalyzerName = AnalyzersSettings[0] -> Name;
+
+        // for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
+		// {
+
+        //     FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax, AnalyzerName);
+        // }
 		
 		CompiledSpectrum = CCompiledSpectrum;
     }
@@ -222,12 +240,14 @@ void ASpectrumManager::CheckLength()
 
 }
 
-void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int index, const float value, const float max)
+void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max, const FName Name)
 {
      FSpectrumData NewData;
-     NewData.index = index;
-     NewData.value = value;
-     NewData.max = max;
+     NewData.Index = Index;
+     NewData.Value = Value;
+     NewData.Max = Max;
+     NewData.Name = Name;
+
 
      OnSpectrumUpdatedEvent.Broadcast(NewData);
 

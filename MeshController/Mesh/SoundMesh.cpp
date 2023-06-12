@@ -28,13 +28,15 @@ ASoundMesh::ASoundMesh()
 void ASoundMesh::Init(UStaticMesh* NewMesh, UMaterialInterface* NewMaterial, FVector NewScale)
 {   
     Mesh = NewMesh;
-    Material = NewMaterial;
+
+    Material = UMaterialInstanceDynamic::Create(NewMaterial, this);
 
     MeshComponent -> SetStaticMesh(Mesh);
 
-    MeshComponent -> SetMaterial(0,NewMaterial);
+    MeshComponent -> SetMaterial(0,Material);
 
     MeshComponent -> SetRelativeScale3D(NewScale);
+    
 }
 
 
@@ -45,11 +47,16 @@ void ASoundMesh::SetMesh(UStaticMesh* NewMesh)
 
 }
 
-void ASoundMesh::SetMaterial(UMaterialInterface* NewMaterial)
+void ASoundMesh::SetMaterial(UMaterialInstanceDynamic* NewMaterial)
 {
+    FName ColorName = FName(TEXT("Color"));
+    FName Intensity = FName(TEXT("Intensity"));
+
+    Brightness = NewMaterial -> K2_GetScalarParameterValue(Intensity);
+    Color =  NewMaterial -> K2_GetVectorParameterValue(ColorName);
+
     MeshComponent -> SetMaterial(0,NewMaterial);
 
-    // Brightness = MeshComponent -> GetMaterial(0) -> GetScalarParameterValue();
 } 
 
 void ASoundMesh::SetScale(FVector NewScale)
@@ -73,27 +80,22 @@ void ASoundMesh::SetZScale(const float NewZScale)
 
 void ASoundMesh::SetBrightness(const float InBrightness)
 {
-    TObjectPtr<UMaterialInstanceDynamic> DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
 
-    DynMaterial -> SetVectorParameterValue("Color", Color); 
+
+    Material -> SetScalarParameterValue("Intensity", InBrightness); 
 
     Brightness = InBrightness;
 
-    DynMaterial -> SetScalarParameterValue("Intensity", InBrightness); 
-
-    SetMaterial(DynMaterial);
 
 
 }
 
 void ASoundMesh::SetColor(FLinearColor NewColor)
 {
+
+    Material -> SetVectorParameterValue("Color", NewColor);
+    Material -> SetScalarParameterValue("Intensity", Brightness); 
+
     Color = NewColor;
-    UMaterialInstanceDynamic* DynMaterial = UMaterialInstanceDynamic::Create(Material, this);
-    DynMaterial -> K2_CopyMaterialInstanceParameters(Material, true);
-    DynMaterial -> SetVectorParameterValue("Color", NewColor);
-    // DynMaterial -> SetScalarParameterValue("Intensity", Brightness); 
-    Color = NewColor;
-    SetMaterial(DynMaterial);
 
 }

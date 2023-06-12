@@ -16,9 +16,12 @@ public class SynRTCQT : ModuleRules
 		"AudioSynesthesia" , 
 		"AudioSynesthesiaCore", 
 		"SignalProcessing", 
+		"AudioMixerCore",
+		"AudioMixer",
 		"AudioAnalyzer",
 		"UMG", 
 		"AdvancedWidgets",
+		"AudioSynesthesiaEditor"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {

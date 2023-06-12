@@ -2,6 +2,8 @@
 
 
 #include "CQTSettings.h"
+// #include "AudioSynesthesiaLog.h"
+
 
 UCQTSettings::UCQTSettings()
 : Proportion(1.0f)
@@ -9,3 +11,14 @@ UCQTSettings::UCQTSettings()
 {
 }
 
+#if WITH_EDITOR
+FText UCQTSettings::GetAssetActionName() const
+{
+	return NSLOCTEXT("AssetTypeActions", "AssetTypeActions_AssetSoundSynesthesiaConstantQNRTSettings", "Synesthesia NRT Settings (ConstantQ)");
+}
+
+UClass* UCQTSettings::GetSupportedClass() const
+{
+	return UConstantQNRTSettings::StaticClass();
+}
+#endif

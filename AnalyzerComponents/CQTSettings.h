@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable, EditInlineNew)
+UCLASS(Blueprintable, EditInlineNew, Abstract)
 class SYNRTCQT_API UCQTSettings : public UConstantQNRTSettings
 {
 
@@ -24,4 +24,11 @@ public:
 	float EndingFrequency;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "FFT"))
 	int32 UnrestrictedFFTSize;
+
+#if WITH_EDITOR
+		virtual FText GetAssetActionName() const override;
+
+		virtual UClass* GetSupportedClass() const override;
+#endif
+
 };

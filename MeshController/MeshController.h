@@ -38,7 +38,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnMeshesInLine(int32 Number, float InPadding);
 
-		/** Please add a function description */
+	UFUNCTION(BlueprintCallable)
+	void SpawnMeshesInCircle(int32 Number, float InPadding, float Radius);
+	
+	UFUNCTION(BlueprintCallable)
+	void SpawnMeshesInSphere(int32 Number, float Radius);
+
+	UFUNCTION(BlueprintCallable)
+	FVector FibSphere(int32 i, int32 Number ,float radius);
+
+
+
+	/** Please add a function description */
 	UFUNCTION(BlueprintCallable)
 	void UpdateMesh(int32 Index, double Value);
 
