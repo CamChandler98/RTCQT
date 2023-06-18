@@ -4,6 +4,7 @@
 #include "SpectrumManager.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
+#include <chrono>
 
 
 // Sets default values
@@ -51,6 +52,7 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 	TArray<float> CCompiledSpectrum;
 	CCompiledSpectrum.AddZeroed(NumBands);
 
+	auto StartTime = std::chrono::system_clock::now();
 	for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, AudioData, FloatWindowBuffer, false))
     {   
 		CCompiledSpectrum.Reset();
@@ -70,11 +72,19 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
+			if(BoundaryThreshold > 0 && i != 0 && i !=CCompiledSpectrum.Num() - 1 && StartAndEnds.Find(i - BoundaryThreshold))
+			{
+				SmoothBoundary(CCompiledSpectrum, i, BoundaryThreshold);
+			}
 
             FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
         }
     }
 
+	auto EndTime = std::chrono::system_clock::now();
+
+	std::chrono::duration<double> ElapsedSeconds = EndTime-StartTime;
+	ExecutionTime = ElapsedSeconds.count();
 	Sampler -> CanProcess = true;
 }
 
@@ -132,6 +142,10 @@ void ASpectrumManager::CreateAnalyzers()
 
 	int32 RunningTracker = 0;
 
+
+	float ContinuousStartFreq = AnalyzersSettings[0] ->  CQTSettings -> StartingFrequency;
+	int32 NextIndex;
+
 	for(int32 i = 0; i < AnalyzersSettings.Num(); i++)
 	{	
 
@@ -149,7 +163,15 @@ void ASpectrumManager::CreateAnalyzers()
 		
 		CQTSettings -> SampleRate = SampleRate;
 		CQTSettings -> UnrestrictedFFTSize = FFTSize;
+
+		if(DoContinousSpectrum)
+		{
+			CQTSettings -> StartingFrequency = ContinuousStartFreq;
+
+		}
+
 		CQTSettings -> StartingFrequency *= 2;
+
 		CQTSettings -> EndingFrequency *= 2;
 
 
@@ -168,6 +190,7 @@ void ASpectrumManager::CreateAnalyzers()
 
 		CurrentAnalyzer -> TotalBands = NumBands;
 		
+
 		// CurrentAnalyzer -> SpectrumToggles = SpectrumToggles;
 		// CurrentAnalyzer -> SampleToggles = SampleToggles;
 		CurrentAnalyzer -> GetParams(CQTSettings);
@@ -199,6 +222,14 @@ void ASpectrumManager::CreateAnalyzers()
 
 
 		AddOwnedComponent(CurrentAnalyzer);
+		//get index as if the first element of the next analyzer was the next element of the previous analyzer
+		NextIndex = CurrentAnalyzer -> _NumBands;
+		float BandsPerOctave = CurrentAnalyzer -> _NumBandsPerOctave;
+
+		//Calculate center 
+
+		ContinuousStartFreq = Audio::FPseudoConstantQ::GetConstantQCenterFrequency(NextIndex, ContinuousStartFreq, BandsPerOctave );
+
 	}
 
 
@@ -227,6 +258,36 @@ void ASpectrumManager::CheckLength()
 	CompiledSpectrum.AddZeroed(TargetLength);
 	NumBands = TargetLength; 
 
+}
+
+void ASpectrumManager::SmoothBoundary(TArray<float>& SpectrumData, int32 Index, int32 ThresholdWidth )
+{
+	TArray<float> SmoothedSpectrum = SpectrumData;
+
+	const int32 WindowSize = 3; // adjust window size as desired
+
+	const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
+
+
+	for(int32 i = Index; i < Index + (2 * ThresholdWidth); i++)
+	{
+		float Sum = 0.0f;
+		int32 Count = 0;
+
+		for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
+		{
+			int32 CurrentIndex = FMath::Clamp(i + j, 0, SpectrumData.Num() - 1);
+			Sum += SpectrumData[CurrentIndex];
+			Count++;
+		}
+
+		SmoothedSpectrum[i] = Sum * ScaleFactor;
+	}
+
+	for (int32 i = Index; i < 2 * ThresholdWidth;  i++)
+	{
+		SpectrumData[i] = SmoothedSpectrum[i];
+	}
 }
 
 void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max)

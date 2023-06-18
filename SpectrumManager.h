@@ -32,7 +32,16 @@ public:
 	float NumHopFrames = 480;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 BoundaryThreshold;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ExecutionTime = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 FFTSize = 8192;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool DoContinousSpectrum = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool DoSpectrumProcessing = true;
@@ -73,6 +82,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CreateAnalyzers();
+
+
+	UFUNCTION(BlueprintCallable)
+	void SmoothBoundary( TArray<float>& SpectrumData, int32 Index, int32 ThresholdWidth );
+
 
 	UFUNCTION(BlueprintCallable)
 	TArray<int32> GetStartEndKeys();
