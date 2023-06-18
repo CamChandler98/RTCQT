@@ -242,24 +242,6 @@ void AMeshController::SpawnMeshesInCircle(int32 Number,  float InPadding, float 
 }
 
 
-FVector AMeshController::FibSphere(int32 i, int32 Number, float radius)
-{
-
-	// Calculate the azimuth angle based on the current object's index 
-	 float k = i + .5f;
-     float phi = FMath::Acos(1.f - 2.f * k / Number);
-
-
-     float theta = PI * (1 + FMath::Sqrt(5.0f)) * k;
-
-     float x = FMath::Cos(theta) * FMath::Sin(phi);
-     float y = FMath::Sin(theta) * FMath::Sin(phi);
-     float z = FMath::Cos(phi);
-
-     return FVector(x, y, z) * radius;
-}
-
-
 void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
 {
 
@@ -284,6 +266,7 @@ void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
 
 
         // Calculate the spherical coordinates
+
         FVector SphereLocation = FibSphere(i,Number,Radius);
 
         // Create the spawn location relative to the spawner's location
@@ -334,6 +317,118 @@ void AMeshController::SpawnMeshesInSphere(int32 Number, float Radius)
     }
 
 
+}
+
+void AMeshController::SpawnMeshesInSpiral(int32 Number, float Radius, float SpiralRadius)
+{
+
+	float Step = 360.0f / static_cast<float>(Number);
+
+	FVector Location = this -> GetActorLocation();
+
+	FQuat SpawnRotation = GetActorQuat();
+	FVector SpawnScale(MeshScale);
+
+
+
+	ESpawnActorCollisionHandlingMethod Collision = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	FActorSpawnParameters Parameters = FActorSpawnParameters(); 
+
+	VisualizationMeshes.AddUninitialized(Number);
+
+	for (int32 i = 0; i < Number; i++)
+    {
+ 		
+ // Calculate the inclination angle based on the current object's index
+		float SpiralOffset = SpiralRadius * (i / static_cast<float>(Number));
+
+	
+        FVector SphereLocation = FibSpiral(i,Number,(Radius),SpiralOffset);
+
+
+        // Create the spawn location relative to the spawner's location
+        FVector SpawnLocation = UKismetMathLibrary::Add_VectorVector(SphereLocation,Location);
+
+		FTransform Transform(SpawnRotation, SpawnLocation,SpawnScale);
+
+		ASoundMesh* CurrentMesh = GetWorld()->SpawnActorDeferred<ASoundMesh>(
+
+		ASoundMesh::StaticClass()
+		, Transform
+		, this
+		, nullptr
+		, Collision
+		);
+
+
+		FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepRelative, EAttachmentRule::KeepRelative, true);
+		CurrentMesh -> AttachToActor(this, TransformRules);
+
+		CurrentMesh -> Init(Mesh, Material, SpawnScale);
+
+		VisualizationMeshes[i] = CurrentMesh;
+
+		UGameplayStatics::FinishSpawningActor(CurrentMesh, Transform);
+		if(doFocus && FocusIndices[i - 1])
+		{
+			CurrentMesh -> SetColor(FocusColor);
+
+		}
+		else
+		{
+
+			CurrentMesh -> SetColor(Color);
+
+		}
+
+		FVector MeshLocation = CurrentMesh -> GetActorLocation();
+
+		FRotator LookatRotator = UKismetMathLibrary::FindLookAtRotation(MeshLocation, Location);
+		FRotator UpOffset = UKismetMathLibrary::MakeRotator(0.0,90.0,0.0);
+
+		FRotator NewRotation = UKismetMathLibrary::ComposeRotators(UpOffset, LookatRotator);
+
+		CurrentMesh -> SetActorRelativeRotation(NewRotation);
+		// CurrentMesh -> AddActorLocalRotation(UKismetMathLibrary::MakeRotator(0.0,180.0,0.0));
+
+    }
+
+
+}
+
+FVector AMeshController::FibSphere(int32 i, int32 Number, float Radius)
+{
+
+	// Calculate the azimuth angle based on the current object's index 
+	 float k = i + .5f;
+     float phi = FMath::Acos(1.f - 2.f * k / Number);
+
+
+     float theta = PI * (1 + FMath::Sqrt(5.0f)) * k;
+
+     float x = FMath::Cos(theta) * FMath::Sin(phi);
+     float y = FMath::Sin(theta) * FMath::Sin(phi);
+     float z = FMath::Cos(phi);
+
+     return FVector(x, y, z) * Radius;
+}
+
+FVector AMeshController::FibSpiral(int32 i, int32 Number, float Radius, float SpiralOffset)
+{
+
+	// Calculate the azimuth angle based on the current object's index 
+	 float k = i + .5f;
+     float phi = FMath::Acos(1.f - 2.f * k / Number);
+
+
+     float theta = PI * (1 + FMath::Sqrt(5.0f)) * k;
+
+     float x = (FMath::Cos(theta) * FMath::Sin(phi)) + SpiralOffset ;
+     float y = (FMath::Sin(theta) * FMath::Sin(phi)) + SpiralOffset;
+     float z = (FMath::Cos(phi)) + SpiralOffset;
+
+     return FVector(x, y, z) * Radius;
 }
 
 
@@ -405,6 +500,13 @@ void AMeshController::UpdateMeshZ(int32 Index, float Value)
 
 	CurrentMesh -> SetZScale(NewZScale);
 	// CurrentMesh -> SetBrightness(NewBrightness);
+}
+
+void AMeshController::UpdateMeshBrightness(int32 Index, float Value)
+{
+	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
+
+	CurrentMesh -> SetBrightness(Value);
 }
 void AMeshController::TestSpawn()
 {

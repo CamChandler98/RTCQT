@@ -92,7 +92,7 @@ URTCQTAnalyzer::URTCQTAnalyzer()
 	// off to improve performance if you don't need them.
 
 
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
@@ -389,4 +389,27 @@ void URTCQTAnalyzer::Analyze(TArray<float> AudioData, bool bProcessSamples, bool
 	{
 		SpectrumProcessor -> ProcessSpectrum(OutCQT);
 	}
+
+	if(BroadcastData)
+	{
+		float ArrayMax = Audio::ArrayMaxAbsValue(OutCQT);
+
+		for(int32 i = 0; i < OutCQT.Num(); i++)
+		{
+			FireOnSpectrumUpdatedEvent(i, OutCQT[i], ArrayMax);
+		}
+	}
+}
+
+
+void URTCQTAnalyzer::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max)
+{
+     FSpectrumData NewData;
+     NewData.Index = Index;
+     NewData.Value = Value;
+     NewData.Max = Max;
+
+
+     OnSpectrumUpdatedEvent.Broadcast(NewData);
+
 }

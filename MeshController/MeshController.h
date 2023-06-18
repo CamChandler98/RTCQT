@@ -45,7 +45,13 @@ public:
 	void SpawnMeshesInSphere(int32 Number, float Radius);
 
 	UFUNCTION(BlueprintCallable)
-	FVector FibSphere(int32 i, int32 Number ,float radius);
+	void SpawnMeshesInSpiral(int32 Number, float Radius, float SpiralRadius);
+
+	UFUNCTION(BlueprintCallable)
+	FVector FibSphere(int32 i, int32 Number, float Radius);
+
+	UFUNCTION(BlueprintCallable)
+	FVector FibSpiral(int32 i, int32 Number, float Radius, float SpiralOffset);
 
 
 
@@ -55,6 +61,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateMeshZ(int32 Index, float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateMeshBrightness(int32 Index, float Value);
 
 
 	float CalculateTotalLength(int NumberOfObjects, float Scale, float InPadding);

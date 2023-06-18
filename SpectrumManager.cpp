@@ -66,25 +66,12 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 		}
 
 		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
-		
-		FName AnalyzerName = AnalyzersSettings[0] -> Name;
-		int NameIndex = 0;
-
-		int EndPoint = BoundaryKeys[1];
-		int EndPointIndex = 1;
+		;
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
-			if(i > EndPoint)
-			{
-				EndPointIndex++;
-				EndPoint = BoundaryKeys[EndPointIndex];
 
-				NameIndex++;
-				AnalyzerName = AnalyzersSettings[NameIndex] -> Name;
-
-			}
-            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax, AnalyzerName);
+            FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
         }
     }
 
@@ -190,7 +177,9 @@ void ASpectrumManager::CreateAnalyzers()
 		CurrentAnalyzer -> GenerateAnalyzer();
 
 
+		NamedAnalyzers.Add(CurrentAnalyzerName, CurrentAnalyzer);
 		SpectrumAnalyzers[i] = CurrentAnalyzer;
+
 
 		float StartFreq = CurrentAnalyzer -> _SFreq;
 		float EndFreq = CurrentAnalyzer -> _EFreq;
@@ -240,13 +229,12 @@ void ASpectrumManager::CheckLength()
 
 }
 
-void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max, const FName Name)
+void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max)
 {
      FSpectrumData NewData;
      NewData.Index = Index;
      NewData.Value = Value;
      NewData.Max = Max;
-     NewData.Name = Name;
 
 
      OnSpectrumUpdatedEvent.Broadcast(NewData);

@@ -21,6 +21,36 @@
 
 #include "RTCQTAnalyzer.generated.h"
 
+USTRUCT(BlueprintType)
+struct FSpectrumData
+{	    
+		GENERATED_BODY();
+
+
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int Index;
+
+	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float Value;
+
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float Max;
+
+
+
+		FSpectrumData()
+		{
+			Index = 0;
+			Value = 0.0;
+			Max = 0.0;
+		}
+};
+
+
+UDELEGATE(BlueprintCallable)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumDelegate, FSpectrumData, updateData);
+
+
 UCLASS(Blueprintable, EditInlineNew)
 class SYNRTCQT_API UAnalyzerSettings : public UObject
 {
@@ -91,6 +121,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CeilProportion = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool BroadcastData = false;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<float> OutCQT; 
 
@@ -122,6 +155,13 @@ public:
 
 	void GetToggleInterfaces(USpectrumProcessor* InProcessor, FName InName);
 	void GetToggleInterfaces(USampleProcessor* InProcessor, FName InName);
+
+	UPROPERTY(BlueprintAssignable);
+	FOnSpectrumDelegate OnSpectrumUpdatedEvent;
+
+
+	void FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max);
+
 
 
 

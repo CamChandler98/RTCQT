@@ -12,35 +12,6 @@
 #include "./Widget/RadialSliderWidget.h"
 #include "SpectrumManager.generated.h"
 
-USTRUCT(BlueprintType)
-struct FSpectrumData
-{	    
-		GENERATED_BODY();
-
-
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		int Index;
-
-	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float Value;
-
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		float Max;
-
-		UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		FName Name;
-
-		FSpectrumData()
-		{
-			Index = 0;
-			Value = 0.0;
-			Max = 0.0;
-		}
-};
-
-
-UDELEGATE(BlueprintCallable)
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpectrumDelegate, FSpectrumData, updateData);
 
 UCLASS()
 class SYNRTCQT_API ASpectrumManager : public AActor
@@ -86,6 +57,9 @@ public:
 	TArray<URTCQTAnalyzer*> SpectrumAnalyzers;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
+	TMap<FName,URTCQTAnalyzer*> NamedAnalyzers;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<UAnalyzerSettings*> AnalyzersSettings;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
@@ -117,7 +91,7 @@ public:
 	FOnSpectrumDelegate OnSpectrumUpdatedEvent;
 
 
-	void FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max, const FName Name);
+	void FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max);
 
 
 protected:
