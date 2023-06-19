@@ -61,5 +61,8 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void SetValue(float InValue);
+
+    UFUNCTION(BlueprintCallable)
+    void SyncValue();
 	
 };

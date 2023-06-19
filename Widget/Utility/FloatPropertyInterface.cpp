@@ -94,3 +94,25 @@ void UFloatPropertyInterface::SetValue(float InValue)
         PropertyPtr->SetFloatingPointPropertyValue(Data, InValue);
     }
 }
+
+
+void UFloatPropertyInterface::SyncValue()
+{   
+
+    // float OutputValue = RadialSlider -> Slider -> GetValue(Value);
+
+  
+        void *Data = PropertyPtr ->ContainerPtrToValuePtr<void>(PropertyParent);
+        IsInteger = PropertyPtr -> IsInteger();
+        if(IsInteger)
+        {
+
+            int64 IntValue = PropertyPtr -> GetSignedIntPropertyValue(Data);
+            Value = static_cast<float>(IntValue);
+        }
+        else
+        {
+            Value = PropertyPtr -> GetFloatingPointPropertyValue(Data);
+        }
+        
+}
