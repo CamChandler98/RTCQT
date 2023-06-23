@@ -29,10 +29,16 @@ public:
 	float SampleRate = 48000;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float SampleConversionFactor = 2;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float NumHopFrames = 480;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 BoundaryThreshold;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float BoundarySmooth = 1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float ExecutionTime = 0;
@@ -86,6 +92,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SmoothBoundary( TArray<float>& SpectrumData, int32 Index, int32 ThresholdWidth );
+
+	UFUNCTION(BlueprintCallable)
+	void SmoothSpectrum(TArray<float>& CurrentCQT);
+
+	UFUNCTION(BlueprintCallable)
+	void GetSampleConversionFactor(float InSampleRate);
 
 
 	UFUNCTION(BlueprintCallable)

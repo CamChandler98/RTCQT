@@ -25,7 +25,7 @@ AMeshController::AMeshController()
 	#endif
 
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	SceneRootComponent = CreateDefaultSubobject<USceneComponent>("Root Scene Component");
 	RootComponent = SceneRootComponent;;
@@ -512,6 +512,15 @@ void AMeshController::TestSpawn()
 {
 	SpawnMeshesInLine(NumberOfMeshes, Padding);
 }
+
+
+void AMeshController::UpdateMeshColor(int32 Index, FLinearColor InColor)
+{
+	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
+	CurrentMesh -> SetColor(InColor);
+
+}
+
 
 void AMeshController::TestIncreasePadding()
 {

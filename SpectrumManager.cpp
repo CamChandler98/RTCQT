@@ -21,20 +21,17 @@ ASpectrumManager::ASpectrumManager()
 // Called when the game starts or when spawned
 void ASpectrumManager::BeginPlay()
 {	
+
+
 	StartAndEnds.Reset();
 	BoundaryKeys.Reset();
+
+	Super::BeginPlay();
+
 	CompiledSpectrum.AddZeroed(NumBands);
 	FloatWindowBuffer.AddZeroed(FFTSize);
     SlidingFloatBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize, NumHopFrames);
     UnrealSlidingBuffer = MakeUnique<Audio::TSlidingBuffer<float> >(FFTSize * 2, NumHopFrames * 2);
-
-
-	CreateAnalyzers();
-
-	GetStartEndKeys();
-
-	Super::BeginPlay();
-
 	
 }
 
@@ -72,7 +69,7 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
-			if(BoundaryThreshold > 0 && i != 0 && i !=CCompiledSpectrum.Num() - 1 && StartAndEnds.Find(i - BoundaryThreshold))
+			if(BoundaryThreshold > 0 && i != 0 && i !=CCompiledSpectrum.Num() - 1 && StartAndEnds.Find(i + BoundaryThreshold))
 			{
 				SmoothBoundary(CCompiledSpectrum, i, BoundaryThreshold);
 			}
@@ -145,6 +142,9 @@ void ASpectrumManager::CreateAnalyzers()
 
 	float ContinuousStartFreq = AnalyzersSettings[0] ->  CQTSettings -> StartingFrequency;
 	int32 NextIndex;
+	
+	GetSampleConversionFactor(SampleRate);
+
 
 	for(int32 i = 0; i < AnalyzersSettings.Num(); i++)
 	{	
@@ -170,9 +170,9 @@ void ASpectrumManager::CreateAnalyzers()
 
 		}
 
-		CQTSettings -> StartingFrequency *= 2;
+		CQTSettings -> StartingFrequency *= SampleConversionFactor;
 
-		CQTSettings -> EndingFrequency *= 2;
+		CQTSettings -> EndingFrequency *= SampleConversionFactor;
 
 
 
@@ -260,16 +260,50 @@ void ASpectrumManager::CheckLength()
 
 }
 
+
+void ASpectrumManager::SmoothSpectrum(TArray<float>& CurrentCQT)
+{
+	TArray<float> SmoothedCQT = CurrentCQT;
+			
+	const int32 WindowSize = BoundarySmooth; // adjust window size as desired
+	const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
+
+	for (int32 i = 0; i < CurrentCQT.Num(); i++)
+	{
+		float Sum = 0.0f;
+		int32 Count = 0;
+
+		for (int32 j = -WindowSize / 2; j <= WindowSize / 2; j++)
+		{
+			int32 Index = FMath::Clamp(i + j, 0, CurrentCQT.Num() - 1);
+			Sum += CurrentCQT[Index];
+			Count++;
+		}
+
+		SmoothedCQT[i] = Sum * ScaleFactor;
+	}
+	
+	for (int32 i = 0; i < CurrentCQT.Num(); i++)
+	{
+		CurrentCQT[i] = SmoothedCQT[i];
+	}
+}
+
+
 void ASpectrumManager::SmoothBoundary(TArray<float>& SpectrumData, int32 Index, int32 ThresholdWidth )
 {
 	TArray<float> SmoothedSpectrum = SpectrumData;
 
-	const int32 WindowSize = 3; // adjust window size as desired
+	const int32 WindowSize = BoundarySmooth; // adjust window size as desired
 
 	const float ScaleFactor = 1.0f / static_cast<float>(WindowSize);
 
+	if(!SpectrumData.IsValidIndex(Index + (ThresholdWidth*2)))
+	{
+		return;
+	}
 
-	for(int32 i = Index; i < Index + (2 * ThresholdWidth); i++)
+	for(int32 i = Index; i < Index + (ThresholdWidth*2); i++)
 	{
 		float Sum = 0.0f;
 		int32 Count = 0;
@@ -289,6 +323,12 @@ void ASpectrumManager::SmoothBoundary(TArray<float>& SpectrumData, int32 Index, 
 		SpectrumData[i] = SmoothedSpectrum[i];
 	}
 }
+
+void ASpectrumManager::GetSampleConversionFactor(float InSampleRate)
+{
+	SampleConversionFactor = InSampleRate / 24000;
+}
+
 
 void ASpectrumManager::FireOnSpectrumUpdatedEvent(const int Index, const float Value, const float Max)
 {

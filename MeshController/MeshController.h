@@ -65,6 +65,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateMeshBrightness(int32 Index, float Value);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateMeshColor(int32 Index, FLinearColor InColor);
+
+
 
 	float CalculateTotalLength(int NumberOfObjects, float Scale, float InPadding);
 

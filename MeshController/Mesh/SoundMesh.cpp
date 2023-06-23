@@ -99,3 +99,4 @@ void ASoundMesh::SetColor(FLinearColor NewColor)
     Color = NewColor;
 
 }
+

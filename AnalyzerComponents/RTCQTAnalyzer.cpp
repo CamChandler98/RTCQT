@@ -359,8 +359,8 @@ int32 URTCQTAnalyzer::GetNumBands(int32 BandTotal, float Proportion, bool doCeil
 float URTCQTAnalyzer::GetBandsPerOctave(const float BaseFrequency, const float EndFrequency, int32 NumBands)
 {
 
-	_SFreq = BaseFrequency/2;
-	_EFreq = EndFrequency/2;
+	_SFreq = BaseFrequency;
+	_EFreq = EndFrequency;
 	int32 Index = NumBands - 1;
 	float LogBase =  FGenericPlatformMath::LogX(10.0f, 2.0f);
 	float LogFactor = FGenericPlatformMath::LogX(10.0f,((EndFrequency )/(BaseFrequency )));
