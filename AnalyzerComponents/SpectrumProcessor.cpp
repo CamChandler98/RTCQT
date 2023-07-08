@@ -40,13 +40,21 @@ void USpectrumProcessor::ProcessSpectrum(TArray<float>& CurrentCQT)
 	{
 		ExponentiateSpectrum(CurrentCQT, PeakExponentMultiplier);
 	}
-	if(Toggles -> DoSmooth)
+	if(Toggles -> DoMedianSmooth)
+	{
+		MedianSmoothSpectrum(CurrentCQT);
+	}
+	else if(Toggles -> DoSmooth)
 	{
 		SmoothSpectrum(CurrentCQT);
 	}
 	if(Toggles -> DoInterpolate)
 	{
 		InterpolateSpectrum(CurrentCQT, Toggles -> DoCubicInterpolation);
+	}
+	if(Toggles -> DoPostScale)
+	{
+		PostScaleSpectrum(CurrentCQT, PostScaleMultiplier);
 	}
 }
 
@@ -58,6 +66,8 @@ void USpectrumProcessor::SetSettings(USpectrumSettings* InSettings)
 	Settings -> InterpolationFactor = InSettings -> InterpolationFactor ;
 	
 	Settings -> ScaleMultiplier = InSettings -> ScaleMultiplier;
+	Settings -> PostScaleMultiplier = InSettings -> PostScaleMultiplier;
+
 	
 	Settings -> QuietMultiplier = InSettings -> QuietMultiplier;
 	
@@ -79,6 +89,8 @@ void USpectrumProcessor::SetParams()
 	InterpolationFactor =  Settings -> InterpolationFactor;
 	
 	ScaleMultiplier = Settings -> ScaleMultiplier;
+	PostScaleMultiplier = Settings -> PostScaleMultiplier;
+
 	
 	QuietMultiplier = Settings -> QuietMultiplier;
 	
@@ -200,6 +212,36 @@ void USpectrumProcessor::SmoothSpectrum(TArray<float>& CurrentCQT)
 	}
 }
 
+void USpectrumProcessor::MedianSmoothSpectrum(TArray<float>& CurrentCQT)
+{
+	TArray<float> SmoothedCQT = CurrentCQT;
+
+	const int32 NumBins = CurrentCQT.Num();
+	const int32 HalfWindowSize = SmoothingWindowSize / 2;
+
+	for (int32 i = 0; i < NumBins; ++i)
+	{
+		TArray<float> WindowValues;
+
+		for (int32 j = -HalfWindowSize; j <= HalfWindowSize; ++j)
+		{
+			int32 Index = FMath::Clamp(i + j, 0, NumBins - 1);
+			WindowValues.Add(CurrentCQT[Index]);
+		}
+
+		// Sort the window values
+		WindowValues.Sort();
+
+		// Get the median value
+		float Median = WindowValues[HalfWindowSize];
+
+		// Assign the median value to the corresponding index in the smoothed array
+		SmoothedCQT[i] = Median;
+	}
+
+	CurrentCQT = SmoothedCQT;
+}
+
 void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InNoiseFloorDB)
 {
 	float MinValue = TNumericLimits<float>::Max();
@@ -218,7 +260,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 
 	if(CQTRange > SMALL_NUMBER)
 	{
-		const float Scaling = 1.2f / CQTRange;
+		const float Scaling = 1.1f / CQTRange;
 		Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, Scaling);
 
 	}
@@ -229,7 +271,7 @@ void USpectrumProcessor::NormalizeSpectrum(TArray<float>& CurrentCQT,  float InN
 	    }
 	}
 	// Clamp the values in the CurrentCQT array between 0 and 1
-	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.2f);
+	Audio::ArrayClampInPlace(CurrentCQT, 0.f, 1.15f);
 }
 
 
@@ -266,6 +308,14 @@ void USpectrumProcessor::ScaleSpectrum(TArray<float>& CurrentCQT, float ScalingF
 			Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, ScalingFactor);
 		}
 }
+
+void USpectrumProcessor::PostScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor)
+{
+		
+	Audio::ArrayMultiplyByConstantInPlace(CurrentCQT, ScalingFactor);
+	
+}
+
 
 void USpectrumProcessor::ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent)
 {

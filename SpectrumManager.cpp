@@ -64,18 +64,15 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 			CCompiledSpectrum.Append(CurrentAnalyzer -> OutCQT);
 		}
 
+		SmoothSpectrum(CCompiledSpectrum);
 		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
-		;
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
-			if(BoundaryThreshold > 0 && i != 0 && i !=CCompiledSpectrum.Num() - 1 && StartAndEnds.Find(i + BoundaryThreshold))
-			{
-				SmoothBoundary(CCompiledSpectrum, i, BoundaryThreshold);
-			}
-
             FireOnSpectrumUpdatedEvent(i,CCompiledSpectrum[i], ArrayMax);
         }
+
+		
     }
 
 	auto EndTime = std::chrono::system_clock::now();

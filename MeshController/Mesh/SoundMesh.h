@@ -40,6 +40,9 @@ class SYNRTCQT_API ASoundMesh : public AStaticMeshActor
 	void SetColor(FLinearColor NewColor);
 
 	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
+	void SetColorHSV(float Hue = -1.0, float Saturation = -1.0, float Value = -1.0, float Alpha = -1.0);
+
+	UFUNCTION(BlueprintCallable, Category = "Sound Mesh")
 	void Init(UStaticMesh* NewMesh, UMaterialInterface* NewMaterial, FVector NewScale);
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category="Default")

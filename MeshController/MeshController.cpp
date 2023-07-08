@@ -5,6 +5,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include <iostream>
+#include <chrono>
+#include <thread>
+
 // Sets default values
 AMeshController::AMeshController()
 
@@ -390,7 +394,7 @@ void AMeshController::SpawnMeshesInSpiral(int32 Number, float Radius, float Spir
 		FRotator NewRotation = UKismetMathLibrary::ComposeRotators(UpOffset, LookatRotator);
 
 		CurrentMesh -> SetActorRelativeRotation(NewRotation);
-		// CurrentMesh -> AddActorLocalRotation(UKismetMathLibrary::MakeRotator(0.0,180.0,0.0));
+		// CurrentMesh -> AddActorLocalRotation(UKismetMathLibrary::MakeRotator(90.0,0.0,0.0));
 
     }
 
@@ -502,6 +506,7 @@ void AMeshController::UpdateMeshZ(int32 Index, float Value)
 	// CurrentMesh -> SetBrightness(NewBrightness);
 }
 
+
 void AMeshController::UpdateMeshBrightness(int32 Index, float Value)
 {
 	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
@@ -521,7 +526,11 @@ void AMeshController::UpdateMeshColor(int32 Index, FLinearColor InColor)
 
 }
 
-
+void AMeshController::UpdateMeshColorHSV(int32 Index, float Hue, float Saturation, float Value, float Alpha)
+{
+	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
+	CurrentMesh -> SetColorHSV(Hue, Saturation, Value, Alpha);
+}
 void AMeshController::TestIncreasePadding()
 {
 	float NewPadding = Padding + 25;
@@ -547,4 +556,10 @@ float AMeshController::CalculateTotalLength(int NumberOfObjects, float Scale, fl
     }
 
     return TotalLength;
+}
+
+void AMeshController::Sleep(int32 TimeMs)
+{	
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(TimeMs));
 }

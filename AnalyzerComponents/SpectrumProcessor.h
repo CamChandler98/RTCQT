@@ -39,6 +39,8 @@ public:
 	float InterpolationFactor = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 8.0, ShortName = "Scale"))
 	float ScaleMultiplier = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 8.0, ShortName = "PostScale"))
+	float PostScaleMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -1.0, ClampMax = 10.0, ShortName = "Quiet"))
 	float QuietMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = 1.0, ClampMax = 8.0, ShortName = "Peak"))
@@ -58,6 +60,8 @@ public:
 	bool doCubicInterpolation = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Smooth")) 
 	bool doSmooth = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Median")) 
+	bool doMedianSmooth = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Focus")) 
 	bool doFocusExp = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing", meta = (ShortName = "Peak")) 
@@ -66,6 +70,8 @@ public:
 	bool doNormalize = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Scale")) 
 	bool doScale = true;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "PostScale")) 
+	bool doPostScale = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Quiet")) 
 	bool doSupressQuiet = true;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Clamp")) 
@@ -96,12 +102,16 @@ public:
 
 	void SmoothSpectrum(TArray<float>& CurrentCQT);
 
+	void MedianSmoothSpectrum(TArray<float>& CurrentCQT);
+
 	void NormalizeSpectrum(TArray<float>& CurrentCQT, float InNoiseFloorDB);
 
 	void SupressQuiet(TArray<float>& CurrentCQT, float ScalingFactor);
 
 
 	void ScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor);
+
+	void PostScaleSpectrum(TArray<float>& CurrentCQT, float ScalingFactor);
 
 	void ExponentiateSpectrum(TArray<float>& CurrentCQT, float Exponent);
 

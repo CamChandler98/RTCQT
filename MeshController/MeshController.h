@@ -68,7 +68,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateMeshColor(int32 Index, FLinearColor InColor);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateMeshColorHSV(int32 Index, float Hue, float Saturation, float Value, float Alpha);
 
+
+	UFUNCTION(BlueprintCallable)
+	void Sleep(int32 TimeMs);
 
 	float CalculateTotalLength(int NumberOfObjects, float Scale, float InPadding);
 

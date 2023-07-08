@@ -2,6 +2,8 @@
 
 
 #include "SoundMesh.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 ASoundMesh::ASoundMesh()
 {
@@ -78,16 +80,12 @@ void ASoundMesh::SetZScale(const float NewZScale)
     
 }
 
+
 void ASoundMesh::SetBrightness(const float InBrightness)
 {
-
-
     Material -> SetScalarParameterValue("Intensity", InBrightness); 
 
     Brightness = InBrightness;
-
-
-
 }
 
 void ASoundMesh::SetColor(FLinearColor NewColor)
@@ -97,6 +95,32 @@ void ASoundMesh::SetColor(FLinearColor NewColor)
     Material -> SetScalarParameterValue("Intensity", Brightness); 
 
     Color = NewColor;
+}
+
+void ASoundMesh::SetColorHSV(float Hue, float Saturation, float Value, float Alpha)
+{
+
+    float NewHue;
+    float NewSaturation;
+    float NewValue; 
+    float NewAlpha;
+
+    UKismetMathLibrary::RGBToHSV(Color, NewHue, NewSaturation, NewValue, NewAlpha);
+    
+    NewHue = Hue >= 0 ? Hue : NewHue;
+    NewSaturation = Saturation >= 0 ? Saturation : NewSaturation;
+    NewValue = Value >= 0 ? Value : NewValue;
+    NewAlpha = Alpha >= 0 ? Alpha : NewAlpha;
+
+    FLinearColor NewColor = UKismetMathLibrary::HSVToRGB(NewHue, NewSaturation, NewValue, NewAlpha);
+
+    Material -> SetVectorParameterValue("Color", NewColor);
+    Material -> SetScalarParameterValue("Intensity", Brightness); 
+
+    Color = NewColor;
 
 }
+
+
+
 

@@ -32,10 +32,14 @@ class SYNRTCQT_API USpectrumToggles : public UObject
 		bool DoNormalize = true;
 		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Scale"))
 		bool DoScale = true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "PostScale")) 
+		bool DoPostScale = true;
 		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Quiet"))
 		bool DoSupressQuiet = true;
 		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "HiBoost"))
 		bool DoBoostHighFrequency= true;
+		UPROPERTY(BlueprintReadWrite, EditAnywhere ,Category = "Spectrum Processing", meta = (ShortName = "Median")) 
+		bool DoMedianSmooth = false;
 
 
 
@@ -53,6 +57,8 @@ struct FSpectrumToggleNames
 	FName DoCubicInterpolationName = FName(TEXT("DoCubicInterpolation"));
 	
 	FName DoSmoothName = FName(TEXT("DoSmooth"));
+
+	FName DoMedianSmoothName = FName(TEXT("DoMedianSmooth"));
 	
 	FName DoFocusExpName = FName(TEXT("DoFocusExp"));
 	
@@ -61,6 +67,8 @@ struct FSpectrumToggleNames
 	FName DoNormalizeName = FName(TEXT("DoNormalize"));
 	
 	FName DoScaleName = FName(TEXT("DoScale"));
+	FName DoPostScaleName = FName(TEXT("DoPostScale"));
+
 	
 	FName DoSupressQuietName = FName(TEXT("DoSupressQuiet"));
 	
@@ -74,10 +82,12 @@ struct FSpectrumToggleNames
 		Names.Add(DoInterpolateName);
 		Names.Add(DoCubicInterpolationName);
 		Names.Add(DoSmoothName);
+		Names.Add(DoMedianSmoothName);
 		Names.Add(DoFocusExpName);
 		Names.Add(DoPeakExpName);
 		Names.Add(DoNormalizeName);
 		Names.Add(DoScaleName);
+		Names.Add(DoPostScaleName);
 		Names.Add(DoSupressQuietName);
 		Names.Add(DoBoostHighFrequency);
 	}
@@ -98,6 +108,8 @@ public:
 	float InterpolationFactor = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float ScaleMultiplier = 1;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 8.0, ShortName = "PostScale"))
+	float PostScaleMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
 	float QuietMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" )
@@ -126,6 +138,7 @@ struct FSpectrumPropertyNames
 	FName InterpolationFactorName =  FName(TEXT("InterpolationFactor"));
 	
 	FName ScaleMultiplierName = FName(TEXT("ScaleMultiplier"));
+	FName PostScaleMultiplierName = FName(TEXT("PostScaleMultiplier"));
 	
 	FName QuietMultiplierName = FName(TEXT("QuietMultiplier"));
 	
@@ -148,6 +161,7 @@ struct FSpectrumPropertyNames
 		Names.Add(SmoothingWindowSizeName);
 		Names.Add(InterpolationFactorName);
 		Names.Add(ScaleMultiplierName);
+		Names.Add(PostScaleMultiplierName);
 		Names.Add(QuietMultiplierName);
 		Names.Add(PeakExponentMultiplierName);
 		Names.Add(FocusExponentMultiplierName);
