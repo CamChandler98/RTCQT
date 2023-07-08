@@ -20,7 +20,7 @@ UMeshReactor::UMeshReactor()
 			TObjectPtr<UFunctionToggle> CurrentToggle = NewObject<UFunctionToggle>(this, UFunctionToggle::StaticClass(),CurrentName);
 
 			CurrentToggle -> Name = CurrentName;
-			CurrentToggle -> Active = False;
+			CurrentToggle -> Active = false;
 
 			FunctionToggles.Add(CurrentToggle);
 
