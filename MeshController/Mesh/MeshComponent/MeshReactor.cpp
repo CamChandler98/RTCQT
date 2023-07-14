@@ -5,29 +5,29 @@ UMeshReactor::UMeshReactor()
 {
 
 
-    for ( TFieldIterator<UFunction> FIT ( GetClass(), EFieldIteratorFlags::IncludeSuper ); FIT; ++FIT) {
+    // for ( TFieldIterator<UFunction> FIT ( GetClass(), EFieldIteratorFlags::IncludeSuper ); FIT; ++FIT) {
 
-        UFunction* Function = *FIT;
-    	FString CurrentNameString = Function->GetName();
+    //     UFunction* Function = *FIT;
+    // 	FString CurrentNameString = Function->GetName();
 
-		FName CurrentName = FName(*CurrentNameString);
+	// 	FName CurrentName = FName(*CurrentNameString);
 
-		const FString* Category = Function -> FindMetaData("Category");
+	// 	const FString* Category = Function -> FindMetaData("Category");
 
-		if(Category -> Equals(TEXT("React Function"), ESearchCase::IgnoreCase))
-		{
+	// 	if(Category -> Equals(TEXT("React Function"), ESearchCase::IgnoreCase))
+	// 	{
 		
-			TObjectPtr<UFunctionToggle> CurrentToggle = NewObject<UFunctionToggle>(this, UFunctionToggle::StaticClass(),CurrentName);
+	// 		TObjectPtr<UFunctionToggle> CurrentToggle = NewObject<UFunctionToggle>(this, UFunctionToggle::StaticClass(),CurrentName);
 
-			CurrentToggle -> Name = CurrentName;
-			CurrentToggle -> Active = false;
+	// 		CurrentToggle -> Name = CurrentName;
+	// 		CurrentToggle -> Active = false;
 
-			FunctionToggles.Add(CurrentToggle);
+	// 		FunctionToggles.Add(CurrentToggle);
 
-		}
+	// 	}
 
 
-    }
+    // }
 
 
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
@@ -62,8 +62,31 @@ void UMeshReactor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 }
 
 
-void UMeshReactor::ReactOnValue(float InValue, float MaxValue)
+void UMeshReactor::ReactOnValue(FReactionParams ReactionParams)
 {
 
+	struct FFuncParams
+    {
+        FReactionParams ReactionParams;
+    } FuncParams;
+
+	FuncParams.ReactionParams = ReactionParams;
+
+
+		for(int32 i = 0; i < FunctionToggles.Num(); i++)
+		{
+			UFunctionToggle* CurrentToggle = FunctionToggles[i];
+
+			if(CurrentToggle -> Active)
+			{
+				UFunction* function = this->FindFunction(CurrentToggle -> Name);
+
+				if (function)
+				{
+					this->ProcessEvent(function, &FuncParams);
+				}
+
+			} 
+		}
 }
 

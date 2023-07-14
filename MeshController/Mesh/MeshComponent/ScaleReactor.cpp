@@ -39,9 +39,9 @@ void UScaleReactor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 }
 
 
-void UScaleReactor::ReactOnValue(float InValue, float MaxValue)
+void UScaleReactor::ReactOnValue(FReactionParams ReactionParams)
 {
-    Super::ReactOnValue(InValue, MaxValue);
+    Super::ReactOnValue(ReactionParams);
 
 }
 

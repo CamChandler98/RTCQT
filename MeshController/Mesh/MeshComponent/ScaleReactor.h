@@ -24,7 +24,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 
-    virtual void ReactOnValue(float InValue, float MaxValue = 0.0f);
+    virtual void ReactOnValue(FReactionParams ReactionParams);
 
 
     void ScaleZ(float InValue);

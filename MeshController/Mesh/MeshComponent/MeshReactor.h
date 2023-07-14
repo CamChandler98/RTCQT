@@ -6,6 +6,21 @@
 
 #include "MeshReactor.generated.h"
 
+USTRUCT(BlueprintType)
+struct FReactionParams
+{	    
+		GENERATED_BODY();
+		UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float MaxValue;
+
+	   	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float Value;
+
+		FReactionParams()
+		{
+
+		}
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SYNRTCQT_API UMeshReactor : public UActorComponent
@@ -27,7 +42,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 
-    virtual void ReactOnValue(float InValue, float MaxValue = 0.0f);
+    virtual void ReactOnValue(FReactionParams ReactionParams);
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     TArray<UFunctionToggle*> FunctionToggles;

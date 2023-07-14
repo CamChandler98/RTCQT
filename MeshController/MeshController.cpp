@@ -560,6 +560,5 @@ float AMeshController::CalculateTotalLength(int NumberOfObjects, float Scale, fl
 
 void AMeshController::Sleep(int32 TimeMs)
 {	
-
 	std::this_thread::sleep_for(std::chrono::milliseconds(TimeMs));
 }

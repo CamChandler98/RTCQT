@@ -10,7 +10,7 @@ class UFunctionToggle : public UObject
 	GENERATED_BODY()
 
 public:
-	FName FunctionName;
+	FName Name;
 
     bool Active;
 
