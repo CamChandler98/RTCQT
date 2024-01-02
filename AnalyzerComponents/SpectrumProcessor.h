@@ -39,7 +39,7 @@ public:
 	float InterpolationFactor = .5;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 8.0, ShortName = "Scale"))
 	float ScaleMultiplier = 1;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 8.0, ShortName = "PostScale"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing",  meta = (ClampMin = 0.0, ClampMax = 16.0, ShortName = "PostScale"))
 	float PostScaleMultiplier = 1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spectrum Processing" , meta = (ClampMin = -1.0, ClampMax = 10.0, ShortName = "Quiet"))
 	float QuietMultiplier = 1;

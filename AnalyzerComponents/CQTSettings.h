@@ -24,6 +24,8 @@ public:
 	float EndingFrequency;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "FFT"))
 	int32 UnrestrictedFFTSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = AudioAnalyzer, meta = (DisplayName = "Piece Wise"))
+	bool doPieceWise;
 
 #if WITH_EDITOR
 		virtual FText GetAssetActionName() const override;

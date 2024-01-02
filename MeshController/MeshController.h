@@ -5,7 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
-#include "../RealTimeCQTManager.h"
+// #include "../RealTimeCQTManager.h"
 #include "./Mesh/SoundMesh.h"
 #include "MeshController.generated.h"
 
@@ -66,6 +66,9 @@ public:
 	void UpdateMeshBrightness(int32 Index, float Value);
 
 	UFUNCTION(BlueprintCallable)
+	float MapValue(float InValue, float InMax, float ExpMult, float OutMin, float OutMax, bool Reverse = true);
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateMeshColor(int32 Index, FLinearColor InColor);
 
 	UFUNCTION(BlueprintCallable)
@@ -121,8 +124,8 @@ public:
 	TArray<bool> FocusIndices;
 
 		/** Please add a variable description */
-	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
-	TObjectPtr<ARealTimeCQTManager> CQTManager;
+	// UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
+	// TObjectPtr<ARealTimeCQTManager> CQTManager;
 
 	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category="Default")
 	TObjectPtr<UStaticMesh>  Mesh;

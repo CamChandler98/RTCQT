@@ -9,7 +9,7 @@
 
 namespace Audio
 {
-	FConstantQAnalyzer::FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const FFocusSettings& InFocusSettings, const float InSampleRate)
+	FConstantQAnalyzer::FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const FFocusSettings& InFocusSettings, const bool DoPieceWise, const float InSampleRate)
 	: Settings(InSettings)
 	, SampleRate(InSampleRate)
 	, ActualFFTSize(0)
@@ -33,7 +33,7 @@ namespace Audio
 		FFT = FFFTFactory::NewFFTAlgorithm(FFTSettings);
 
 		// Create CQT kernel
-		CQTTransform = NewPseudoConstantQKernelTransform(Settings, InFocusSettings, ActualFFTSize, SampleRate);
+		CQTTransform = NewPseudoConstantQKernelTransform(Settings, InFocusSettings, DoPieceWise, ActualFFTSize, SampleRate);
 
 		if (FFT.IsValid())
 		{

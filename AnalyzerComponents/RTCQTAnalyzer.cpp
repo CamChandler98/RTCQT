@@ -373,7 +373,7 @@ void URTCQTAnalyzer::GenerateAnalyzer()
 {
 	Audio::FFocusSettings focusSettings = Audio::FFocusSettings();
 
-	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(ConstantQSettings, focusSettings, ParameterSettings -> SampleRate);
+	ConstantQAnalyzer = MakeUnique<Audio::FConstantQAnalyzer>(ConstantQSettings, focusSettings, ParameterSettings -> doPieceWise,  ParameterSettings -> SampleRate);
 }
 
 void URTCQTAnalyzer::Analyze(TArray<float> AudioData, bool bProcessSamples, bool bProcessSpectrum)

@@ -4,6 +4,7 @@
 
 #include "DSP/AlignedBuffer.h"
 #include "DSP/FloatArrayMath.h"
+#include "../CustomDSP/FrequencyDivisionSettings.h"
 
 #if UE_ENABLE_INCLUDE_ORDER_DEPRECATED_IN_5_1
 #include "CoreMinimal.h"
@@ -55,6 +56,8 @@ namespace Audio
 
 		bool doStupid;
 
+		bool doPieceWise;
+
 
 		EPseudoConstantQNormalization Normalization;	//< Normalization scheme for bands.
 
@@ -71,6 +74,7 @@ namespace Audio
 		,   LogFast(2.5)
 		,   LogSlow(.975)
 		,	doStupid(false)
+		,	doPieceWise(false)
 		,	Normalization(EPseudoConstantQNormalization::EqualEnergy)
 		{}
 	};
@@ -91,7 +95,7 @@ namespace Audio
 	 *
 	 *  Returns a TUniquePtr to a FContiguousSparse2DKernelTransform.
 	 */
-	SIGNALPROCESSING_API TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const FFocusSettings& FocusSettings, const int32 InFFTSize, const float InSampleRate);
+	SIGNALPROCESSING_API TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const FFocusSettings& FocusSettings, const bool DoPieceWise, const int32 InFFTSize, const float InSampleRate);
 
 	/** Settings for a single constant q band. */
 	struct SIGNALPROCESSING_API FPseudoConstantQBandSettings
@@ -118,6 +122,9 @@ namespace Audio
 		static float GetConstantQCenterFrequency(const int32 InBandIndex, const float InBaseFrequency, const float InBandsPerOctave, float LogBase = 2.0);
 
 		static float GetStupidConstantQCenterFrequency(const int32 InBandIndex, const float InBaseFrequency, const float InBandsPerOctave,  float LogBase, int32 MaxBands);
+
+		static float GetPieceWiseConstantQCenterFrequency(const int32 InBandIndex, const float InBaseFrequency, const float InBandsPerOctave, const float PreviousFrequency);
+
 
 
 		// Returns the bandwidth for a given CQT band.

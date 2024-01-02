@@ -4,6 +4,7 @@
 #include "SpectrumManager.h"
 #include "DSP/FloatArrayMath.h"
 #include "DSP/DeinterleaveView.h"
+#include "Kismet/GameplayStatics.h"
 #include <chrono>
 
 
@@ -47,7 +48,7 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 {
 
 	TArray<float> CCompiledSpectrum;
-	CCompiledSpectrum.AddZeroed(NumBands);
+	// CCompiledSpectrum.AddZeroed(NumBands);
 
 	auto StartTime = std::chrono::system_clock::now();
 	for (const TArray<float>& Window : Audio::TAutoSlidingWindow<float>(*SlidingFloatBuffer, AudioData, FloatWindowBuffer, false))
@@ -66,6 +67,8 @@ void ASpectrumManager::AnalyzeAudio(const TArray<float>& AudioData)
 
 		SmoothSpectrum(CCompiledSpectrum);
 		float ArrayMax = Audio::ArrayMaxAbsValue(CCompiledSpectrum);
+		CompiledSpectrum = CCompiledSpectrum;
+
 
         for(int32 i = 0; i < CCompiledSpectrum.Num(); i++ )
 		{
@@ -141,7 +144,22 @@ void ASpectrumManager::CreateAnalyzers()
 	int32 NextIndex;
 	
 	GetSampleConversionFactor(SampleRate);
+	
+	USaveSpectrumConfig* SavedSpectrumSettings =  Cast<USaveSpectrumConfig>(UGameplayStatics::LoadGameFromSlot(ManagerName, 0));
 
+	ManagerSavedSettings = SavedSpectrumSettings;
+
+	if(!SavedSpectrumSettings)
+	{
+		SavedSpectrumSettings =  Cast<USaveSpectrumConfig>(UGameplayStatics::CreateSaveGameObject(USaveSpectrumConfig::StaticClass()));
+		ManagerSavedSettings = SavedSpectrumSettings;
+		UE_LOG(SpectrumSettingsLog, Warning, TEXT("Save Not Found"));
+
+	}
+	else
+	{
+		UE_LOG(SpectrumSettingsLog, Warning, TEXT("Save Found"));
+	}
 
 	for(int32 i = 0; i < AnalyzersSettings.Num(); i++)
 	{	
@@ -176,28 +194,36 @@ void ASpectrumManager::CreateAnalyzers()
 
 		FName CurrentAnalyzerName = CurrentSettings -> Name;
 
-		// FString WidgetString = CurrentAnalyzerName.ToString() + ""
+
 		FString NameString = CurrentAnalyzerName.ToString() + "CQT";
 
 		FName UpdatedName = FName(*NameString);
 
-		// TObjectPtr<URTCQTAnalyzer> CurrentAnalyzer = CreateDefaultSubobject<URTCQTAnalyzer>(CurrentAnalyzerName);
 		TObjectPtr<URTCQTAnalyzer> CurrentAnalyzer = NewObject<URTCQTAnalyzer>(this,URTCQTAnalyzer::StaticClass(),UpdatedName);
 
 
 		CurrentAnalyzer -> TotalBands = NumBands;
-		
-
-		// CurrentAnalyzer -> SpectrumToggles = SpectrumToggles;
-		// CurrentAnalyzer -> SampleToggles = SampleToggles;
 		CurrentAnalyzer -> GetParams(CQTSettings);
 		CurrentAnalyzer -> GetCQTSettings();
 		CurrentAnalyzer -> GetSpectrumProcessor(SpectrumSettings, SpectrumToggles, CurrentAnalyzerName);
 		CurrentAnalyzer -> GetSampleProcessor(SampleSettings, SampleToggles, CurrentAnalyzerName);
 		CurrentAnalyzer -> GenerateAnalyzer();
 
+		if(SavedSpectrumSettings -> SpectrumSettings.Contains(CurrentAnalyzerName))
+		{
+		    UE_LOG(SpectrumSettingsLog, Warning, TEXT("SettignsName %s Found"), *CurrentAnalyzerName.ToString());
+			ManagerSavedSettings -> LoadSettingsFromProcessor(CurrentAnalyzerName, CurrentAnalyzer -> SpectrumProcessor);
+
+		}
+		else
+		{
+		    UE_LOG(SpectrumSettingsLog, Warning, TEXT("SettignsName %s Not Found"), *CurrentAnalyzerName.ToString());
+			ManagerSavedSettings -> SaveSettingsFromProcessor(CurrentAnalyzerName, CurrentAnalyzer -> SpectrumProcessor);
+		}
 
 		NamedAnalyzers.Add(CurrentAnalyzerName, CurrentAnalyzer);
+		UGameplayStatics::SaveGameToSlot(SavedSpectrumSettings, ManagerName, 0);
+
 		SpectrumAnalyzers[i] = CurrentAnalyzer;
 
 
@@ -232,6 +258,37 @@ void ASpectrumManager::CreateAnalyzers()
 
 
 	CheckLength();
+}
+
+void ASpectrumManager::SaveProcessorSettings(FName SettingsName, USpectrumProcessor* SpectrumProcessor)
+{
+
+
+}
+
+void ASpectrumManager::LoadAllProcessorSettings()
+{
+	USaveSpectrumConfig* SavedSpectrumSettings =  Cast<USaveSpectrumConfig>(UGameplayStatics::LoadGameFromSlot(ManagerName, 0));
+	
+	for(auto& Analyzer : NamedAnalyzers)
+	{
+		SavedSpectrumSettings -> LoadSettingsFromProcessor(Analyzer.Key, Analyzer.Value -> SpectrumProcessor);
+	}
+}
+
+
+void ASpectrumManager::SaveAllProcessorSettings()
+{
+	USaveSpectrumConfig* SavedSpectrumSettings =  Cast<USaveSpectrumConfig>(UGameplayStatics::LoadGameFromSlot(ManagerName, 0));
+
+	for(auto& Analyzer : NamedAnalyzers)
+	{
+
+		SavedSpectrumSettings -> SaveSettingsFromProcessor(Analyzer.Key, Analyzer.Value -> SpectrumProcessor);
+	}
+
+
+	UGameplayStatics::SaveGameToSlot(SavedSpectrumSettings, ManagerName, 0);
 }
 
 

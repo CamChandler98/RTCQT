@@ -329,6 +329,7 @@ void AMeshController::SpawnMeshesInSpiral(int32 Number, float Radius, float Spir
 	float Step = 360.0f / static_cast<float>(Number);
 
 	FVector Location = this -> GetActorLocation();
+	float InitZ = Location.Z;
 
 	FQuat SpawnRotation = GetActorQuat();
 	FVector SpawnScale(MeshScale);
@@ -343,6 +344,7 @@ void AMeshController::SpawnMeshesInSpiral(int32 Number, float Radius, float Spir
 
 	for (int32 i = 0; i < Number; i++)
     {
+
  		
  // Calculate the inclination angle based on the current object's index
 		float SpiralOffset = SpiralRadius * (i / static_cast<float>(Number));
@@ -388,8 +390,26 @@ void AMeshController::SpawnMeshesInSpiral(int32 Number, float Radius, float Spir
 
 		FVector MeshLocation = CurrentMesh -> GetActorLocation();
 
+
 		FRotator LookatRotator = UKismetMathLibrary::FindLookAtRotation(MeshLocation, Location);
-		FRotator UpOffset = UKismetMathLibrary::MakeRotator(0.0,90.0,0.0);
+
+		float MinAngle = 0;
+		float MaxAngle = 0;
+
+		if(i <= static_cast<int>(Number/2))
+		{
+			MinAngle = 40;
+			MaxAngle = 20;
+		}
+		else
+		{
+			MinAngle = 60;
+			MaxAngle = 20;
+		}
+
+		float TurnOffset = UKismetMathLibrary::MapRangeClamped(i, 0,  Number, MinAngle, MaxAngle);
+		
+		FRotator UpOffset = UKismetMathLibrary::MakeRotator(0.0,TurnOffset ,0.0);
 
 		FRotator NewRotation = UKismetMathLibrary::ComposeRotators(UpOffset, LookatRotator);
 
@@ -530,6 +550,25 @@ void AMeshController::UpdateMeshColorHSV(int32 Index, float Hue, float Saturatio
 {
 	ASoundMesh* CurrentMesh = VisualizationMeshes[Index];
 	CurrentMesh -> SetColorHSV(Hue, Saturation, Value, Alpha);
+}
+
+float AMeshController::MapValue(float InValue, float InMax, float ExpMult, float OutMin, float OutMax, bool Reverse)
+{
+	float OutValue = 0.0;
+
+	float ScaledValue  = FMath::Pow(InValue, ExpMult)/ FMath::Pow(InMax, ExpMult);
+
+
+	if(!Reverse)
+	{
+		OutValue = UKismetMathLibrary::MapRangeClamped(ScaledValue, 0, 1, OutMin, OutMax);
+	}
+	else
+	{
+		OutValue = UKismetMathLibrary::MapRangeClamped(ScaledValue, 0, 1, OutMax, OutMin);
+	}
+	
+	return OutValue;
 }
 void AMeshController::TestIncreasePadding()
 {

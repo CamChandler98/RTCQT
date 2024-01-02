@@ -63,8 +63,6 @@ namespace Audio
 
 		float frequency = InBaseFrequency * FMath::Pow(2, static_cast<float>(InBandIndex) / InBandsPerOctave);
 		return frequency;
-
-
 	}
 
 	float FPseudoConstantQ::GetStupidConstantQCenterFrequency(const int32 InBandIndex, const float InBaseFrequency, const float InBandsPerOctave,  float LogBase, int32 MaxBands)
@@ -83,6 +81,58 @@ namespace Audio
 		
 		return frequency;
 	}
+
+	float FPseudoConstantQ::GetPieceWiseConstantQCenterFrequency(const int32 InBandIndex, const float InBaseFrequency, const float InBandsPerOctave,  const float PreviousFrequency)
+	{
+		check(InBandsPerOctave > 0.f);
+
+		float GrowthFactor = 1.0;
+
+	 	int SwitchFrequency = static_cast<int32>(PreviousFrequency);
+
+			if(SwitchFrequency > 60 && SwitchFrequency < 250)
+			{
+				
+				GrowthFactor = 1;
+
+			}
+			if(SwitchFrequency > 251 && SwitchFrequency < 500)
+			{
+				
+				GrowthFactor = 1.25;
+
+			}
+			if(SwitchFrequency > 501 && SwitchFrequency < 2000)
+			{
+				
+				GrowthFactor = 1.25;
+
+			}
+			if(SwitchFrequency > 2001 && SwitchFrequency < 4000)
+			{
+				
+				GrowthFactor = 1;
+
+			}
+			if(SwitchFrequency > 4001 && SwitchFrequency < 6000)
+			{
+				
+				GrowthFactor= 1.25;
+
+			}
+			if(SwitchFrequency > 6001 )
+			{
+				
+				GrowthFactor= 1.25;
+
+			}
+
+
+		float frequency = InBaseFrequency * FMath::Pow(2 * GrowthFactor, static_cast<float>(InBandIndex) / InBandsPerOctave);
+		
+		return frequency;
+	}
+
 	float FPseudoConstantQ::GetConstantQBandWidth(const float InBandCenter, const float InBandsPerOctave, const float InBandWidthStretch)
 	{
 		check(InBandsPerOctave > 0.f);
@@ -178,7 +228,7 @@ namespace Audio
 		}
 	}
 
-	TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const FFocusSettings& FocusSettings ,const int32 InFFTSize, const float InSampleRate)
+	TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const FFocusSettings& FocusSettings , const bool DoPieceWise,const int32 InFFTSize, const float InSampleRate)
 	{
 		check(InSampleRate > 0.f);
 		check(InFFTSize > 0);
@@ -194,6 +244,9 @@ namespace Audio
 		float LogBase = FocusSettings.LogNormal;
 		bool CanSwitch = true;
 		bool CanSlow = true;
+		float PreviousFrequency = InSettings.KernelLowestCenterFreq;
+		
+		
 		for (int32 CQTBandIndex = 0; CQTBandIndex < InSettings.NumBands; CQTBandIndex++)
 		{
 			// Determine band center and width for this CQT band
@@ -204,6 +257,11 @@ namespace Audio
 				BandSettings.CenterFreq = FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands);
 			
 			}
+			else if(DoPieceWise)
+			{
+				BandSettings.CenterFreq = FPseudoConstantQ::GetPieceWiseConstantQCenterFrequency(CQTBandIndex, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, PreviousFrequency);
+				PreviousFrequency = BandSettings.CenterFreq;
+			}
 			else
 			{
 			
@@ -211,24 +269,6 @@ namespace Audio
 
 			}
 			
-
-			if(BandSettings.CenterFreq < FocusSettings.FocusStart && CanSlow)
-			{
-				LogBase = FocusSettings.LogFast;
-				CanSlow = false;
-			}
-			else if(BandSettings.CenterFreq >=  FocusSettings.FocusMin && CanSwitch){
-				LogBase = FocusSettings.LogSlow;
-				CanSwitch = false;
-			}
-
-			if(BandSettings.CenterFreq >  FocusSettings.FocusMax){
-				LogBase = FocusSettings.LogNormal;
-			}
-			if(CQTBandIndex > 0 && BandSettings.CenterFreq < FPseudoConstantQ::GetStupidConstantQCenterFrequency(CQTBandIndex - 1, InSettings.KernelLowestCenterFreq, InSettings.NumBandsPerOctave, LogBase, InSettings.NumBands))
-			{
-				BandSettings.CenterFreq = BandSettings.CenterFreq + 50.0;
-			}
 
 			BandSettings.BandWidth = FPseudoConstantQ::GetConstantQBandWidth(BandSettings.CenterFreq, InSettings.NumBandsPerOctave, InSettings.BandWidthStretch);
 

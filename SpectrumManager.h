@@ -9,6 +9,8 @@
 
 #include "./AnalyzerComponents/RTCQTAnalyzer.h"
 #include "./AnalyzerComponents/Sampler.h"
+#include "./SaveSettings/SaveSpectrumConfig.h"
+
 #include "./Widget/RadialSliderWidget.h"
 #include "SpectrumManager.generated.h"
 
@@ -21,6 +23,9 @@ class SYNRTCQT_API ASpectrumManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASpectrumManager();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString ManagerName;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 NumBands = 96;
@@ -69,6 +74,9 @@ public:
 	URadialSliderWidget* SliderWidget;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
+	USaveSpectrumConfig* ManagerSavedSettings;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<URTCQTAnalyzer*> SpectrumAnalyzers;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
@@ -76,6 +84,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TArray<UAnalyzerSettings*> AnalyzersSettings;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
+	TArray<USpectrumSettings*> SavedSettings;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Instanced)
 	TObjectPtr<USampler> Sampler;
@@ -108,6 +119,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AnalyzeAudio(const TArray<float>& AudioData);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveProcessorSettings(FName SettingsName, USpectrumProcessor* SpectrumProcessor);
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void SaveAllProcessorSettings();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void LoadAllProcessorSettings();
 
 	UFUNCTION(BlueprintCallable)
 	void UnrealAnalyzeAudio(const TArray<float>& AudioData);

@@ -52,7 +52,7 @@ void  UFloatPropertyInterface::Init(UObject* InParent, FNumericProperty* InPrope
 
     if(!RadialSlider -> Slider)
     {
-        UE_LOG(LogTemp, Error, TEXT("No Slider Found"));
+        // UE_LOG(LogTemp, Error, TEXT("No Slider Found"));
     }
     else
     {

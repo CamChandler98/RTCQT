@@ -63,7 +63,7 @@ namespace Audio
 		 * 	InSettings contains the parameters used to configure the analyzer.
 		 * 	InSampleRate is the sample rate of the input audio.
 		 */
-		FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const FFocusSettings& FocusSettings, const float InSampleRate);
+		FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const FFocusSettings& FocusSettings, const bool DoPieceWise, const float InSampleRate);
 
 		/** Calcualte Constant Q Transform of input audio.
 		 *
