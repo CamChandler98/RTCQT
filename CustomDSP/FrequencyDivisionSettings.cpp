@@ -30,4 +30,6 @@ void UFrequencyDivisionSettings::GetCenterFrequencies()
 
         CombinedCenterFrequencies.Append(CurrentDivision.DivisionSettings);
     }
+
+    NumBands = CombinedCenterFrequencies.Num();
 }

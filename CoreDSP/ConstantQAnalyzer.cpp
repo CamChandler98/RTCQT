@@ -45,6 +45,43 @@ namespace Audio
 		}
 	}
 
+	FConstantQAnalyzer::FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const UFrequencyDivisionSettings& DivisionSettings  ,const float InSampleRate)
+	: Settings(InSettings)
+	, SampleRate(InSampleRate)
+	, ActualFFTSize(0)
+	, NumUsefulFFTBins(0)
+    , Window(Settings.WindowType, Settings.FFTSize, 1, false)
+	{
+		// Need FFTSize atleast 8 to support optimized operations.
+		check(Settings.FFTSize >= 8);
+		check(SampleRate > 0.f);
+
+		// Create FFT
+		FFFTSettings FFTSettings;
+		FFTSettings.Log2Size = CeilLog2(Settings.FFTSize);
+		FFTSettings.bArrays128BitAligned = true;
+		FFTSettings.bEnableHardwareAcceleration = true;
+
+		ActualFFTSize = 1 << FFTSettings.Log2Size;
+		NumUsefulFFTBins = (ActualFFTSize / 2) + 1;
+
+		checkf(FFFTFactory::AreFFTSettingsSupported(FFTSettings), TEXT("No fft algorithm supports fft settings."));
+		FFT = FFFTFactory::NewFFTAlgorithm(FFTSettings);
+
+		// Create CQT kernel
+		CQTTransform = NewPseudoConstantQKernelTransform(Settings, DivisionSettings ,ActualFFTSize, SampleRate);
+
+		if (FFT.IsValid())
+		{
+			// Size internal buffers
+			WindowedSamples.AddZeroed(FFT->NumInputFloats()); // Zero samples to apply zero buffer in case actual FFT is larger than provided settings.
+
+			ComplexSpectrum.AddUninitialized(FFT->NumOutputFloats());
+			RealSpectrum.AddUninitialized(ComplexSpectrum.Num() / 2);
+		}
+	}
+
+
 	void FConstantQAnalyzer::CalculateCQT(const float* InSamples, TArray<float>& OutCQT)
 	{
 		// Copy input samples and apply window

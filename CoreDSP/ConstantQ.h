@@ -97,6 +97,8 @@ namespace Audio
 	 */
 	SIGNALPROCESSING_API TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const FFocusSettings& FocusSettings, const bool DoPieceWise, const int32 InFFTSize, const float InSampleRate);
 
+
+	SIGNALPROCESSING_API TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const UFrequencyDivisionSettings& DivisionSettings ,const int32 InFFTSize, const float InSampleRate);
 	/** Settings for a single constant q band. */
 	struct SIGNALPROCESSING_API FPseudoConstantQBandSettings
 	{

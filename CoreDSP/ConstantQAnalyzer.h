@@ -65,6 +65,11 @@ namespace Audio
 		 */
 		FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const FFocusSettings& FocusSettings, const bool DoPieceWise, const float InSampleRate);
 
+		FConstantQAnalyzer(const FConstantQAnalyzerSettings& InSettings, const UFrequencyDivisionSettings& DivisionSettings  ,const float InSampleRate);
+
+
+		
+
 		/** Calcualte Constant Q Transform of input audio.
 		 *
 		 * InSamples is an array of input audio. It must be of length GetSettings().FFTSize.

@@ -296,4 +296,49 @@ namespace Audio
 
 		return Transform;
 	}
+
+	TUniquePtr<FContiguousSparse2DKernelTransform> NewPseudoConstantQKernelTransform(const FPseudoConstantQKernelSettings& InSettings, const UFrequencyDivisionSettings& DivisionSettings ,const int32 InFFTSize, const float InSampleRate)
+	{
+		check(InSampleRate > 0.f);
+		check(InFFTSize > 0);
+
+		const int32 NumUsefulFFTBins = (InFFTSize / 2) + 1;
+
+		TUniquePtr<FContiguousSparse2DKernelTransform> Transform = MakeUnique<FContiguousSparse2DKernelTransform>(NumUsefulFFTBins, InSettings.NumBands);
+
+		FPseudoConstantQBandSettings BandSettings;
+		BandSettings.FFTSize = InFFTSize;
+		BandSettings.SampleRate = InSampleRate;
+		BandSettings.Normalization = InSettings.Normalization;
+
+		
+		for (int32 CQTBandIndex = 0; CQTBandIndex < DivisionSettings.NumBands; CQTBandIndex++)
+		{
+
+			FFrequencyBandSettings CurrentSettings = DivisionSettings.CombinedCenterFrequencies[CQTBandIndex];
+
+			BandSettings.CenterFreq = CurrentSettings.CenterFreq;
+			BandSettings.BandWidth = CurrentSettings.BandWidth;
+
+			if ((BandSettings.CenterFreq - BandSettings.BandWidth) > InSampleRate)
+			{
+				continue;
+			}
+
+			if (BandSettings.CenterFreq > (2.f * InSampleRate))
+			{
+				continue;
+			}
+			
+			FAlignedFloatBuffer OffsetBandWeights;
+			int32 OffsetBandWeightsIndex = 0;
+
+			FPseudoConstantQ::FillArrayWithConstantQBand(BandSettings, OffsetBandWeights, OffsetBandWeightsIndex);
+
+			// Store row in transform
+			Transform->SetRow(CQTBandIndex, OffsetBandWeightsIndex, OffsetBandWeights);
+		}
+
+		return Transform;
+	}
 }

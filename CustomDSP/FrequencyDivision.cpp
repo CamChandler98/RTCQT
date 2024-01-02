@@ -42,11 +42,11 @@ void FFrequencyDivision::FillDivisionSettings()
     GetBandsPerOctave();
     for(int i = 0; i < NumBands; i++)
     {
-        FFrequencyBandSettings CurrentBandSettings;
+        FFrequencyBandSettings CurrentBandSettings = FFrequencyBandSettings();
         
         CurrentBandSettings.CenterFreq = GetConstantQCenterFrequency(i, StartFrequency, BandsPerOctave);
         CurrentBandSettings.BandWidth = GetConstantQBandWidth(CurrentBandSettings.CenterFreq, BandsPerOctave, BandWidthStretch);
 
-        UE_LOG(LogTemp, Warning, TEXT("Value %f"),   CurrentBandSettings.CenterFreq );
+        DivisionSettings.Add(CurrentBandSettings);
     }
 }
