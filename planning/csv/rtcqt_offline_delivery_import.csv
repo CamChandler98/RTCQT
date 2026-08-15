@@ -1,0 +1,406 @@
+ID,Title,Body,Status,Priority,Estimate,Blocked By,Work Location,Labels,Milestone
+D01,Finalize offline rebuild architecture,"## Objective
+Adopt one source of truth for the deterministic offline visualizer.
+
+## Scope
+- Confirm ConstantQNRT and Sequencer time as the supported analysis path.
+- Confirm the initial line layout and instanced-mesh rendering approach.
+- Record retired and deferred legacy systems.
+- Record deterministic seek and failure-handling requirements.
+
+## Acceptance Criteria
+- The architecture document names the runtime components and their boundaries.
+- Every Stream MVP delivery card is consistent with the offline-only decision.
+- Custom CQT and live audio are not prerequisites for the MVP.
+
+## Dependencies
+- None.
+
+## Evidence
+- Link `planning/documents/offline_visualizer_architecture.md`.",Done,P0,S,None,Remote,"architecture,decision,stream-mvp,priority:P0",Stream MVP
+D02,Define response math and golden test vectors,"## Objective
+Specify deterministic conversion from raw ConstantQNRT values to visual response values.
+
+## Scope
+- Define noise-floor, normalization, band-weight, exponent, and clamp operations.
+- Define safe behavior for invalid settings and non-finite input.
+- Create representative input/output vectors for later automated tests.
+- Defer stateful attack/release smoothing.
+
+## Acceptance Criteria
+- Operation order and formulas are unambiguous.
+- Boundary cases include silence, threshold, midpoint, peak, NaN, and infinity.
+- Expected outputs can be checked without opening Unreal.
+- Repeated evaluation of the same input has the same output.
+
+## Dependencies
+- D01 Finalize offline rebuild architecture.
+
+## Evidence
+- Response specification and golden-vector file.",Now,P0,S,D01,Remote,"response,tests,cpp,stream-mvp,priority:P0",Stream MVP
+D03,Define deterministic layout contracts and test vectors,"## Objective
+Specify pure layout behavior for line, circle, and Fibonacci-sphere modes.
+
+## Scope
+- Define inputs, coordinate conventions, ordering, scale, spacing, and orientation.
+- Define behavior for zero and invalid instance counts.
+- Create reference transforms for small known counts.
+- Defer spiral layout until its intended shape is specified.
+
+## Acceptance Criteria
+- Each layout returns exactly one finite transform per requested band.
+- Reference transforms cover counts 0, 1, 2, and a representative full layout.
+- Circle radius and sphere radius can be verified numerically.
+- Results do not depend on actor or world state.
+
+## Dependencies
+- D01 Finalize offline rebuild architecture.
+
+## Parallel Work
+- May run in parallel with D02.
+
+## Evidence
+- Layout specification and golden-vector file.",Now,P0,S,D01,Remote,"layout,tests,cpp,stream-mvp,priority:P0",Stream MVP
+D04,Define Unreal runtime API and source structure,"## Objective
+Turn the architecture and pure behavior contracts into implementation-ready Unreal interfaces.
+
+## Scope
+- Define `ARTCQTVisualizer`, response settings, response processor, and layout APIs.
+- Define ownership and asset-reference types.
+- Define the explicit song-time update method.
+- Define logging and missing-asset behavior.
+- Draft the clean runtime-module file tree and dependency list.
+
+## Acceptance Criteria
+- Every public property and method has one documented responsibility.
+- Runtime code has no editor-module dependency.
+- The API supports isolated frame evaluation and backward seeks.
+- Implementation tasks can proceed without inventing new architecture.
+
+## Dependencies
+- D02 Define response math and golden test vectors.
+- D03 Define deterministic layout contracts and test vectors.
+
+## Evidence
+- API specification or reviewed header draft.",Next,P0,M,"D02, D03",Remote,"architecture,api,cpp,stream-mvp,priority:P0",Stream MVP
+D05,Prepare approved test audio and asset manifest,"## Objective
+Select and document the short audio source used for deterministic verification.
+
+## Scope
+- Select a 30-60 second WAV owned or cleared for the intended use.
+- Record source, permission, duration, channels, sample rate, and bit depth.
+- Define three or more reference timestamps with recognizable events.
+- Decide whether the binary belongs in Git LFS or external storage.
+
+## Acceptance Criteria
+- Permission and provenance are recorded.
+- The WAV meets the agreed technical format.
+- Reference timestamps are documented.
+- The storage location is recoverable.
+
+## Dependencies
+- D01 Finalize offline rebuild architecture.
+
+## Parallel Work
+- May run in parallel with D02-D04.
+
+## Evidence
+- Asset manifest entry and audio metadata.",Next,P0,S,D01,"Remote + audio access","audio,licensing,foundation,stream-mvp,priority:P0",Stream MVP
+D06,Create recoverable Unreal project shell,"## Objective
+Create the complete current-Unreal project context missing from this checkout.
+
+## Scope
+- Record the exact Unreal Engine version.
+- Create the C++ project and clean runtime module.
+- Enable Audio Synesthesia and Movie Render Queue.
+- Preserve `.uproject`, target files, `Config/`, and source.
+- Configure storage rules for binary assets.
+- Keep legacy source outside the new runtime module.
+
+## Acceptance Criteria
+- Development Editor build succeeds.
+- The editor opens after a clean close and restart.
+- Runtime build rules contain no editor-only modules.
+- Another clone or backup contains the complete project shell.
+
+## Dependencies
+- D04 Define Unreal runtime API and source structure.
+
+## Evidence
+- Engine version, build log, editor screenshot, and repository tree.",Next,P0,M,D04,"Unreal workstation","foundation,unreal,build,stream-mvp,priority:P0",Stream MVP
+D07,Import test audio and create ConstantQNRT asset,"## Objective
+Create the supported pre-analyzed input for the first visualizer.
+
+## Scope
+- Import the approved WAV into `Content/Audio/`.
+- Create a ConstantQNRT asset with the chosen 32- or 48-band configuration.
+- Query raw band values at the manifest reference timestamps.
+- Record analyzer settings and returned value counts.
+
+## Acceptance Criteria
+- The SoundWave plays in the editor.
+- ConstantQNRT analysis completes without an editor error.
+- Raw values are available at every reference timestamp.
+- Asset settings and band count are recorded.
+
+## Dependencies
+- D05 Prepare approved test audio and asset manifest.
+- D06 Create recoverable Unreal project shell.
+
+## Evidence
+- Asset settings screenshot and timestamp query results.",Next,P0,S,"D05, D06","Unreal workstation","audio,analysis,unreal,stream-mvp,priority:P0",Stream MVP
+D08,Implement static instanced line layout,"## Objective
+Render exactly one reusable mesh instance per configured band before connecting audio.
+
+## Scope
+- Add the visualizer actor and one instanced static mesh component.
+- Implement the D03 line-layout contract.
+- Rebuild instances only when layout inputs or band count change.
+- Handle missing mesh and zero bands safely.
+
+## Acceptance Criteria
+- Instance count exactly matches the configured band count.
+- Transforms match D03 reference vectors.
+- No per-band actors are spawned.
+- Missing assets produce a safe empty state and one actionable log.
+
+## Dependencies
+- D03 Define deterministic layout contracts and test vectors.
+- D06 Create recoverable Unreal project shell.
+
+## Parallel Work
+- May run in parallel with D07 after D06 completes.
+
+## Evidence
+- Automated results, actor/component screenshot, and editor capture.",Next,P0,M,"D03, D06","Unreal workstation","layout,instancing,unreal,stream-mvp,priority:P0",Stream MVP
+D09,Implement stateless response processor,"## Objective
+Implement the agreed deterministic spectrum-to-response transformation.
+
+## Scope
+- Implement the D02 operation order in plain C++.
+- Add safe settings validation and non-finite input handling.
+- Add automated checks using the golden vectors.
+- Keep the processor independent of UObject, rendering, and playback.
+
+## Acceptance Criteria
+- All D02 golden vectors pass.
+- Output remains finite and within documented bounds.
+- Identical input and settings produce identical output.
+- No prior-frame state is stored.
+
+## Dependencies
+- D02 Define response math and golden test vectors.
+- D06 Create recoverable Unreal project shell.
+
+## Parallel Work
+- May run in parallel with D07 and D08 after D06 completes.
+
+## Evidence
+- Test output and implementation review.",Next,P0,M,"D02, D06","Unreal workstation or remote with configured UE toolchain","response,tests,cpp,stream-mvp,priority:P0",Stream MVP
+D10,Connect ConstantQNRT queries to explicit song time,"## Objective
+Drive raw frequency-band values from one authoritative time input.
+
+## Scope
+- Add an explicit update method accepting song time in seconds.
+- Query ConstantQNRT at that exact time.
+- Handle negative time, end-of-track time, missing assets, and band mismatches.
+- Capture raw values at the reference timestamps.
+
+## Acceptance Criteria
+- The method does not use accumulated DeltaTime as song time.
+- Repeated calls at the same timestamp return matching raw values.
+- Seeking backward and forward does not retain analyzer state.
+- Captured values match the D07 references.
+
+## Dependencies
+- D07 Import test audio and create ConstantQNRT asset.
+- D08 Implement static instanced line layout.
+
+## Evidence
+- Timestamp captures from repeated and out-of-order queries.",Next,P0,M,"D07, D08","Unreal workstation","sync,analysis,unreal,stream-mvp,priority:P0",Stream MVP
+D11,Drive mesh scale with deterministic response,"## Objective
+Map queried analyzer values through the response processor into bounded instance transforms.
+
+## Scope
+- Connect D10 raw band values to D09 processing.
+- Apply bounded Z scale while preserving base X and Y scale.
+- Update existing instances without recreating them.
+- Expose response settings as an Unreal data asset.
+
+## Acceptance Criteria
+- Every queried band maps to exactly one instance.
+- Silence and peaks stay within configured scale bounds.
+- Repeated and out-of-order timestamp updates produce matching transforms.
+- Settings changes refresh safely without recreating the actor.
+
+## Dependencies
+- D09 Implement stateless response processor.
+- D10 Connect ConstantQNRT queries to explicit song time.
+
+## Evidence
+- Reference timestamp transforms and short editor capture.",Next,P0,M,"D09, D10","Unreal workstation","visualizer,response,instancing,stream-mvp,priority:P0",Stream MVP
+D12,Build emissive material and exposure baseline,"## Objective
+Create a stream-readable material response without unstable exposure.
+
+## Scope
+- Create a material using per-instance custom data for response and band index.
+- Map the response to bounded emissive intensity and color.
+- Lock or deliberately configure scene exposure.
+- Document custom-data slots and parameter ranges.
+
+## Acceptance Criteria
+- Emissive response follows the same deterministic value used for scale.
+- Quiet, average, and peak frames remain readable.
+- Exposure does not pump during the test segment.
+- Instance count does not create one dynamic material per band.
+
+## Dependencies
+- D11 Drive mesh scale with deterministic response.
+
+## Evidence
+- Material documentation and stills from quiet, average, and peak timestamps.",Next,P1,M,D11,"Unreal workstation","material,lighting,visualizer,stream-mvp,priority:P1",Stream MVP
+D13,Build Sequencer-driven track-length scene,"## Objective
+Drive audio, visualizer time, camera, and output duration from one Level Sequence.
+
+## Scope
+- Create a Level Sequence matching the approved test range.
+- Set explicit frame rate and resolution.
+- Drive the visualizer's song-time input from sequence time.
+- Add and frame the camera.
+- Verify scrubbing at every reference timestamp.
+
+## Acceptance Criteria
+- Sequence duration matches the intended audio range.
+- Scrubbing away and back reproduces reference visual states.
+- Camera framing includes every instance.
+- Audio playback is synchronized to the timeline but is not used as the visual clock.
+
+## Dependencies
+- D05 Prepare approved test audio and asset manifest.
+- D11 Drive mesh scale with deterministic response.
+- D12 Build emissive material and exposure baseline.
+
+## Evidence
+- Sequence settings and reference-timestamp screenshots.",Next,P0,M,"D05, D11, D12","Unreal workstation","sequencer,sync,render,stream-mvp,priority:P0",Stream MVP
+D14,Render repeatability and synchronization proof,"## Objective
+Prove Movie Render Queue produces clean and repeatable output from the deterministic scene.
+
+## Scope
+- Save a Movie Render Queue preset.
+- Render the same 30-second range twice.
+- Compare start, middle, end, and manifest reference frames.
+- Record output settings, duration, elapsed time, and any differences.
+
+## Acceptance Criteria
+- Both renders complete without missing frames or editor overlays.
+- Output duration matches the sequence range.
+- Reference checkpoints match within a documented pixel or parameter tolerance.
+- The preset reproduces the output after restarting the editor.
+
+## Dependencies
+- D13 Build Sequencer-driven track-length scene.
+
+## Evidence
+- MRQ preset, logs, two proof renders, and comparison notes.",Next,P0,M,D13,"Unreal workstation","mrq,render,test,stream-mvp,priority:P0",Stream MVP
+D15,Produce and verify synchronized media file,"## Objective
+Combine the approved audio and repeatable visual render into the OBS-ready media file.
+
+## Scope
+- Encode the selected render into the delivery codec.
+- Mux the approved master audio exactly once.
+- Verify synchronization at the start, middle, end, and reference timestamps.
+- Record video and audio metadata.
+
+## Acceptance Criteria
+- The file plays completely without corruption.
+- Video and audio durations agree within one frame or documented tolerance.
+- All synchronization checkpoints pass.
+- Loudness and peak levels are safe for the intended stream mix.
+
+## Dependencies
+- D14 Render repeatability and synchronization proof.
+
+## Evidence
+- Media metadata and synchronization notes.",Next,P0,S,D14,"Remote or media workstation","render,audio,sync,stream-mvp,priority:P0",Stream MVP
+D16,Build OBS scene with single audio path and fallback,"## Objective
+Play the verified media through OBS with predictable video and exactly one audio route.
+
+## Scope
+- Add the media as a Media Source.
+- Configure activation, restart, and loop behavior.
+- Select embedded or separately routed audio, never both.
+- Configure canvas, output, frame rate, and color settings.
+- Create a one-action fallback scene.
+
+## Acceptance Criteria
+- Scene activation starts at the expected frame.
+- OBS meters show exactly one intended audio signal.
+- A local recording preserves resolution, frame rate, and sync.
+- Switching to fallback requires one operator action.
+
+## Dependencies
+- D15 Produce and verify synchronized media file.
+
+## Evidence
+- OBS settings, mixer screenshot, and local recording.",Next,P0,S,D15,"Streaming workstation","obs,audio,reliability,stream-mvp,priority:P0",Stream MVP
+D17,Pass private stream rehearsal,"## Objective
+Validate the complete viewer path before public use.
+
+## Scope
+- Run an unlisted or private stream for at least one complete loop.
+- Watch from a second device or account.
+- Monitor dropped frames, encoder load, audio levels, and synchronization.
+- Exercise fallback and recovery.
+
+## Acceptance Criteria
+- The complete loop reaches the viewer without interruption.
+- No doubled audio, clipping, or visible drift is observed.
+- OBS reports no unexplained render or encoding lag.
+- Fallback and recovery both succeed.
+- Discovered issues are captured as separate cards.
+
+## Dependencies
+- D16 Build OBS scene with single audio path and fallback.
+
+## Evidence
+- Rehearsal date, platform, OBS statistics, and viewer notes.",Next,P0,M,D16,"Streaming workstation + network","obs,stream,test,stream-mvp,priority:P0",Stream MVP
+D18,Write live-show runbook and release checklist,"## Objective
+Make the proven stream workflow repeatable under time pressure.
+
+## Scope
+- Document preflight, go-live, scene switching, recovery, and shutdown.
+- Record final media, OBS backup, and fallback locations.
+- Add a post-show evidence and issue-capture checklist.
+- Record the last successful rehearsal configuration.
+
+## Acceptance Criteria
+- A dry run can be completed using only the runbook.
+- All referenced paths and backups exist.
+- The fallback has a known-good visual and audio state.
+- The runbook identifies the configuration proven in D17.
+
+## Dependencies
+- D17 Pass private stream rehearsal.
+
+## Evidence
+- Reviewed runbook and completed dry-run checklist.",Next,P1,S,D17,"Remote after rehearsal evidence is available","docs,obs,reliability,stream-mvp,priority:P1",Stream MVP
+D19,Add circle and Fibonacci-sphere layouts,"## Objective
+Recover recognizable RTCQT layouts on the proven deterministic pipeline.
+
+## Scope
+- Implement the D03 circle and Fibonacci-sphere contracts.
+- Preserve band ordering, response processing, and explicit song time.
+- Add layout switching without recreating analysis state.
+- Verify camera framing and a short MRQ range for both layouts.
+
+## Acceptance Criteria
+- Every band maps to one finite transform in each layout.
+- Implementations match D03 reference vectors.
+- Switching layouts does not alter analyzer or response values.
+- Short MRQ tests complete for both layouts.
+
+## Dependencies
+- D14 Render repeatability and synchronization proof.
+
+## Evidence
+- Automated checks, layout stills, and MRQ proof clips.",Later,P1,M,D14,"Unreal workstation","layout,visualizer,polish,priority:P1",Polish

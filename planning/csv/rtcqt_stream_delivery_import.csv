@@ -1,0 +1,407 @@
+Title,Body,Status,Priority,Estimate,Labels,Milestone
+Create a recoverable Unreal project shell,"## Objective
+Create the complete current-Unreal project context that is missing from this checkout.
+
+## Epic
+Stream MVP - Project and Analysis Foundation
+
+## Scope
+- Choose and record the exact Unreal Engine version.
+- Create a C++ project with the `SynRTCQT` name or document the new module boundary.
+- Enable Audio Synesthesia and Movie Render Queue.
+- Preserve `.uproject`, target files, `Config/`, and source in a recoverable location.
+- Decide which binary assets require Git LFS or external storage.
+
+## Acceptance Criteria
+- The editor opens after closing and reopening the project.
+- A Development Editor build succeeds for the clean shell.
+- The engine version and enabled plugins are documented.
+- Another clone or backup contains everything needed to recreate the shell.
+
+## Dependencies
+- Unreal Engine installation and C++ toolchain.
+
+## Out Of Scope
+- Making the old custom RTCQT module compile.
+- Final visual design.
+
+## Evidence
+- Attach the successful build log and editor screenshot.",Now,P0,M,"foundation,unreal,stream-mvp,priority:P0",Stream MVP
+Prepare a licensed test track and ConstantQNRT asset,"## Objective
+Create the approved, pre-analyzed audio input for the first visualizer.
+
+## Epic
+Stream MVP - Project and Analysis Foundation
+
+## Scope
+- Select a 30-60 second WAV that is owned or cleared for broadcast.
+- Import it into `Content/Audio/`.
+- Create and configure a ConstantQNRT asset with 32 or 48 bands.
+- Record the track duration, sample rate, and permission source.
+
+## Acceptance Criteria
+- The SoundWave plays in the editor.
+- ConstantQNRT analysis completes without an editor error.
+- Band values can be queried at three or more timestamps.
+- Broadcast permission is recorded next to the asset.
+
+## Dependencies
+- Recoverable Unreal project shell.
+
+## Out Of Scope
+- Final music selection.
+- Custom RTCQT analysis.
+
+## Evidence
+- Attach the asset settings screenshot and three sampled value results.",Now,P0,S,"audio,analysis,stream-mvp,priority:P0",Stream MVP
+Build the first ConstantQNRT line visualizer,"## Objective
+Show one stable mesh response per ConstantQNRT frequency band.
+
+## Epic
+Stream MVP - Deterministic Visualizer
+
+## Scope
+- Create a visualizer actor using Blueprint or focused C++.
+- Create one cube instance per band in a line layout.
+- Query band values at the current song time.
+- Map values to Z scale with bounded minimum and maximum values.
+
+## Acceptance Criteria
+- Every configured band has exactly one visible mesh.
+- A test tone or music segment produces obvious band-specific motion.
+- No mesh is created or destroyed during normal playback.
+- The actor handles a missing analyzer asset without crashing.
+
+## Dependencies
+- Licensed test track and ConstantQNRT asset.
+
+## Out Of Scope
+- Circle, spiral, and sphere layouts.
+- Old RTCQT C++ integration.
+
+## Evidence
+- Attach a short editor capture and actor/component screenshot.",Next,P0,M,"visualizer,unreal,stream-mvp,priority:P0",Stream MVP
+Lock playback and analysis to one clock,"## Objective
+Make repeated playback produce the same visual timing.
+
+## Epic
+Stream MVP - Deterministic Visualizer
+
+## Scope
+- Define one authoritative song-time source.
+- Query ConstantQNRT using that time.
+- Handle start, stop, seek, and restart without a free-running animation timer.
+- Add a lightweight timestamp or band-value debug capture.
+
+## Acceptance Criteria
+- Three runs of the same 30-second segment align at selected checkpoints.
+- Restart returns the visualizer to the expected first-frame state.
+- Seeking does not leave stale smoothed values behind.
+- The clock choice is documented in the visualizer notes.
+
+## Dependencies
+- First ConstantQNRT line visualizer.
+
+## Evidence
+- Attach checkpoint timestamps or debug captures from three runs.",Next,P0,M,"sync,visualizer,stream-mvp,priority:P0",Stream MVP
+Add spectrum smoothing and response controls,"## Objective
+Make the visualization readable without losing timing or band identity.
+
+## Epic
+Stream MVP - Deterministic Visualizer
+
+## Scope
+- Add attack and release smoothing.
+- Add noise floor, response exponent, and min/max scale controls.
+- Reset temporal state on stop and seek.
+- Expose settings in the actor or a small settings asset.
+
+## Acceptance Criteria
+- Controls update without rebuilding the actor.
+- Silence settles to the configured baseline.
+- Peaks remain bounded at the configured maximum.
+- Repeated runs with unchanged settings remain deterministic.
+
+## Dependencies
+- Single-clock visualizer.
+
+## Notes
+Use the old `SpectrumProcessor` behavior as a reference, not a required port.",Next,P1,M,"spectrum,visualizer,polish,priority:P1",Stream MVP
+Build the emissive material and exposure baseline,"## Objective
+Create a bright, stream-readable material response without unstable exposure.
+
+## Epic
+Stream MVP - Deterministic Visualizer
+
+## Scope
+- Create a material with emissive intensity and color controls.
+- Feed per-band response through dynamic material parameters or per-instance custom data.
+- Lock or deliberately configure scene exposure.
+- Test against the intended stream background.
+
+## Acceptance Criteria
+- Emissive response follows the same band values as mesh scale.
+- No clipping or unreadable black frames appear in a short render.
+- Exposure does not visibly pump during the test segment.
+- Material parameter names and ranges are documented.
+
+## Dependencies
+- Line visualizer and response controls.
+
+## Evidence
+- Attach stills from quiet, average, and peak moments.",Next,P1,M,"material,visualizer,polish,priority:P1",Stream MVP
+Build a track-length Level Sequence,"## Objective
+Put the visualizer, camera, and audio into a sequence with an exact shared duration.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Create a Level Sequence matching the test track duration.
+- Add the camera and lock the intended framing.
+- Define how audio playback and visualizer song time are driven by the sequence.
+- Add start and end handles only if the final media specification includes them.
+
+## Acceptance Criteria
+- Sequence duration matches the intended output duration.
+- Frame rate and resolution are explicitly set.
+- Scrubbing to known timestamps shows the expected visual state.
+- Camera framing has no clipped or missing band meshes.
+
+## Dependencies
+- Deterministic visualizer and material baseline.
+
+## Evidence
+- Attach sequence settings and camera-frame screenshots.",Next,P0,M,"sequencer,render,stream-mvp,priority:P0",Stream MVP
+Render a short synchronization proof,"## Objective
+Prove Movie Render Queue can produce a clean, repeatable 30-second visual render.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Configure Movie Render Queue for the target frame rate and resolution.
+- Render a frame sequence or high-quality intermediate.
+- Record render settings and elapsed time.
+- Inspect first, middle, and last frames for missing content or temporal jumps.
+
+## Acceptance Criteria
+- The render completes without missing frames.
+- Output duration matches the selected sequence range.
+- The same range can be rendered again from saved settings.
+- No editor overlays, debug text, or unintended UI appear.
+
+## Dependencies
+- Track-length Level Sequence.
+
+## Evidence
+- Attach the MRQ preset, render log, and proof clip.",Next,P0,M,"render,mrq,stream-mvp,priority:P0",Stream MVP
+Produce and verify the synchronized media file,"## Objective
+Combine the clean visual render with the original approved audio for OBS playback.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Encode the rendered frames or intermediate into the chosen delivery codec.
+- Mux the original WAV or approved master audio exactly once.
+- Check synchronization near the start, middle, and end.
+- Record codec, resolution, frame rate, audio format, and duration.
+
+## Acceptance Criteria
+- The file plays from start to finish without corruption.
+- Video and audio duration agree within one frame or a documented tolerance.
+- Three synchronization checkpoints pass.
+- Loudness and peak levels are safe for the intended stream mix.
+
+## Dependencies
+- Completed synchronization proof render.
+
+## Out Of Scope
+- OBS scene configuration.
+
+## Evidence
+- Attach media metadata and checkpoint notes.",Next,P0,S,"render,audio,sync,stream-mvp,priority:P0",Stream MVP
+Build the OBS scene and audio routing,"## Objective
+Play the synchronized visual in OBS with predictable video and exactly one audio path.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Add the final file as a Media Source.
+- Configure loop, restart-on-activation, and visibility behavior.
+- Choose either embedded media audio or a separate routed track, not both.
+- Set canvas, output resolution, frame rate, and color settings.
+- Create a basic fallback scene.
+
+## Acceptance Criteria
+- The source starts at the expected frame when the scene is activated.
+- Audio meters show one intended signal path with no doubling or echo.
+- A local recording has the expected resolution, frame rate, and sync.
+- Switching to the fallback scene takes only one operator action.
+
+## Dependencies
+- Verified synchronized media file.
+
+## Evidence
+- Attach OBS source settings, audio mixer screenshot, and local test recording.",Next,P0,S,"obs,stream,audio,priority:P0",Stream MVP
+Pass a private stream rehearsal,"## Objective
+Validate the complete viewer path before a public broadcast.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Run an unlisted or private stream for at least one full media loop.
+- Watch from a second device or account.
+- Monitor dropped frames, encoder load, audio levels, and sync.
+- Test the fallback scene and recovery back to the main visual.
+
+## Acceptance Criteria
+- The full loop reaches the viewer without interruption.
+- No doubled audio, clipping, or visible drift is observed.
+- OBS reports no unexplained render or encoding lag.
+- Fallback and recovery both work during the rehearsal.
+- Any issue found becomes a separate card before public launch.
+
+## Dependencies
+- OBS scene and audio routing.
+
+## Evidence
+- Attach rehearsal date, platform, OBS stats, and viewer-side notes.",Next,P0,M,"obs,stream,test,priority:P0",Stream MVP
+Write the live-show runbook and fallback scene,"## Objective
+Make the first public use repeatable under time pressure.
+
+## Epic
+Stream MVP - Render and OBS Launch
+
+## Scope
+- Write preflight, go-live, scene-switch, recovery, and shutdown steps.
+- Keep a known-good fallback visual and audio state.
+- Record where the final media and OBS scene backup are stored.
+- Add a short post-show checklist for logs and notes.
+
+## Acceptance Criteria
+- A dry run can be completed using only the runbook.
+- The fallback has no missing media or silent unexpected state.
+- Paths and backup locations are valid on the streaming machine.
+- The runbook records the last rehearsal result.
+
+## Dependencies
+- Passed private stream rehearsal.",Next,P1,S,"docs,obs,reliability,priority:P1",Stream MVP
+Add circle and spiral layouts,"## Objective
+Recover recognizable RTCQT visual layouts on the proven visualizer architecture.
+
+## Epic
+Polish - RTCQT Visual Language
+
+## Scope
+- Add circle and spiral layout modes.
+- Keep band ordering and focus behavior explicit.
+- Preserve the same analysis, smoothing, and material pipeline.
+- Verify camera framing for each layout.
+
+## Acceptance Criteria
+- Layout switching does not recreate analysis state.
+- Every band maps to one valid transform in each layout.
+- Index zero and empty focus ranges are handled safely.
+- A short MRQ test succeeds for both layouts.
+
+## Dependencies
+- Stream MVP visualizer is stable.
+
+## Notes
+Use `AMeshController` as design reference; do not copy known unsafe indexing.",Later,P1,M,"layout,visualizer,polish,priority:P1",Polish
+Evaluate custom RTCQT processing against the NRT baseline,"## Objective
+Decide with evidence whether any old custom processing is worth porting.
+
+## Epic
+Polish - RTCQT Visual Language
+
+## Scope
+- Identify two or three old processing features with likely visual value.
+- Reproduce comparable settings using the current NRT pipeline where possible.
+- Capture side-by-side clips on the same audio segment.
+- Record visual benefit, complexity, packaging risk, and performance cost.
+
+## Acceptance Criteria
+- Each candidate has a side-by-side result or a documented reason it cannot be tested.
+- The decision names specific features to port or explicitly closes the port path.
+- No old DSP work is required for the existing stream scene to continue working.
+
+## Dependencies
+- Passed Stream MVP and stable spectrum controls.
+
+## Evidence
+- Attach comparison clips and the decision note.",Later,P1,S,"analysis,decision,rtcqt,priority:P1",Polish
+Port only approved RTCQT spectrum features,"## Objective
+Add only the custom processing features that showed a material benefit in comparison tests.
+
+## Epic
+Polish - RTCQT Visual Language
+
+## Scope
+- Put analysis or shaping code behind a clean runtime module boundary.
+- Keep editor-only dependencies out of runtime builds.
+- Add known-signal tests for each approved feature.
+- Preserve the ConstantQNRT path as a working fallback.
+
+## Acceptance Criteria
+- Known test tones activate expected bands or shaping behavior.
+- Development Editor and packaged runtime dependency boundaries are clean.
+- The fallback NRT mode still renders the proven stream scene.
+- A comparison render confirms the intended visual improvement.
+
+## Dependencies
+- Approved RTCQT processing decision.
+
+## Out Of Scope
+- Porting every surviving old class.",Later,P2,L,"cpp,dsp,rtcqt,priority:P2",Polish
+Benchmark live Unreal capture in OBS,"## Objective
+Measure whether the visualizer can run live on the streaming machine without harming broadcast quality.
+
+## Epic
+Live - Real-Time and Interactive Delivery
+
+## Scope
+- Package or run the visualizer in a controlled full-screen or windowed mode.
+- Capture it in OBS using the appropriate source type.
+- Measure Unreal frame time, GPU load, OBS render lag, encoder lag, and audio sync.
+- Compare results with the proven pre-rendered Media Source scene.
+
+## Acceptance Criteria
+- A 30-minute test records all target metrics.
+- Quality thresholds and machine specifications are documented.
+- The decision is explicit: use live capture, optimize and retest, or retain pre-rendered playback.
+- The pre-rendered fallback remains immediately available.
+
+## Dependencies
+- Passed Stream MVP rehearsal.
+
+## Evidence
+- Attach OBS stats, Unreal performance captures, and decision notes.",Later,P2,M,"live,obs,performance,priority:P2",Live
+Prototype Pixel Streaming on the local network,"## Objective
+Prove one shared Unreal visualizer session can reach a browser before planning public hosting.
+
+## Epic
+Live - Real-Time and Interactive Delivery
+
+## Scope
+- Enable and configure Pixel Streaming for the chosen Unreal version.
+- Connect one browser client over the local network.
+- Confirm synchronized video and audio delivery.
+- Disable general viewer control or limit it to one curated interaction.
+- Record signaling, firewall, and GPU requirements discovered.
+
+## Acceptance Criteria
+- A second device receives the same visual and audio session.
+- End-to-end latency and stability are measured for at least 15 minutes.
+- Unwanted keyboard and mouse control is blocked.
+- Public hosting, HTTPS, STUN/TURN, moderation, and access control remain separate follow-up work.
+
+## Dependencies
+- Stable live visualizer path and completed live-capture benchmark.
+
+## Out Of Scope
+- Public deployment and true multiplayer.",Later,P2,L,"pixel-streaming,webrtc,prototype,priority:P2",Live
