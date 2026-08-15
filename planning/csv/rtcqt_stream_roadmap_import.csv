@@ -1,0 +1,39 @@
+Title,Body,Status,Priority,Estimate,Labels,Milestone
+Stream MVP - Project and Analysis Foundation,"## Outcome
+Create a recoverable Unreal project that can pre-analyze one licensed track with supported engine tools.
+
+## Success Measures
+- The project opens after a clean restart.
+- Audio Synesthesia and Movie Render Queue are enabled.
+- A ConstantQNRT asset is connected to the approved test track.
+
+## Delivery Cards
+- Create a recoverable Unreal project shell.
+- Prepare a licensed test track and ConstantQNRT asset.",Now,P0,M,"epic,stream-mvp,foundation,priority:P0",Stream MVP
+Stream MVP - Deterministic Visualizer,"## Outcome
+Produce repeatable per-band mesh motion from pre-analyzed audio on one shared playback clock.
+
+## Success Measures
+- Three runs of the same segment produce matching visual events.
+- Smoothing, scale, and emissive response are controllable.
+- The first implementation does not depend on the old custom CQT compiling.",Next,P0,L,"epic,stream-mvp,visualizer,priority:P0",Stream MVP
+Stream MVP - Render and OBS Launch,"## Outcome
+Turn the deterministic scene into synchronized media and pass a private OBS stream rehearsal.
+
+## Success Measures
+- Sync is checked at the start, middle, and end.
+- OBS receives audio exactly once.
+- A fallback scene and short operator runbook are ready.",Next,P0,L,"epic,stream-mvp,obs,priority:P0",Stream MVP
+Polish - RTCQT Visual Language,"## Outcome
+Recover the strongest visual and spectrum-shaping ideas from the old module after the Stream MVP works.
+
+## Success Measures
+- Circle or spiral layouts are available.
+- Any custom RTCQT processing has a documented visible benefit over ConstantQNRT.
+- Performance remains within the render target.",Later,P1,L,"epic,polish,visualizer,priority:P1",Polish
+Live - Real-Time and Interactive Delivery,"## Outcome
+Evaluate live Unreal capture and a shared browser room without putting the proven pre-rendered stream path at risk.
+
+## Success Measures
+- Live capture has measured frame-time and OBS results.
+- Pixel Streaming works on the local network before any public hosting work begins.",Later,P2,L,"epic,live,pixel-streaming,priority:P2",Live
