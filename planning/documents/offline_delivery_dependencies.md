@@ -43,16 +43,22 @@ D14 --> D19 Circle and Fibonacci-sphere polish
 
 ## Remote Work Remaining Before the Unreal Workstation
 
-1. D02: response formulas and golden test vectors.
-2. D03: layout contracts and golden test vectors.
-3. D05: approved audio selection and asset manifest, if the audio is available.
-4. D04: Unreal-facing API and source-tree design after D02 and D03.
+Completed remotely:
+
+- [x] D01: offline architecture decision.
+- [x] D02: response formulas and 32 validated golden test vectors.
+
+Remaining remote work:
+
+1. D03: layout contracts and golden test vectors.
+2. D05: approved audio selection and asset manifest, if the audio is available.
+3. D04: Unreal-facing API and source-tree design after D03. D02 is complete.
 
 D06 is the first unavoidable Unreal-workstation gate. Work should not begin on
 D07-D14 until the dependencies listed on each card are complete.
 
 ## WIP Recommendation
 
-Keep no more than two cards in `Now`. The recommended current pair is D02 and
-D03. If audio selection can happen independently, track D05 as preparation but
-do not displace either specification card until one is done.
+Keep no more than two cards in `Now`. D03 is the current implementation card.
+If audio selection can happen independently, D05 may take the second WIP slot.
+D04 remains blocked only by D03.

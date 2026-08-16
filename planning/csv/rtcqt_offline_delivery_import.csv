@@ -37,7 +37,9 @@ Specify deterministic conversion from raw ConstantQNRT values to visual response
 - D01 Finalize offline rebuild architecture.
 
 ## Evidence
-- Response specification and golden-vector file.",Now,P0,S,D01,Remote,"response,tests,cpp,stream-mvp,priority:P0",Stream MVP
+- `planning/documents/response_math_spec.md`.
+- `planning/test-vectors/response_golden_vectors.csv`.
+- `python3 planning/scripts/validate_response_vectors.py`: PASS for 32 cases.",Done,P0,S,D01,Remote,"response,tests,cpp,stream-mvp,priority:P0",Stream MVP
 D03,Define deterministic layout contracts and test vectors,"## Objective
 Specify pure layout behavior for line, circle, and Fibonacci-sphere modes.
 
