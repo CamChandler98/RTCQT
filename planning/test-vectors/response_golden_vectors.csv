@@ -1,0 +1,33 @@
+case_id,input,noise_floor,input_ceiling,band_weight,response_exponent,output_min,output_max,expected_sanitized_input,expected_normalized,expected_weighted,expected_response,expected_output,notes
+silence,0,0.1,1,1,2,1,5,0,0,0,0,1,Silence maps to the output baseline
+below_floor,0.05,0.1,1,1,2,1,5,0.05,0,0,0,1,Input below the floor is suppressed
+at_floor,0.1,0.1,1,1,2,1,5,0.1,0,0,0,1,Exact floor boundary is zero
+midpoint,0.55,0.1,1,1,2,1,5,0.55,0.5,0.5,0.25,2,Default quadratic midpoint
+three_quarters,0.775,0.1,1,1,2,1,5,0.775,0.75,0.75,0.5625,3.25,Quadratic response at three quarters
+peak,1,0.1,1,1,2,1,5,1,1,1,1,5,Ceiling maps to maximum
+above_ceiling,1.4,0.1,1,1,2,1,5,1.4,1,1,1,5,Finite input above ceiling saturates
+negative_input,-0.2,0.1,1,1,2,1,5,-0.2,0,0,0,1,Finite negative input saturates during normalization
+nan_input,nan,0.1,1,1,2,1,5,0,0,0,0,1,NaN input becomes zero
+positive_infinity_input,inf,0.1,1,1,2,1,5,0,0,0,0,1,Positive infinity input becomes zero
+negative_infinity_input,-inf,0.1,1,1,2,1,5,0,0,0,0,1,Negative infinity input becomes zero
+missing_weight,0.55,0.1,1,,2,1,5,0.55,0.5,0.5,0.25,2,Missing weight defaults to one
+zero_weight,1,0.1,1,0,2,1,5,1,1,0,0,1,Zero weight disables the band
+reduced_weight,0.55,0.1,1,0.5,2,1,5,0.55,0.5,0.25,0.0625,1.25,Reduced band weight before exponentiation
+boosted_weight,0.55,0.1,1,2,2,1,5,0.55,0.5,1,1,5,Boosted weight saturates before exponentiation
+negative_weight,1,0.1,1,-2,2,1,5,1,1,0,0,1,Negative weight becomes zero
+nan_weight,1,0.1,1,nan,2,1,5,1,1,0,0,1,Non-finite weight becomes zero
+linear_exponent,0.55,0.1,1,1,1,1,5,0.55,0.5,0.5,0.5,3,Exponent one is linear
+square_root_exponent,0.325,0.1,1,1,0.5,1,5,0.325,0.25,0.25,0.5,3,Exponent below one raises middle response
+fourth_power_exponent,0.55,0.1,1,1,4,1,5,0.55,0.5,0.5,0.0625,1.25,Higher exponent emphasizes peaks
+zero_exponent,0.55,0.1,1,1,0,1,5,0.55,0.5,0.5,0.5,3,Zero exponent falls back to one
+negative_exponent,0.55,0.1,1,1,-2,1,5,0.55,0.5,0.5,0.5,3,Negative exponent falls back to one
+nan_exponent,0.55,0.1,1,1,nan,1,5,0.55,0.5,0.5,0.5,3,Non-finite exponent falls back to one
+degenerate_input_window,1,0.5,0.5,1,2,1,5,1,0,0,0,1,Equal floor and ceiling return baseline
+reversed_input_window,1,0.8,0.2,1,2,1,5,1,0,0,0,1,Reversed floor and ceiling return baseline
+negative_noise_floor,0.5,-0.5,1,1,1,0,10,0.5,0.5,0.5,0.5,5,Noise floor clamps to zero
+nan_noise_floor,0.5,nan,1,1,1,0,10,0.5,0.5,0.5,0.5,5,Non-finite floor defaults to zero
+infinite_ceiling,0.5,0,inf,1,1,0,10,0.5,0.5,0.5,0.5,5,Non-finite ceiling defaults to one
+reversed_output_range,0.55,0.1,1,1,1,5,1,0.55,0.5,0.5,0.5,3,Output bounds are ordered before mapping
+constant_output_range,1,0.1,1,1,2,2,2,1,1,1,1,2,Equal output bounds produce a constant
+nan_output_min,0.5,0,1,1,1,nan,4,0.5,0.5,0.5,0.5,2,Non-finite output minimum defaults to zero
+nan_output_max,0.5,0,1,1,1,2,nan,0.5,0.5,0.5,0.5,1.5,Non-finite output maximum defaults to one then bounds are ordered

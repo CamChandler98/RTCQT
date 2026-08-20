@@ -13,3 +13,11 @@ Saved
 *.xcodeproj
 *.xcworkspace
 .DS_Store
+
+# Unreal-generated IDE workspace files.
+.ignore
+*.code-workspace
+
+# Private licensed test audio and assets derived from it.
+Content/Audio/PrivateTest/
+Music
