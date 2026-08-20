@@ -55,15 +55,18 @@ Completed remotely:
   technical fingerprints, deterministic extraction recipe, and six reference
   timestamps.
 
-Remaining remote work:
+## Unreal Workstation Progress
 
-None. D01-D05 are complete.
+Completed:
 
-D06 is the first unavoidable Unreal-workstation gate. Work should not begin on
-D07-D14 until the dependencies listed on each card are complete.
+- [x] D06: UE 5.8 project shell, canonical runtime module, required plugins,
+  Development Editor build, interactive reopen, and fresh-clone build/load.
+
+Current:
+
+- D07 and D08 are unblocked and may proceed in parallel.
 
 ## WIP Recommendation
 
-Keep no more than two cards in `Now`. No remote foundation work remains before
-D06; begin the clean Unreal project shell at the workstation. D07 can follow as
-soon as the project shell is healthy because its approved audio is now ready.
+Keep D07 and D08 as the two cards in `Now`. Pull D09 only after one of them is
+complete; D10 remains blocked until both D07 and D08 are complete.

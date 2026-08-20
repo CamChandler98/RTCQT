@@ -136,7 +136,10 @@ Create the complete current-Unreal project context missing from this checkout.
 - D04 Define Unreal runtime API and source structure.
 
 ## Evidence
-- Engine version, build log, editor screenshot, and repository tree.",Next,P0,M,D04,"Unreal workstation","foundation,unreal,build,stream-mvp,priority:P0",Stream MVP
+- `planning/documents/unreal_project_baseline.md`.
+- UE 5.8 Development Editor build: Succeeded.
+- Interactive close/reopen and required-plugin checks: Passed.
+- Fresh NTFS clone build and headless editor load: Passed.",Done,P0,M,D04,"Unreal workstation","foundation,unreal,build,stream-mvp,priority:P0",Stream MVP
 D07,Import test audio and create ConstantQNRT asset,"## Objective
 Create the supported pre-analyzed input for the first visualizer.
 
@@ -157,7 +160,7 @@ Create the supported pre-analyzed input for the first visualizer.
 - D06 Create recoverable Unreal project shell.
 
 ## Evidence
-- Asset settings screenshot and timestamp query results.",Next,P0,S,"D05, D06","Unreal workstation","audio,analysis,unreal,stream-mvp,priority:P0",Stream MVP
+- Asset settings screenshot and timestamp query results.",Now,P0,S,"D05, D06","Unreal workstation","audio,analysis,unreal,stream-mvp,priority:P0",Stream MVP
 D08,Implement static instanced line layout,"## Objective
 Render exactly one reusable mesh instance per configured band before connecting audio.
 
@@ -181,7 +184,7 @@ Render exactly one reusable mesh instance per configured band before connecting 
 - May run in parallel with D07 after D06 completes.
 
 ## Evidence
-- Automated results, actor/component screenshot, and editor capture.",Next,P0,M,"D03, D06","Unreal workstation","layout,instancing,unreal,stream-mvp,priority:P0",Stream MVP
+- Automated results, actor/component screenshot, and editor capture.",Now,P0,M,"D03, D06","Unreal workstation","layout,instancing,unreal,stream-mvp,priority:P0",Stream MVP
 D09,Implement stateless response processor,"## Objective
 Implement the agreed deterministic spectrum-to-response transformation.
 

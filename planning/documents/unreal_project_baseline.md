@@ -2,8 +2,7 @@
 
 ## Status
 
-D06 has passed its UE 5.8 compile, headless editor-load, and interactive reopen
-gates. Fresh-clone verification remains before the card is marked Done.
+D06 is complete. Every project-shell acceptance gate passed on UE 5.8.
 
 ## Workstation
 
@@ -89,6 +88,17 @@ After the canonical source change, the project:
 - Closed without a project or module error.
 - Opened normally a second time.
 
+## Fresh Clone Verification
+
+The committed candidate at `0801436` was cloned to a separate NTFS directory.
+
+- No generated build, cache, or saved directories were present before build.
+- UnrealHeaderTool generated eight files from tracked source.
+- All twelve Development Editor build actions completed successfully.
+- The clean clone loaded `UnrealEditor-RTCQT.dll` and both required plugins.
+- Engine initialization and the template map check completed with zero errors
+  and zero warnings.
+
 ## Storage Policy
 
 - Track `.uproject`, `Config/`, `Source/`, and authored project
@@ -103,7 +113,7 @@ After the canonical source change, the project:
   committing other authored `.uasset` or `.umap` files.
 - Do not commit the private audio merely because a later Git LFS policy exists.
 
-## Remaining D06 Gates
+## D06 Result
 
-- Commit and push the D06 shell.
-- Build and open a fresh NTFS clone using only tracked files.
+D06 meets its definition of done. D07 and D08 are now the two current delivery
+cards under the work-in-progress limit.
