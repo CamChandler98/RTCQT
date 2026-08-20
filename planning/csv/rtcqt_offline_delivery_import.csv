@@ -62,7 +62,9 @@ Specify pure layout behavior for line, circle, and Fibonacci-sphere modes.
 - May run in parallel with D02.
 
 ## Evidence
-- Layout specification and golden-vector file.",Now,P0,S,D01,Remote,"layout,tests,cpp,stream-mvp,priority:P0",Stream MVP
+- `planning/documents/layout_spec.md`.
+- `planning/test-vectors/layout_golden_vectors.csv`.
+- `python3 planning/scripts/validate_layout_vectors.py`: PASS for 17 cases and 29 transforms.",Done,P0,S,D01,Remote,"layout,tests,cpp,stream-mvp,priority:P0",Stream MVP
 D04,Define Unreal runtime API and source structure,"## Objective
 Turn the architecture and pure behavior contracts into implementation-ready Unreal interfaces.
 
@@ -84,7 +86,9 @@ Turn the architecture and pure behavior contracts into implementation-ready Unre
 - D03 Define deterministic layout contracts and test vectors.
 
 ## Evidence
-- API specification or reviewed header draft.",Next,P0,M,"D02, D03",Remote,"architecture,api,cpp,stream-mvp,priority:P0",Stream MVP
+- `planning/documents/unreal_runtime_api_spec.md`.
+- Reviewed interface and build drafts in `planning/header-drafts/`.
+- D02 and D03 reference validators remain passing.",Done,P0,M,"D02, D03",Remote,"architecture,api,cpp,stream-mvp,priority:P0",Stream MVP
 D05,Prepare approved test audio and asset manifest,"## Objective
 Select and document the short audio source used for deterministic verification.
 
@@ -107,7 +111,10 @@ Select and document the short audio source used for deterministic verification.
 - May run in parallel with D02-D04.
 
 ## Evidence
-- Asset manifest entry and audio metadata.",Next,P0,S,D01,"Remote + audio access","audio,licensing,foundation,stream-mvp,priority:P0",Stream MVP
+- `planning/documents/test_audio_manifest.md` records permission, provenance, technical identity, storage policy, and six reference timestamps.
+- `planning/scripts/extract_wav_segment.py` recreates the exact 60-second fixture from the ignored full source.
+- `planning/scripts/analyze_test_audio.py` verifies the fixture metadata, SHA-256, and signal checkpoints.
+- Fixture SHA-256: `818bc64d830301e32fc929bfa19fb4799b23295e22bdde4e0108826554eb8a23`.",Done,P0,S,D01,"Remote + audio access","audio,licensing,foundation,stream-mvp,priority:P0",Stream MVP
 D06,Create recoverable Unreal project shell,"## Objective
 Create the complete current-Unreal project context missing from this checkout.
 

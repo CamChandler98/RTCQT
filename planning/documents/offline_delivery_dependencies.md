@@ -47,18 +47,23 @@ Completed remotely:
 
 - [x] D01: offline architecture decision.
 - [x] D02: response formulas and 32 validated golden test vectors.
+- [x] D03: line, circle, and Fibonacci-sphere contracts with 29 validated
+  transforms across 17 cases.
+- [x] D04: Unreal runtime API, ownership, failure, source-tree, and module
+  dependency contract with reviewed header drafts.
+- [x] D05: approved Good Kid instrumental test fixture, permission evidence,
+  technical fingerprints, deterministic extraction recipe, and six reference
+  timestamps.
 
 Remaining remote work:
 
-1. D03: layout contracts and golden test vectors.
-2. D05: approved audio selection and asset manifest, if the audio is available.
-3. D04: Unreal-facing API and source-tree design after D03. D02 is complete.
+None. D01-D05 are complete.
 
 D06 is the first unavoidable Unreal-workstation gate. Work should not begin on
 D07-D14 until the dependencies listed on each card are complete.
 
 ## WIP Recommendation
 
-Keep no more than two cards in `Now`. D03 is the current implementation card.
-If audio selection can happen independently, D05 may take the second WIP slot.
-D04 remains blocked only by D03.
+Keep no more than two cards in `Now`. No remote foundation work remains before
+D06; begin the clean Unreal project shell at the workstation. D07 can follow as
+soon as the project shell is healthy because its approved audio is now ready.

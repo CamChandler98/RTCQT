@@ -1,0 +1,34 @@
+case_id,layout,count,spacing,radius,origin_x,origin_y,origin_z,scale_x,scale_y,scale_z,expected_count,index,expected_translation_x,expected_translation_y,expected_translation_z,expected_forward_x,expected_forward_y,expected_forward_z,expected_up_x,expected_up_y,expected_up_z,expected_scale_x,expected_scale_y,expected_scale_z,notes
+line_count_0,line,0,10,0,0,0,0,1,1,1,0,,,,,,,,,,,,,,Zero line count returns empty
+line_negative_count,line,-2,10,0,0,0,0,1,1,1,0,,,,,,,,,,,,,,Negative count returns empty
+line_count_1,line,1,10,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,Single line instance is centered
+line_count_2,line,2,10,0,0,0,0,1,1,1,2,0,-5,0,0,1,0,0,0,0,1,1,1,1,Even line count straddles origin
+line_count_2,line,2,10,0,0,0,0,1,1,1,2,1,5,0,0,1,0,0,0,0,1,1,1,1,Even line count straddles origin
+line_count_5,line,5,2,0,10,-2,3,1,2,0.5,5,0,6,-2,3,1,0,0,0,0,1,1,2,0.5,Translated full line with non-uniform scale
+line_count_5,line,5,2,0,10,-2,3,1,2,0.5,5,1,8,-2,3,1,0,0,0,0,1,1,2,0.5,Translated full line with non-uniform scale
+line_count_5,line,5,2,0,10,-2,3,1,2,0.5,5,2,10,-2,3,1,0,0,0,0,1,1,2,0.5,Translated full line with non-uniform scale
+line_count_5,line,5,2,0,10,-2,3,1,2,0.5,5,3,12,-2,3,1,0,0,0,0,1,1,2,0.5,Translated full line with non-uniform scale
+line_count_5,line,5,2,0,10,-2,3,1,2,0.5,5,4,14,-2,3,1,0,0,0,0,1,1,2,0.5,Translated full line with non-uniform scale
+line_negative_spacing,line,2,-4,0,1,2,3,1,1,1,2,0,1,2,3,1,0,0,0,0,1,1,1,1,Negative spacing sanitizes to zero
+line_negative_spacing,line,2,-4,0,1,2,3,1,1,1,2,1,1,2,3,1,0,0,0,0,1,1,1,1,Negative spacing sanitizes to zero
+line_invalid_origin_scale,line,1,1,0,nan,inf,-inf,nan,-1,inf,1,0,0,0,0,1,0,0,0,0,1,0,0,0,Non-finite origin and invalid scale sanitize safely
+circle_count_0,circle,0,0,3,0,0,0,1,1,1,0,,,,,,,,,,,,,,Zero circle count returns empty
+circle_count_1,circle,1,0,3,0,0,0,1,1,1,1,0,3,0,0,1,0,0,0,0,1,1,1,1,Single circle instance begins on positive X
+circle_count_2,circle,2,0,3,0,0,0,1,1,1,2,0,3,0,0,1,0,0,0,0,1,1,1,1,Two circle instances oppose each other
+circle_count_2,circle,2,0,3,0,0,0,1,1,1,2,1,-3,0,0,-1,0,0,0,0,1,1,1,1,Two circle instances oppose each other
+circle_count_4,circle,4,0,2,1,2,3,0.5,1,2,4,0,3,2,3,1,0,0,0,0,1,0.5,1,2,Translated four-point circle
+circle_count_4,circle,4,0,2,1,2,3,0.5,1,2,4,1,1,4,3,0,1,0,0,0,1,0.5,1,2,Translated four-point circle
+circle_count_4,circle,4,0,2,1,2,3,0.5,1,2,4,2,-1,2,3,-1,0,0,0,0,1,0.5,1,2,Translated four-point circle
+circle_count_4,circle,4,0,2,1,2,3,0.5,1,2,4,3,1,0,3,0,-1,0,0,0,1,0.5,1,2,Translated four-point circle
+circle_infinite_radius,circle,1,0,inf,1,2,3,1,1,1,1,0,1,2,3,1,0,0,0,0,1,1,1,1,Infinite radius sanitizes to zero
+sphere_count_0,fibonacci_sphere,0,0,3,0,0,0,1,1,1,0,,,,,,,,,,,,,,Zero sphere count returns empty
+sphere_count_1,fibonacci_sphere,1,0,3,0,0,0,1,1,1,1,0,3,0,0,1,0,0,0,0,1,1,1,1,Single sphere instance is on positive X
+sphere_count_2,fibonacci_sphere,2,0,2,0,0,0,1,1,1,2,0,1.73205080757,0,1,0.866025403784,0,0.5,-0.5,0,0.866025403784,1,1,1,Two-point midpoint Fibonacci sphere
+sphere_count_2,fibonacci_sphere,2,0,2,0,0,0,1,1,1,2,1,-1.27716036075,1.16998350968,-1,-0.638580180376,0.58499175484,-0.5,-0.368684439039,0.337745147131,0.866025403784,1,1,1,Two-point midpoint Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,0,1.21108319357,2,3.83333333333,0.552770798393,0,0.833333333333,-0.833333333333,0,0.552770798393,1,0.5,2,Translated representative Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,1,-3.5543207215,4.33996701936,2.5,-0.638580180376,0.58499175484,0.5,0.368684439039,-0.337745147131,0.866025403784,1,0.5,2,Translated representative Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,2,-0.655188291653,-1.92895157025,1.16666666667,0.0862029270868,-0.982237892562,0.166666666667,-0.0145709541195,0.166028506811,0.986013297183,1,0.5,2,Translated representative Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,3,1.39971522979,5.13000357371,-0.166666666667,0.599928807448,0.782500893428,-0.166666666667,0.10140647683,0.132266791882,0.986013297183,1,0.5,2,Translated representative Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,4,-4.41114757493,1.39661602436,-1.5,-0.852786893732,-0.150845993909,-0.5,-0.492356742658,-0.0870909751897,0.866025403784,1,0.5,2,Translated representative Fibonacci sphere
+sphere_count_6,fibonacci_sphere,6,0,4,-1,2,0.5,1,0.5,2,6,5,0.865613151846,0.81324962332,-2.83333333333,0.466403287961,-0.29668759417,-0.833333333333,0.703129412344,-0.447273377189,0.552770798393,1,0.5,2,Translated representative Fibonacci sphere
+sphere_nan_radius,fibonacci_sphere,1,0,nan,1,2,3,1,1,1,1,0,1,2,3,1,0,0,0,0,1,1,1,1,NaN radius sanitizes to zero
