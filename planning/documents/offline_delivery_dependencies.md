@@ -61,12 +61,18 @@ Completed:
 
 - [x] D06: UE 5.8 project shell, canonical runtime module, required plugins,
   Development Editor build, interactive reopen, and fresh-clone build/load.
+- [x] D07: imported SoundWave, configured 32-band ConstantQNRT asset, and
+  complete raw/normalized readings at all six reference timestamps. Reordered
+  and fresh-editor runs match the baseline exactly. See
+  [D07 verification](d07_constant_qnrt_verification.md).
 
 Current:
 
-- D07 and D08 are unblocked and may proceed in parallel.
+- D08 is the current implementation card: the static instanced line layout.
+- D09 is unblocked and available to pull next.
+- D10 waits for D08; its D07 dependency is complete.
 
 ## WIP Recommendation
 
-Keep D07 and D08 as the two cards in `Now`. Pull D09 only after one of them is
-complete; D10 remains blocked until both D07 and D08 are complete.
+Keep D08 in `Now`. D09 may fill the second slot when useful; keep no more than
+two cards in `Now`. The next visible checkpoint is a line of 32 mesh instances.

@@ -1,0 +1,122 @@
+{
+  "delivery_card": "D07",
+  "status": "Done",
+  "local_verification_date": "2026-09-22 America/New_York",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "fixture_sha256": "818bc64d830301e32fc929bfa19fb4799b23295e22bdde4e0108826554eb8a23",
+  "settings": {
+    "starting_frequency_hz": 40,
+    "bands": 32,
+    "bands_per_octave": 3.5,
+    "analysis_period_seconds": 0.01,
+    "downmix_to_mono": true,
+    "query_channel": 0,
+    "fft_size": 8192,
+    "window": "Blackman",
+    "spectrum": "Power Spectrum",
+    "band_width_stretch": 1,
+    "cqt_normalization": "Equal Energy",
+    "noise_floor_db": -60
+  },
+  "settings_evidence": "constant_qnrt_settings.png.png",
+  "import_evidence": "soundwave_details.png",
+  "comparison_absolute_tolerance": 1e-06,
+  "comparison_key": [
+    "time_seconds",
+    "band_index"
+  ],
+  "fresh_editor_initialization_utc": "2026-09-22T21:45:17.899Z",
+  "fresh_editor_evidence": "reopened-editor-startup.txt",
+  "audible_playback_evidence": {
+    "kind": "user-reported manual check",
+    "detail": "After being asked to restart, rerun the probe, and preview the SoundWave separately, the user reported the final checks should be good. Audio output was not independently observed by the assistant."
+  },
+  "runs": [
+    {
+      "name": "baseline",
+      "run_utc": "2026-09-22T21:32:08.684Z",
+      "csv": "baseline.csv",
+      "log_excerpt": "baseline-log.txt",
+      "rows": 192,
+      "timestamp_order": [
+        0.75,
+        2.0,
+        11.75,
+        16.75,
+        33.25,
+        44.25
+      ],
+      "raw_and_normalized_count_per_timestamp": 32,
+      "all_finite": true,
+      "normalized_in_0_to_1": true,
+      "raw_max_absolute_difference_from_baseline": 0.0,
+      "normalized_max_absolute_difference_from_baseline": 0.0,
+      "csv_sha256": "15eb95767c7751cce86fa0f2bc7e852d773106f0daf3e8343f820846612c23ea"
+    },
+    {
+      "name": "reordered",
+      "run_utc": "2026-09-22T21:40:50.354Z",
+      "csv": "reordered.csv",
+      "log_excerpt": "reordered-log.txt",
+      "rows": 192,
+      "timestamp_order": [
+        44.25,
+        33.25,
+        2.0,
+        0.75,
+        16.75,
+        11.75
+      ],
+      "raw_and_normalized_count_per_timestamp": 32,
+      "all_finite": true,
+      "normalized_in_0_to_1": true,
+      "raw_max_absolute_difference_from_baseline": 0.0,
+      "normalized_max_absolute_difference_from_baseline": 0.0,
+      "csv_sha256": "6bbb3155433929df0e2f626c231aee6f047032627c4437dace22649c451c33ce"
+    },
+    {
+      "name": "reopened",
+      "run_utc": "2026-09-23T00:03:39.899Z",
+      "csv": "reopened.csv",
+      "log_excerpt": "reopened-log.txt",
+      "rows": 192,
+      "timestamp_order": [
+        44.25,
+        33.25,
+        2.0,
+        0.75,
+        16.75,
+        11.75
+      ],
+      "raw_and_normalized_count_per_timestamp": 32,
+      "all_finite": true,
+      "normalized_in_0_to_1": true,
+      "raw_max_absolute_difference_from_baseline": 0.0,
+      "normalized_max_absolute_difference_from_baseline": 0.0,
+      "csv_sha256": "69beaef3cb7ac16700c623dcc86e35538a5612a1872428375b06bdb65437a273"
+    }
+  ],
+  "private_asset_fingerprints": [
+    {
+      "local_path": "Content/Audio/PrivateTest/SW_NoTimeToExplain_60s.uasset",
+      "bytes": 8539458,
+      "sha256": "c34e5d299f12c2d6a74217670f774533c1e4213457ed7381c366879df247dca7"
+    },
+    {
+      "local_path": "Content/Audio/PrivateTest/CQNRT_NoTimeToExplain_32.uasset",
+      "bytes": 839945,
+      "sha256": "35d34424c7fc3ce3efc4f160e21a6915fed134dfd101788191145e99f29eeab7"
+    },
+    {
+      "local_path": "Content/Audio/PrivateTest/BP_D07ConstantQProbe.uasset",
+      "bytes": 95404,
+      "sha256": "4414469863c4213373bdc057b7ac5f3203159d27c3782c60ceeebf861796a98d"
+    },
+    {
+      "local_path": "Content/Audio/PrivateTest/L_D07Probe.umap",
+      "bytes": 10976,
+      "sha256": "17cbd65e763a8ed0b0a5711d1f6573e4ae41b272b9fdac645bc97ad81fd1e022"
+    }
+  ],
+  "scope": "Audio-analysis input and repeatability. D08 layout, D09 response processing, and D10 visualizer integration remain separate work."
+}

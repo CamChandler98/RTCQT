@@ -15,15 +15,18 @@ smoothing, previous-frame buffers, reflection, widgets, and runtime saving.
 ## Contract Boundary
 
 The response processor accepts one scalar analyzer value per frequency band.
-The ConstantQNRT adapter is responsible for supplying a linear value in the
-nominal range `[0, 1]`:
+The ConstantQNRT adapter is responsible for supplying a normalized control
+value in the nominal range `[0, 1]`:
 
 - `0` means no useful response.
 - `1` means the configured input ceiling.
 - Finite values below `0` and above `1` are allowed at the boundary and
   saturate during normalization.
-- Decibel conversion, if the selected Unreal query API requires it, belongs in
-  the ConstantQNRT adapter and must be documented by D07.
+- D07 verified `GetNormalizedChannelConstantQAtTime` as the adapter input.
+  Its values are normalized from the analyzer's decibel scale using a fixed
+  range for the analyzed channel; they are not physical linear amplitude or
+  power. Pass this normalized output directly to the processor. See the
+  [D07 query contract](d07_constant_qnrt_verification.md#query-contract-for-d09-and-d10).
 
 The processor returns a normalized response in `[0, 1]`. A separate range map
 converts that response into scale, emissive intensity, or another bounded
