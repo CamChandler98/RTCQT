@@ -34,7 +34,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RTCQT|Layout")
 	void ClearVisualization();
 
+protected:
+	/** Refreshes the static preview after actor placement or an editor property change. */
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	/** Ensures loaded actors have valid topology when play begins. */
+	virtual void BeginPlay() override;
+
 private:
+	/** Clears stale geometry and logs only when entering a different failure. */
+	bool FailRebuild(ERTCQTFailureReason Reason, const TCHAR* Message);
+
+	/** Removes topology without forgetting a continuing failure condition. */
+	void ResetInstances();
+
 	/** Owns every rendered band instance as one actor component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RTCQT|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInstancedStaticMeshComponent> InstanceComponent;
@@ -60,7 +73,7 @@ private:
 	FRTCQTLayoutSettings LayoutSettings;
 
 	/** Defines both the static instance count and required analyzer result count. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Analysis", meta = (AllowPrivateAccess = "true", ClampMin = "1"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Analysis", meta = (AllowPrivateAccess = "true", ClampMin = "0"))
 	int32 ExpectedBandCount = 32;
 
 	/** Selects the analyzer channel queried at the caller's exact song time. */
@@ -69,4 +82,12 @@ private:
 
 	/** Remembers only the last reported failure to suppress repeated log spam. */
 	ERTCQTFailureReason LastFailureReason = ERTCQTFailureReason::None;
+
+	/** Caches only topology inputs; evaluated responses and song time are never cached. */
+	FRTCQTLayoutSettings CachedLayoutSettings;
+	int32 CachedBandCount = INDEX_NONE;
+	bool bHasCachedLayout = false;
+
+	/** Suppresses repeated warnings while the mesh's default material is in use. */
+	bool bUsingDefaultMaterial = false;
 };
