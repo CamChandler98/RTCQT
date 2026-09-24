@@ -1,0 +1,19 @@
+LogCsvProfiler: Display: Metadata set : commandline="" C:\Users\camch\source\RTCQT\RTCQT.uproject -unattended -nop4 -nosplash -NullRHI -NoSound -ExecCmds="Automation RunTests RTCQT.D08" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\camch\source\RTCQT\Saved\Automation\D08 -abslog=C:\Users\camch\source\RTCQT\Saved\Logs\D08-tests.log""
+LogInit: Command Line: -unattended -nop4 -nosplash -NullRHI -NoSound -ExecCmds="Automation RunTests RTCQT.D08" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\camch\source\RTCQT\Saved\Automation\D08 -abslog=C:\Users\camch\source\RTCQT\Saved\Logs\D08-tests.log
+[2026.09.24-20.52.36:193][593]LogAutomationCommandLine: Display: Found 4 automation tests based on 'RTCQT.D08'
+[2026.09.24-20.52.36:262][594]LogAutomationController: Display: Test Started. Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.09.24-20.52.36:272][595]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.09.24-20.52.36:273][595]LogAutomationController: Display: Test Started. Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.09.24-20.52.36:288][597]LogAutomationController: Display: Test Completed. Result={Success} Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.09.24-20.52.36:289][597]LogAutomationController: Display: Test Started. Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Set Expected Band Count above zero to display instances.
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Select Line layout; Circle and Fibonacci Sphere are deferred to D19.
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.09.24-20.52.36:312][598]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.09.24-20.52.36:322][599]LogAutomationController: Display: Test Completed. Result={Success} Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.09.24-20.52.36:322][599]LogAutomationController: Display: Test Started. Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.09.24-20.52.36:334][601]LogAutomationController: Display: Test Completed. Result={Success} Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.09.24-20.52.36:338][602]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 4 tests performed.
+[2026.09.24-20.52.36:338][602]LogExit: Display: **** TestExit: Automation Test Queue Empty ****

@@ -1,0 +1,38 @@
+{
+  "reportCreatedOn": "2026.09.24-20.52.36",
+  "succeeded": 4,
+  "succeededWithWarnings": 0,
+  "failed": 0,
+  "notRun": 0,
+  "totalDuration": 0.04517660290002823,
+  "source_checkpoint": "0039213",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "line_golden_cases": 7,
+  "line_golden_transforms": 11,
+  "tests": [
+    {
+      "fullTestPath": "RTCQT.D08.Layout.GoldenVectors",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Layout.RepeatabilityAndInvalidInputs",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.SafeFailuresAndRecovery",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.TopologyAndCache",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    }
+  ]
+}

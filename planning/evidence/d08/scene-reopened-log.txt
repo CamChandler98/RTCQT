@@ -1,0 +1,9 @@
+[2026.09.24-20.59.11:132][  0]LogPythonScriptCommandlet: Display: Running Python script: C:/Users/camch/source/RTCQT/planning/scripts/setup_d08_layout.py --verify
+[2026.09.24-20.59.11:138][  0]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Maps/L_D08Layout.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+[2026.09.24-20.59.11:190][  0]LogRTCQT: Warning: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.09.24-20.59.11:190][  0]LogRTCQT: Warning: RTCQTVisualizer_0: Set Expected Band Count above zero to display instances.
+[2026.09.24-20.59.11:207][  0]LogPython: D08_SCENE_VERIFIED {"mode": "fresh_process_verify", "visualizer_count": 1, "component_count": 1, "instance_count": 32}
+[2026.09.24-20.59.11:207][  0]LogPythonScriptCommandlet: Display: Python script executed successfully
+[2026.09.24-20.59.11:207][  0]LogInit: Display: LogRTCQT: Warning: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.09.24-20.59.11:207][  0]LogInit: Display: LogRTCQT: Warning: RTCQTVisualizer_0: Set Expected Band Count above zero to display instances.
+[2026.09.24-20.59.11:207][  0]LogInit: Display: Success - 0 error(s), 2 warning(s)

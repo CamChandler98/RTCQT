@@ -1,0 +1,8 @@
+[2026.09.24-21.10.40:379][  0]MapCheck: Map check complete: 0 Error(s), 0 Warning(s), took 0.04ms to complete.
+[2026.09.24-21.10.42:191][  2]MapCheck: Map check complete: 0 Error(s), 0 Warning(s), took 0.057ms to complete.
+[2026.09.24-21.10.42:191][  2]LogPython: D08_CAMERA <Struct 'Transform' (0x000002696F0DD650) {rotation: {x: -0.172710, y: 0.172710, z: 0.685690, w: 0.685690}, translation: {x: 0.000000, y: -3300.000000, z: 1800.000000}, scale3d: {x: 1.000000, y: 1.000000, z: 1.000000}}> forward=<Struct 'Vector' (0x000002696F128060) {x: 0.000000, y: 0.880685, z: -0.473702}>
+[2026.09.24-21.10.50:542][925]LogPython: D08_PLAY_VERIFIED 1 actor, 32 instances
+[2026.09.24-21.10.57:711][674]LogClient: High resolution screenshot saved as C:/Users/camch/source/RTCQT/Saved/Automation/D08/line-layout.png
+[2026.09.24-21.10.57:767][674]LogPython: D08_CAPTURE_SAVED C:\Users\camch\source\RTCQT\Saved\Automation\D08\line-layout.png
+[2026.09.24-21.10.57:767][674]Cmd: QUIT_EDITOR
+[2026.09.24-21.11.00:700][675]LogExit: Exiting.

@@ -1,0 +1,15 @@
+Building RTCQTEditor...
+Using Visual Studio 14.44.35228 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+Cache bucket 3568528513 used. Action: Compile [x64] Module.RTCQT.gen.cpp ()
+Cache bucket 4243511716 used. Action: Compile [x64] RTCQTLayout.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-RTCQT.dll ()
+[1/9] Compile [x64] Module.RTCQT.gen.cpp
+[2/9] Compile [x64] RTCQTLayout.cpp
+[3/9] Compile [x64] RTCQTLayoutTests.cpp
+[4/9] Compile [x64] RTCQTModule.cpp
+[5/9] Compile [x64] RTCQTVisualizer.cpp
+[6/9] Compile [x64] RTCQTVisualizerTests.cpp
+[7/9] Link [x64] UnrealEditor-RTCQT.dll
+[8/9] Link [x64] UnrealEditor-RTCQT.lib
+Result: Succeeded
+Total execution time: 17.28 seconds

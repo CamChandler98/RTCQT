@@ -1,0 +1,66 @@
+{
+  "delivery_card": "D08",
+  "status": "Done",
+  "local_verification_date": "2026-09-24 America/New_York",
+  "source_checkpoint": "0039213c4c58df52bf4a669b97210c97d609504b",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "automated_tests": 4,
+  "automated_tests_passed": 4,
+  "line_reference_cases": 7,
+  "line_reference_transforms": 11,
+  "scene": "/Game/Maps/L_D08Layout",
+  "saved_scene_reopened": true,
+  "play_in_editor_verified": true,
+  "visual_capture_reviewed": true,
+  "visualizer_actors": 1,
+  "instanced_mesh_components": 1,
+  "instances": 32,
+  "git_lfs_version": "3.7.1",
+  "evidence_substitution": "Actor/component ownership recorded by editor API inspection; desktop inspection tool rejected this WSL task URI, so no separate Outliner/Details screenshot was captured.",
+  "files": {
+    "Content/Maps/L_D08Layout.umap": {
+      "sha256": "f615511d06ced90f5f3cf650b0b24af943ab2a13414650f29859073c456dee17",
+      "size": 25107
+    },
+    "planning/scripts/setup_d08_layout.py": {
+      "sha256": "ac2a04bd0ac2629a295061b3c58e093ec3047d60ca6c8f221106ac662f4a063a",
+      "size": 8726
+    },
+    "planning/scripts/capture_d08_layout.py": {
+      "sha256": "70faee3c69a220df5040d9ddcc863ce8c79d26b2372bc2cfdebfb35ad9dc0df3",
+      "size": 4358
+    },
+    "planning/evidence/d08/automation-log.txt": {
+      "sha256": "c398534b847228ef886ff8c22eadc2eafd84e95f0eaf5bacc302e17a86a50dc2",
+      "size": 3089
+    },
+    "planning/evidence/d08/automation.json": {
+      "sha256": "1de63fe86b777dbba0a52ee5ef406284e7b910629df111829b140b7247418a14",
+      "size": 903
+    },
+    "planning/evidence/d08/build-log.txt": {
+      "sha256": "bf6ad255e20eb6d877e141c7e245eb1600925783881b5ea24b228a0d9a9e292a",
+      "size": 815
+    },
+    "planning/evidence/d08/capture-log.txt": {
+      "sha256": "20a3c33fef8d3b649c617f16bf183b322d2c5ff625db2d6c364f5c287bd381cf",
+      "size": 1024
+    },
+    "planning/evidence/d08/line-layout.png": {
+      "sha256": "495d36da53704f710b8a00daea019e9b418dfb53f4a230bd68de5fed7c9c89d6",
+      "size": 727746
+    },
+    "planning/evidence/d08/play-mode.json": {
+      "sha256": "86860729f5333253c17f42b4439795ac307bbd2e357567bcf2623ec61e7a15b3",
+      "size": 88
+    },
+    "planning/evidence/d08/scene-reopened-log.txt": {
+      "sha256": "8c842ebff128c72a0db6a5406e0d503c9c292164751541972159fdbefbe5e5b2",
+      "size": 1203
+    },
+    "planning/evidence/d08/scene-reopened.json": {
+      "sha256": "0d8a3fe5f86e5878718b9f4c8397943a5894d48c467842dbd3ae5139f6c45161",
+      "size": 6407
+    }
+  }
+}

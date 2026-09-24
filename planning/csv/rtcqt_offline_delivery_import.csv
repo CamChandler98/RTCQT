@@ -187,7 +187,7 @@ Render exactly one reusable mesh instance per configured band before connecting 
 - May run in parallel with D07 after D06 completes.
 
 ## Evidence
-- Automated results, actor/component screenshot, and editor capture.",Now,P0,M,"D03, D06",Unreal workstation,"layout,instancing,unreal,stream-mvp,priority:P0",Stream MVP
+- Automated results, actor/component screenshot, and editor capture.",Done,P0,M,"D03, D06",Unreal workstation,"layout,instancing,unreal,stream-mvp,priority:P0",Stream MVP
 D09,Implement stateless response processor,"## Objective
 Implement the agreed deterministic spectrum-to-response transformation.
 

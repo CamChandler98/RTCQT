@@ -66,13 +66,17 @@ Completed:
   and fresh-editor runs match the baseline exactly. See
   [D07 verification](d07_constant_qnrt_verification.md).
 
-Current:
+- [x] D08: deterministic line layout, one instanced mesh component, automated
+  layout/lifecycle checks, and a saved 32-cube scene verified after reopening
+  and in Play mode. See [D08 verification](d08_line_layout_verification.md).
 
-- D08 is the current implementation card: the static instanced line layout.
-- D09 is unblocked and available to pull next.
-- D10 waits for D08; its D07 dependency is complete.
+Next:
+
+- D09 is unblocked and is the recommended next card: stateless response math.
+- D10 is now unblocked because D07 and D08 are complete.
 
 ## WIP Recommendation
 
-Keep D08 in `Now`. D09 may fill the second slot when useful; keep no more than
-two cards in `Now`. The next visible checkpoint is a line of 32 mesh instances.
+D08 is complete. Pull D09 next; D10 can fill the second slot when useful. Keep
+no more than two cards in `Now`. The next visible milestone is D11: applying
+the shared response to the existing instances without rebuilding topology.

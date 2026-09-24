@@ -109,8 +109,10 @@ The committed candidate at `0801436` was cloned to a separate NTFS directory.
   under `Content/Audio/PrivateTest/`, which is ignored.
 - Keep recovery provenance, hashes, extraction recipes, and analyzer settings
   in tracked text documents.
-- Git LFS is not installed on this workstation. Install and configure it before
-  committing other authored `.uasset` or `.umap` files.
+- At D06, Git LFS was not verified. D08 verified Windows Git LFS 3.7.1,
+  configured it locally, and added `.gitattributes` for authored `.uasset` and
+  `.umap` files. Use Windows Git for this checkout from WSL unless Git LFS is
+  also installed in WSL. See `d08_line_layout_verification.md` for recovery.
 - Do not commit the private audio merely because a later Git LFS policy exists.
 
 ## D06 Result
