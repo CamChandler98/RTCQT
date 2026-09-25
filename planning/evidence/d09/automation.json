@@ -1,0 +1,98 @@
+{
+  "reportCreatedOn": "2026.09.24-22.08.21",
+  "succeeded": 10,
+  "succeededWithWarnings": 0,
+  "failed": 0,
+  "notRun": 0,
+  "totalDuration": 0.1171795129776001,
+  "source_checkpoint": "d591d5481dde13ebf0a932a98bd69c0b923fbf6e",
+  "source_note": "Production implementation from checkpoint; expanded tests are recorded by the accompanying source hashes and final verification commit.",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "response_golden_cases": 32,
+  "d09_test_groups": 6,
+  "d08_regression_groups": 4,
+  "tests": [
+    {
+      "fullTestPath": "RTCQT.D08.Layout.GoldenVectors",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Layout.RepeatabilityAndInvalidInputs",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.SafeFailuresAndRecovery",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.TopologyAndCache",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.BasicCalculations",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.BatchAndWeights",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.ExtremeValuesAndBounds",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.GoldenVectors",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Checked 32 D02 vectors: normalization, weighting, response, and range mapping.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.09.24-22.08.21"
+        }
+      ]
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.OrderIndependence",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.SettingsSnapshot",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0,
+      "entries": []
+    }
+  ]
+}

@@ -70,13 +70,19 @@ Completed:
   layout/lifecycle checks, and a saved 32-cube scene verified after reopening
   and in Play mode. See [D08 verification](d08_line_layout_verification.md).
 
+- [x] D09: stateless C++ response processing, all 32 D02 reference cases,
+  batch and numeric boundary checks, and repeatable results across reordered
+  calls. All six D09 and four D08 automation groups pass. See
+  [D09 verification](d09_response_verification.md).
+
 Next:
 
-- D09 is unblocked and is the recommended next card: stateless response math.
-- D10 is now unblocked because D07 and D08 are complete.
+- D10 is unblocked and is the recommended next card: ConstantQNRT queries at
+  explicit song times.
+- D11 waits for D10; its D09 response prerequisite is complete.
 
 ## WIP Recommendation
 
-D08 is complete. Pull D09 next; D10 can fill the second slot when useful. Keep
-no more than two cards in `Now`. The next visible milestone is D11: applying
-the shared response to the existing instances without rebuilding topology.
+D09 is complete. Pull D10 next and keep no more than two cards in `Now`.
+The next visible milestone is D11: applying the shared response to the existing
+instances without rebuilding topology.

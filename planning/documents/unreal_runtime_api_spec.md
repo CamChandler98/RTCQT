@@ -127,7 +127,12 @@ static float MapResponse(
 
 `ProcessBand` and `ProcessBands` implement D02 exactly. They store no previous
 input or output. `ProcessBands` replaces `OutResponses`; it does not append.
-`MapResponse` performs the D02 output-bound sanitization and ordering.
+Empty inputs clear the output. Evaluation completes in a temporary array before
+replacement, so inputs or parameter weights may share the output storage.
+`MapResponse` performs the D02 output-bound sanitization and ordering. Direct
+finite response arguments are clamped to `[0, 1]`; non-finite arguments use
+zero. See [D09 verification](d09_response_verification.md) for implementation
+and test evidence.
 
 ## Layout API
 

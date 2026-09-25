@@ -211,7 +211,7 @@ Implement the agreed deterministic spectrum-to-response transformation.
 - May run in parallel with D07 and D08 after D06 completes.
 
 ## Evidence
-- Test output and implementation review.",Next,P0,M,"D02, D06",Unreal workstation or remote with configured UE toolchain,"response,tests,cpp,stream-mvp,priority:P0",Stream MVP
+- Test output and implementation review.",Done,P0,M,"D02, D06",Unreal workstation or remote with configured UE toolchain,"response,tests,cpp,stream-mvp,priority:P0",Stream MVP
 D10,Connect ConstantQNRT queries to explicit song time,"## Objective
 Drive raw frequency-band values from one authoritative time input.
 

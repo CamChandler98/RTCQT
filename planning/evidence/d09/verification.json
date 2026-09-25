@@ -1,0 +1,57 @@
+{
+  "delivery_card": "D09",
+  "status": "Done",
+  "local_test_date": "2026-09-24 America/New_York",
+  "evidence_finalized_date": "2026-09-25 America/New_York",
+  "implementation_checkpoint": "d591d5481dde13ebf0a932a98bd69c0b923fbf6e",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "automated_tests": 10,
+  "automated_tests_passed": 10,
+  "d09_test_groups": 6,
+  "d08_regression_groups": 4,
+  "response_golden_cases": 32,
+  "absolute_tolerance": 1e-06,
+  "relative_tolerance": 1e-06,
+  "has_prior_frame_state": false,
+  "explicit_song_time_queries_verified": false,
+  "audio_driven_scale_verified": false,
+  "fingerprint_encoding": "UTF-8 file bytes with CRLF normalized to LF",
+  "files": {
+    "Source/RTCQT/Private/RTCQTResponseProcessor.cpp": {
+      "sha256": "381f60649565e4b15041c31374ca5795ffb167cef84fdc05bbab4683eae45647",
+      "normalized_bytes": 2418
+    },
+    "Source/RTCQT/Public/RTCQTResponseProcessor.h": {
+      "sha256": "57f2a1100b7f8068493468bb5a622da83d9385b1fb63a8143207ea6097de752c",
+      "normalized_bytes": 1265
+    },
+    "Source/RTCQT/Private/RTCQTResponseSettings.cpp": {
+      "sha256": "7e52f379787100b5859fad0a8c351ac0fbe527cfecec93ab79ff2b66ae6e933d",
+      "normalized_bytes": 345
+    },
+    "Source/RTCQT/Public/RTCQTResponseSettings.h": {
+      "sha256": "55d457f8a867208effd0db218bd38b6421ef8bc39531f7529d55b7fe5db35426",
+      "normalized_bytes": 1755
+    },
+    "Source/RTCQT/Private/Tests/RTCQTResponseTests.cpp": {
+      "sha256": "d671c0b29d6fabfa8411add86e4740364ce7506e5ab979492056cacbc53cbecf",
+      "normalized_bytes": 16142
+    },
+    "planning/test-vectors/response_golden_vectors.csv": {
+      "sha256": "6b0f5433bce47632868809c1a19810d6bc0c47045b9ac260437623975fd27928",
+      "normalized_bytes": 2957
+    },
+    "planning/evidence/d09/build-log.txt": {
+      "sha256": "54069c15eef0301a046102283d6ad7e68e744a0c9368e66160267e135c968446",
+      "normalized_bytes": 692
+    },
+    "planning/evidence/d09/automation-log.txt": {
+      "sha256": "4322292cf511ceaf7fdfedc479712436d3e46afdd289811d8d184b3379543e22",
+      "normalized_bytes": 3423
+    },
+    "planning/evidence/d09/automation.json": {
+      "sha256": "7ba8291f5033831370f78f267b039ee3d79d80223c3b3bcff1c43eb69109783f",
+      "normalized_bytes": 2546
+    }
+  }
+}

@@ -6,6 +6,10 @@ This document completes delivery card D02. It is the behavior contract for the
 stateless response processor described in
 `planning/documents/offline_visualizer_architecture.md`.
 
+D09 implements this contract in `FRTCQTResponseProcessor`. All 32 reference
+cases pass against the C++ implementation; see
+[D09 verification](d09_response_verification.md).
+
 The old `USpectrumProcessor` had the right broad idea: remove a noise floor,
 normalize the signal, weight bands, shape the response, and bound the visual
 output. The rebuild keeps those concepts but replaces optional, order-dependent
@@ -89,8 +93,8 @@ bands are present.
 weighted = clamp(normalized * sanitizedBandWeight, 0, 1)
 ```
 
-`BandWeight` covers focus bands and optional high-frequency compensation. A
-future settings asset may store one weight per band. If the weight array is
+`BandWeight` covers focus bands and optional high-frequency compensation. The
+`URTCQTResponseSettings` asset stores optional index-aligned weights. If the weight array is
 shorter than the analyzer output, missing entries use `1`. Extra entries are
 ignored.
 
@@ -127,6 +131,13 @@ emissive  = MapResponse(response, MinEmissive, MaxEmissive)
 
 The normalized response is shared by scale and material output so both remain
 visually synchronized.
+
+At the public `MapResponse` boundary, finite response inputs are clamped to
+`[0, 1]`; non-finite response inputs become `0`. Values returned by
+`ProcessBand` already satisfy this requirement. The D09 implementation uses
+double intermediates and stable interpolation, equivalent to the formula
+above, to keep extreme finite bounds from overflowing and to preserve both
+endpoints. The final result is clamped to the sanitized, ordered bounds.
 
 ## Reference Pseudocode
 
@@ -201,9 +212,12 @@ Run them without Unreal:
 python3 planning/scripts/validate_response_vectors.py
 ```
 
-The validator is a reference model, not production Unreal code. D09 must
-implement the same contract in C++ and run the same vectors against that
-implementation.
+The validator is a reference model. The Unreal automation test
+`RTCQT.D09.Response.GoldenVectors` reads the same CSV and verifies the
+production C++ implementation at the documented tolerance. Neutral settings
+isolate normalization and weighting; the response and range-map checks cover
+the complete pipeline. See [D09 verification](d09_response_verification.md)
+for the Unreal command and the additional boundary and determinism checks.
 
 ## Explicitly Deferred
 
