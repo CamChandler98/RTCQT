@@ -91,10 +91,11 @@ Completed:
 
 Next:
 
-- D12 is unblocked: add the shared-response material and lock exposure.
+- D12 is in progress: shared material settings implemented; material and exposure verification follow.
+  See [D12 plan](d12_material_exposure_plan.md).
 
 ## WIP Recommendation
 
-D11 is `Done`; D12 remains `Next` until implementation begins.
+D11 is `Done`; D12 is `Now` on `codex/d12-material-exposure`.
 Keep no more than two cards in `Now`. The next visible milestone is D12's
 material and exposure setup, followed by D13's sequence-time/audio scene.

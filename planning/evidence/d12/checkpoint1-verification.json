@@ -1,0 +1,19 @@
+{
+  "date_local": "2026-10-02",
+  "timezone": "America/New_York",
+  "branch": "codex/d12-material-exposure",
+  "base_checkpoint": "e574d06",
+  "status": "In progress",
+  "build": "Succeeded",
+  "tests_passed": 22,
+  "test_errors": 0,
+  "test_warnings": 0,
+  "source_sha256": {
+    "Source/RTCQT/Public/RTCQTVisualizer.h": "85a69abf06fd2d95b7d2669d67eaa08e4ffef8d8d456c5c67b4de1b9044b6945",
+    "Source/RTCQT/Private/RTCQTVisualizer.cpp": "2f1bcfaffbd512ee7e261b4b112d072fe7b064f6bd945bab4fbe891b27d7adc0",
+    "Source/RTCQT/Public/RTCQTResponseSettings.h": "1c96438f3ef9f67cc7acc3e0c0075e643439c80ebc51245a117653b0d03211cd",
+    "Source/RTCQT/Public/RTCQTMaterialParameters.h": "210c1991d4c76035e485026040965d48717141260fad46d7ee4522a98e53f34b",
+    "Source/RTCQT/Private/Tests/RTCQTMaterialResponseTests.cpp": "35e8bfe1639ccd34dfd12e8cc33460efa60ff51f58d0151a9794668262a4762c"
+  },
+  "visual_gate": "Pending material authoring, fixed exposure, reference stills, and saved-scene verification"
+}

@@ -1,0 +1,140 @@
+{
+  "succeeded": 22,
+  "failed": 0,
+  "not_run": 0,
+  "succeeded_with_warnings": 0,
+  "tests": [
+    {
+      "fullTestPath": "RTCQT.D08.Layout.GoldenVectors",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Layout.RepeatabilityAndInvalidInputs",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.SafeFailuresAndRecovery",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D08.Visualizer.TopologyAndCache",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.BasicCalculations",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.BatchAndWeights",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.ExtremeValuesAndBounds",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.GoldenVectors",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.OrderIndependence",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D09.Response.SettingsSnapshot",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D10.LocalFixture.D07ReferenceValues",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D10.Query.ExactTimeAndOrder",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D10.Query.InvalidInputs",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D10.Visualizer.FailuresAndRecovery",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D11.LocalFixture.D07ScaleReferences",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D11.Scale.BoundsAndFailureRecovery",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D11.Scale.KnownValuesAndLocalTransforms",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D11.Scale.SeekingAndSettingsEdits",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D11.Scale.SingleBandAndLayoutRefresh",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D12.Material.ActorOwnership",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D12.Material.SeekingReplacementAndFallback",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "fullTestPath": "RTCQT.D12.Material.SharedSettingsAndBounds",
+      "state": "Success",
+      "errors": 0,
+      "warnings": 0
+    }
+  ]
+}

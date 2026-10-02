@@ -9,6 +9,7 @@
 class UConstantQNRT;
 class UInstancedStaticMeshComponent;
 class UMaterialInterface;
+class UMaterialInstanceDynamic;
 class URTCQTResponseSettings;
 class UStaticMesh;
 
@@ -48,6 +49,9 @@ private:
 	/** Removes topology without forgetting a continuing failure condition. */
 	void ResetInstances();
 
+	/** Reuses one component-wide material and refreshes bounded emissive parameters. */
+	void RefreshMaterial();
+
 	/** Owns every rendered band instance as one actor component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RTCQT|Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInstancedStaticMeshComponent> InstanceComponent;
@@ -67,6 +71,10 @@ private:
 	/** Optionally overrides the mesh material once for the whole component. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Assets", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMaterialInterface> InstanceMaterial;
+
+	/** Runtime-only shared override; reconstructed independently in duplicated worlds. */
+	UPROPERTY(Transient, DuplicateTransient)
+	TObjectPtr<UMaterialInstanceDynamic> SharedMaterial;
 
 	/** Stores the explicit D03 inputs used to generate local base transforms. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Layout", meta = (AllowPrivateAccess = "true"))

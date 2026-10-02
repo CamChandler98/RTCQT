@@ -237,9 +237,13 @@ Per-instance custom-data slots are stable constants:
 | `0` | Response | `[0, 1]` | D12 scale-correlated emissive/color material logic. |
 | `1` | Normalized band index | `[0, 1]` | D12 deterministic color variation. |
 
-`NumCustomDataFloats` is therefore `2` before instances are created. D12 may
-use one material or one shared dynamic material instance, but it must not create
-one material instance per band.
+`NumCustomDataFloats` is therefore `2` before instances are created. D12 uses one transient shared dynamic material instance per visualizer actor.
+It is reused between evaluations, refreshed when the assigned parent changes,
+and reconstructed independently in duplicated worlds. No material is allocated
+per band or per evaluation. `EmissiveMin` and `EmissiveMax` receive the ordered,
+finite, non-negative `EmissiveRange` bounds, limited to `[0, 100]` for shader
+safety. The baseline is `[0, 10]`; non-finite bounds become zero. The material
+interpolates those bounds using response slot `0`. Color uses band slot `1`.
 
 A missing material is non-fatal: the component uses the mesh's default
 material, writes custom data normally, and logs one warning when entering that

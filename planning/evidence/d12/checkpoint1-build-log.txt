@@ -1,0 +1,109 @@
+Log started at 10/02/2026 09:06:24 (2026-10-02T13:06:24Z)
+Resolved project argument C:\Users\camch\source\RTCQT\RTCQT.uproject to C:\Users\camch\source\RTCQT\RTCQT.uproject
+No config file at C:\ProgramData\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at C:\Users\camch\AppData\Local\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+No config file at C:\Users\camch\Documents\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Configuration will be read from:
+  C:\Users\camch\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (C:\Users\camch\source\RTCQT\Intermediate\Build\XmlConfigCache.bin): C:\Users\camch\AppData\Roaming\Unreal Engine\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (C:\Users\camch\source\RTCQT\Intermediate\Build\XmlConfigCache.bin): C:\Users\camch\source\RTCQT\Saved\UnrealBuildTool\BuildConfiguration.xml
+Reading configuration file from cache (C:\Users\camch\source\RTCQT\Intermediate\Build\XmlConfigCache.bin): C:\Users\camch\AppData\Local\UnrealEngine\Intermediate\Build\UnrealBuildTool.Env.BuildConfiguration.xml
+Log file: C:\Users\camch\source\RTCQT\Saved\Logs\D12-build.log
+
+Setting temp directory to 'C:\Users\camch\AppData\Local\Temp\UnrealBuildTool\eb6d2d82'
+    Registering build platform: UnrealBuildTool.AndroidPlatformFactory
+    Registering build platform: UnrealBuildTool.IOSPlatformFactory
+    Registering build platform: UnrealBuildTool.LinuxPlatformFactory
+    Registering build platform: UnrealBuildTool.MacPlatformFactory
+    Registering build platform: UnrealBuildTool.TVOSPlatformFactory
+    Registering build platform: UnrealBuildTool.WindowsPlatformFactory
+Found Windows 10 SDK root at C:\Program Files\Windows Kits\10 (1)
+Found Windows 10 SDK root at C:\Program Files (x86)\Windows Kits\10 (2)
+Found Windows 10 SDK version 10.0.22621.0 at C:\Program Files (x86)\Windows Kits\10
+Found Universal CRT version 10.0.22621.0 at C:\Program Files (x86)\Windows Kits\10
+Found Windows 10 SDK version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Found Universal CRT version 10.0.26100.0 at C:\Program Files (x86)\Windows Kits\10
+Win64 Installed SDK(s): MinVersion_Sdk=10.0.19041.0, MaxVersion_Sdk=10.9.99999.0, CurrentVersion_Sdk=10.0.22621.0, Version_AutoSdk=10.0.22621.0, CurrentVersion_AutoSdk=
+        Registering build platform: Win64 - buildable: True
+    Registering build platform: UnrealBuildTool.VisionOSPlatformFactory
+Command line: "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" RTCQTEditor Win64 Development -Project=C:\Users\camch\source\RTCQT\RTCQT.uproject -WaitMutex -NoHotReloadFromIDE -Log=C:\Users\camch\source\RTCQT\Saved\Logs\D12-build.log
+Determining max actions to execute in parallel (10 physical cores, 16 logical cores)
+  Executing up to 10 processes, one per physical core
+  Requested 1.5 GB memory per action, 4.72 GB available: limiting max parallel actions to 3
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\camch\source\RTCQT).
+UbaStorageServer - Database loaded from C:\ProgramData\Epic\UnrealBuildAccelerator\cas\casdb (v32) in <1ms (contained 0 entries estimated to 0b)
+UbaServer - Listening on 0.0.0.0:1345
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5Rules.dll: File is installed
+Skipping C:\Program Files\Epic Games\UE_5.8\Engine\Intermediate\Build\BuildRules\UE5ProgramRules.dll: File is installed
+Building UnrealEditor - RTCQTEditor - Win64 - Development
+Generated code is up to date.
+Deleting outdated item: C:\Users\camch\source\RTCQT\Binaries\Win64\UnrealEditor-RTCQT.pdb
+Deleting outdated item: C:\Users\camch\source\RTCQT\Intermediate\Build\Win64\x64\UnrealEditor\Development\RTCQT\UnrealEditor-RTCQT.lib
+Building RTCQTEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+Using Visual Studio 14.44.35228 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from RTCQT unity file: RTCQTResponseSettings.cpp, RTCQTVisualizer.cpp, RTCQTMaterialResponseTests.cpp, RTCQTVisualizerTests.cpp
+=================================
+Using Unreal Build Accelerator local executor to run 4 action(s)
+  CPU 10 physical cores, 16 logical cores
+  Memory 15.72 GB physical, 16.85 GB/47.72 GB committed
+  UBA Storage capacity 40 GB
+  UBA RootDir C:\ProgramData\Epic\UnrealBuildAccelerator
+Cache bucket 4243511716 used. Action: Compile [x64] RTCQTMaterialResponseTests.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-RTCQT.dll ()
+All processes queued
+[1/4] Compile [x64] RTCQTMaterialResponseTests.cpp
+[2/4] Link [x64] UnrealEditor-RTCQT.lib
+[3/4] Link [x64] UnrealEditor-RTCQT.dll
+[4/4] WriteMetadata RTCQTEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 4.25 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+UbaStorageServer - Database saved in <1ms (0 file entries, 0 cas entries. deleted 0 dropped cas files)
+WriteFileIfChanged() wrote 0 changed files of 1 requested writes.
+
+Timeline:
+[  0.000]  +0.306 Main
+   0.012          [  0.012]  +0.071 Apply XmlConfig
+   0.091          [  0.091]  +0.056 AddTelemetry
+   0.174          [  0.174]  +0.131 RegisterPlatforms
+[  0.318]  +0.021 ParseCommandLine
+[  0.386]  +0.117 LoadMakefile
+   0.400          [  0.013]  +0.023 EngineRulesPlugins
+   0.426          [  0.040]  +0.003 EngineRulesFetchDirs
+   0.437          [  0.050]  +0.008 EngineRulesAssembly
+   0.445          [  0.058]  +0.000 ProgramRulesAssembly
+   0.446          [  0.059]  +0.003 ProjectRulesAssembly
+   0.449          [  0.063]  +0.198 CreateTargetRules
+   0.506             0.119          [  0.056]  +0.000 FindPlugins
+   0.518             0.131          [  0.068]  +0.034 MakefileValid
+[  0.695]  +0.004 CppDependencyCache
+[  0.711]  +0.047 RTCQTEditor Win64 Development
+[  0.759]  +0.019 UHTWait
+   0.761          [  0.001]  +0.016 UHTManifest
+   0.778          [  0.018]  +0.014 UHTTimestamps
+[  0.799]  +0.002 CppDependencyCache
+[  0.802]  +0.064 Preparing ActionGraph
+   0.813          [  0.011]  +0.004 LinkActions
+   0.818             0.015          [  0.004]  +0.000 DetectActionGraphCycles
+   0.818          [  0.016]  +0.000 GatherPrerequisiteActions
+   0.820          [  0.017]  +0.000 CppDependencyCacheWait
+   0.820          [  0.018]  +0.031 GatherOutdatedActions
+   0.855          [  0.053]  +0.007 LinkActions
+   0.855             0.053          [  0.000]  +0.000 DetectActionGraphCycles
+   0.863          [  0.061]  +0.001 DeleteOutdatedProducedItems
+   0.865          [  0.062]  +0.001 SaveActionHistory
+   0.867          [  0.064]  +0.000 CreateDirectoriesForProducedItems
+[  0.879]  +0.108 GarbageCollect
+[  0.988]  +4.146 <unknown>
+[  5.134]  +0.000 Deploying targets
+[  5.135]  +0.000 DisconnectCache
+[  5.138]  +0.008 SaveCasTable
+[  5.149]  +0.048 Saving caches
+[  5.199]  +0.002 TelemetryService.FlushEvents
+[  5.203]
+
+Result: Succeeded
+Total execution time: 5.20 seconds

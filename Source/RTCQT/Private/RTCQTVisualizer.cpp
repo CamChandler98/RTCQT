@@ -2,6 +2,8 @@
 
 #include "Components/InstancedStaticMeshComponent.h"
 #include "ConstantQNRT.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "RTCQTMaterialParameters.h"
 #include "RTCQTAnalyzerQuery.h"
 #include "RTCQTLayout.h"
 #include "RTCQTLog.h"
@@ -178,12 +180,7 @@ bool ARTCQTVisualizer::RebuildInstances()
 	}
 
 	InstanceComponent->SetStaticMesh(InstanceMesh);
-	InstanceComponent->SetMaterial(0, InstanceMaterial);
-	if (!InstanceMaterial && !bUsingDefaultMaterial)
-	{
-		UE_LOG(LogRTCQT, Warning, TEXT("%s: Instance Material is unset; using the mesh's default material. Assign an override if needed."), *GetName());
-	}
-	bUsingDefaultMaterial = !InstanceMaterial;
+	RefreshMaterial();
 
 	if (bHasCachedLayout && CachedBandCount == ExpectedBandCount
 		&& SameLayout(CachedLayoutSettings, LayoutSettings)
@@ -239,6 +236,45 @@ bool ARTCQTVisualizer::RebuildInstances()
 	bHasCachedLayout = true;
 	LastFailureReason = ERTCQTFailureReason::None;
 	return true;
+}
+
+void ARTCQTVisualizer::RefreshMaterial()
+{
+	if (InstanceMaterial)
+	{
+		if (!SharedMaterial || SharedMaterial->Parent != InstanceMaterial)
+		{
+			SharedMaterial = UMaterialInstanceDynamic::Create(InstanceMaterial, this);
+			SharedMaterial->SetFlags(RF_Transient);
+		}
+		// Emissive is a shader intensity, unlike D11's signed scale range.
+		// Bound it to [0, 100] to avoid invalid or overflowing shader inputs.
+		const auto Bound = [](float Value)
+		{
+			return FMath::IsFinite(Value)
+				? FMath::Clamp(Value, 0.0f, RTCQTMaterialParameters::MaxEmissiveIntensity) : 0.0f;
+		};
+		const FRTCQTScalarRange Range = ResponseSettings
+			? ResponseSettings->EmissiveRange : FRTCQTScalarRange(0.0f, 10.0f);
+		const float A = Bound(Range.Min);
+		const float B = Bound(Range.Max);
+		SharedMaterial->SetScalarParameterValue(RTCQTMaterialParameters::EmissiveMin, FMath::Min(A, B));
+		SharedMaterial->SetScalarParameterValue(RTCQTMaterialParameters::EmissiveMax, FMath::Max(A, B));
+		if (InstanceComponent->GetMaterial(0) != SharedMaterial)
+		{
+			InstanceComponent->SetMaterial(0, SharedMaterial);
+		}
+	}
+	else
+	{
+		SharedMaterial = nullptr;
+		InstanceComponent->SetMaterial(0, nullptr);
+		if (!bUsingDefaultMaterial)
+		{
+			UE_LOG(LogRTCQT, Warning, TEXT("%s: Instance Material is unset; using the mesh's default material. Assign an override if needed."), *GetName());
+		}
+	}
+	bUsingDefaultMaterial = !InstanceMaterial;
 }
 
 bool ARTCQTVisualizer::FailRebuild(ERTCQTFailureReason Reason, const TCHAR* Message)

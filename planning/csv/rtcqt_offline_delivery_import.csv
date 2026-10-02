@@ -273,7 +273,7 @@ Create a stream-readable material response without unstable exposure.
 - D11 Drive mesh scale with deterministic response.
 
 ## Evidence
-- Material documentation and stills from quiet, average, and peak timestamps.",Next,P1,M,D11,Unreal workstation,"material,lighting,visualizer,stream-mvp,priority:P1",Stream MVP
+- Material documentation and stills from quiet, average, and peak timestamps.",Now,P1,M,D11,Unreal workstation,"material,lighting,visualizer,stream-mvp,priority:P1",Stream MVP
 D13,Build Sequencer-driven track-length scene,"## Objective
 Drive audio, visualizer time, camera, and output duration from one Level Sequence.
 

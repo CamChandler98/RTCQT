@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Output")
 	FRTCQTScalarRange MeshZScaleRange = {0.1f, 4.0f};
 
-	/** Bounds the emissive intensity derived from the shared response by D12. */
+	/** Bounds D12 emissive intensity; use-time limits sanitize to finite [0, 100]. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Output")
 	FRTCQTScalarRange EmissiveRange = {0.0f, 10.0f};
 };
