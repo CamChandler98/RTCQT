@@ -1,0 +1,20 @@
+D11 user-driven timestamp and exponent-test session. Native log timestamps are UTC.
+Source: Saved/Logs/RTCQT.log
+
+471: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+2107: [2026.10.02-02.29.17:292][422]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_5] D10 success=true time=16.75 bands=32 reason=None
+2152: [2026.10.02-03.11.59:166][701]LogBlueprint: Compiling Blueprint '/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.L_D10D11ResponseTest'
+2155: [2026.10.02-03.12.03:086][129]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2236: [2026.10.02-03.12.04:381][246]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_0] D10 success=true time=0.75 bands=32 reason=None
+2305: [2026.10.02-03.12.24:256][937]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_0] D10 success=true time=0.75 bands=32 reason=None
+2327: [2026.10.02-03.12.57:395][160]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2357: [2026.10.02-03.12.58:861][293]LogBlueprint: Compiling Blueprint '/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.L_D10D11ResponseTest'
+2410: [2026.10.02-03.13.01:072][467]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_1] D10 success=true time=44.25 bands=32 reason=None
+2434: [2026.10.02-03.13.51:210][544]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/DA_ResponseTEst
+2462: [2026.10.02-03.14.21:945][965]LogBlueprint: Compiling Blueprint '/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.L_D10D11ResponseTest'
+2465: [2026.10.02-03.14.24:864][261]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2546: [2026.10.02-03.14.35:471][406]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_2] D10 success=true time=16.75 bands=32 reason=None
+2619: [2026.10.02-03.15.41:852][493]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_2] D10 success=true time=16.75 bands=32 reason=None
+2649: [2026.10.02-03.16.32:484][227]LogCore: Engine exit requested (reason: UUnrealEdEngine::CloseEditor())
+2650: [2026.10.02-03.16.32:503][227]LogCore: Engine exit requested (reason: EngineExit() was called; note: exit was already requested)
+2715: [2026.10.02-03.18.17:060][227]LogExit: Exiting.

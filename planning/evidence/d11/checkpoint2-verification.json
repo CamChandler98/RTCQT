@@ -1,0 +1,179 @@
+{
+  "delivery_card": "D11",
+  "status": "Done",
+  "local_verification_date": "2026-10-02 America/New_York",
+  "user_visual_capture_date": "2026-10-01 America/New_York",
+  "source_checkpoint": "11985ef",
+  "branch": "codex/d11-scale-response",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "checkpoint1_fingerprints_verified": 12,
+  "automated_tests": 19,
+  "automated_tests_passed": 19,
+  "automated_tests_rerun_for_asset_restore_only_closeout": false,
+  "d11_test_groups": 5,
+  "regression_groups": 14,
+  "scene": "/Game/Audio/PrivateTest/L_D10D11ResponseTest",
+  "response_settings_asset": "/Game/Audio/PrivateTest/DA_ResponseTEst",
+  "user_timestamp_queries": [
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2107,
+      "timestamp_utc_unreal": "2026.10.02-02.29.17:292",
+      "evaluated_time_seconds": 16.75,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    },
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2236,
+      "timestamp_utc_unreal": "2026.10.02-03.12.04:381",
+      "evaluated_time_seconds": 0.75,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    },
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2305,
+      "timestamp_utc_unreal": "2026.10.02-03.12.24:256",
+      "evaluated_time_seconds": 0.75,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    },
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2410,
+      "timestamp_utc_unreal": "2026.10.02-03.13.01:072",
+      "evaluated_time_seconds": 44.25,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    },
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2546,
+      "timestamp_utc_unreal": "2026.10.02-03.14.35:471",
+      "evaluated_time_seconds": 16.75,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    },
+    {
+      "source_log": "RTCQT.log",
+      "source_line": 2619,
+      "timestamp_utc_unreal": "2026.10.02-03.15.41:852",
+      "evaluated_time_seconds": 16.75,
+      "succeeded": true,
+      "observed_band_count": 32,
+      "failure_reason": "None"
+    }
+  ],
+  "user_screenshots_reviewed": true,
+  "first_frame_visual_reviewed": true,
+  "settings_edit_verified": true,
+  "saved_exponent_before_closeout": 1.0,
+  "saved_exponent_restored": 2.0,
+  "exponent_restoration_performed_by": "Codex using Unreal EditorAssetSubsystem; original asset retained under ignored Saved storage",
+  "settings_comparison": {
+    "status": "PASS",
+    "saved_exponent_before": 1.0,
+    "saved_exponent_after": 2.0,
+    "bands_compared": 32,
+    "bands_raised_by_exponent_1": 32,
+    "position_and_xy_scale_preserved": true,
+    "maximum_absolute_z_difference_from_checkpoint1": 4.928588648311916e-09,
+    "absolute_tolerance": 1e-06,
+    "relative_tolerance": 1e-06
+  },
+  "saved_level_loaded_in_fresh_editor": true,
+  "fresh_play_verified": true,
+  "fresh_play_time_seconds": 16.75,
+  "fresh_play_succeeded": true,
+  "fresh_play_failure_reason": "None",
+  "visualizer_actors": 1,
+  "instanced_mesh_components": 1,
+  "instances": 32,
+  "fresh_visual_capture_reviewed": true,
+  "capture_phase": "Editor viewport after evaluating the same verified 16.75 frame",
+  "editor_capture_matches_play_transforms_exactly": true,
+  "level_saved_by_capture_script": false,
+  "private_test_assets_ignored": true,
+  "fingerprint_encoding": "UTF-8 text bytes with CRLF normalized to LF; PNG and uasset/umap bytes unchanged",
+  "files": {
+    "planning/evidence/d11/checkpoint1-verification.json": {
+      "sha256": "c7faddfa36c6743e20e9304a50928728ed5f6f1a900919e47b27a34d1ffae675",
+      "bytes": 3410
+    },
+    "planning/evidence/d11/checkpoint2-exponent1-inspection.json": {
+      "sha256": "e055f5d5b8f9a7e3d0f49dd8d68c520718df28fe354569c0e0908412b4474cf6",
+      "bytes": 6267
+    },
+    "planning/evidence/d11/checkpoint2-first-frame-log.txt": {
+      "sha256": "0d8756e2ed026763bbb9d45c86feb848da476ffb4b2d086f3f8e6d500345c9ef",
+      "bytes": 874
+    },
+    "planning/evidence/d11/checkpoint2-first-frame.json": {
+      "sha256": "084372b395c7a0e122e6627e74fd17aa20d6a2e0a7cc91269856c5a1fa2a7f2b",
+      "bytes": 1295
+    },
+    "planning/evidence/d11/checkpoint2-first-frame.png": {
+      "sha256": "3fc6ef66d58023d28599bc4f12a469418b9bdfdfce2e898b241dd4490ee75be1",
+      "bytes": 472883
+    },
+    "planning/evidence/d11/checkpoint2-fresh-play.json": {
+      "sha256": "24aa3e7ec8f6cc24805f875523138c290ee75f8fe937622c56f9350d683da9b6",
+      "bytes": 12081
+    },
+    "planning/evidence/d11/checkpoint2-fresh-verification-log.txt": {
+      "sha256": "7c0ae7435de7b8f6c3da31f56d8a5e6348ca564f0833d061ffec9ab332aaa585",
+      "bytes": 3157
+    },
+    "planning/evidence/d11/checkpoint2-restored-frame.png": {
+      "sha256": "a4a2970145ba9b9c544ddce01a01082c4891dde75cb8cf3f4e6c202e11f607e9",
+      "bytes": 641522
+    },
+    "planning/evidence/d11/checkpoint2-restored-inspection.json": {
+      "sha256": "e29d56e7b1f9737fc3cad734e59d83f69277489ad72b0b751f2e8609e5e643d6",
+      "bytes": 6273
+    },
+    "planning/evidence/d11/checkpoint2-settings-comparison.json": {
+      "sha256": "1fd2876b70c081f6869fbae4538f807baf21627c714364230739c90b8f390410",
+      "bytes": 326
+    },
+    "planning/evidence/d11/checkpoint2-user-231442.png": {
+      "sha256": "9223c473ff86277bb9962801f0a3ad218d56d7b333f944ebc87a06cd79804879",
+      "bytes": 470001
+    },
+    "planning/evidence/d11/checkpoint2-user-231552.png": {
+      "sha256": "d4db375ec91a8cde9d51f1f998824cd9b9e14f4ff90c4feb9630eede7360b70b",
+      "bytes": 319335
+    },
+    "planning/evidence/d11/checkpoint2-user-sessions-log.txt": {
+      "sha256": "b6e6bc68deabab1ed71475f632787757d9b70eb0451a10c5d09afd4577b55dda",
+      "bytes": 2277
+    },
+    "planning/scripts/capture_d11_saved_frame.py": {
+      "sha256": "0613982decc383ed2523353042a7732b21de4be5c3744f26ce24fedb597afca0",
+      "bytes": 5354
+    }
+  },
+  "private_files": {
+    "Content/Audio/PrivateTest/DA_ResponseTEst.uasset": {
+      "sha256": "f935ef65c24f95521b85185bd4d8a9ad27210a05ec1c10c741cfabf23fe7f8e6",
+      "bytes": 1126,
+      "ignored": true
+    },
+    "Content/Audio/PrivateTest/L_D10D11ResponseTest.umap": {
+      "sha256": "79f3b08a3f9c34742953bcbe315d5d728a553125523ea6fd73b9d77fe991ae36",
+      "bytes": 73532,
+      "ignored": true
+    },
+    "Content/Audio/PrivateTest/CQNRT_NoTimeToExplain_32.uasset": {
+      "sha256": "35d34424c7fc3ce3efc4f160e21a6915fed134dfd101788191145e99f29eeab7",
+      "bytes": 839945,
+      "ignored": true
+    }
+  }
+}

@@ -81,23 +81,20 @@ Completed:
   editor session reloads the saved level and returns the same 16.75 result.
   See [D10 checkpoints](d10_timestamp_query_checkpoint.md).
 
-In progress:
-
-- D11: response-driven absolute Z scale is implemented and the five D11
-  automation groups plus all 14 D08-D10 regressions pass. Repeated and
-  reordered queries reproduce stored transforms exactly without rebuilding
-  unchanged topology; an independent check validates 256 real-asset scale
-  rows against D07. The user-built level's visible height changes, settings
-  edit, and fresh-editor visual check remain pending. See
-  [D11 code checkpoint](d11_scale_response_checkpoint.md).
+- [x] D11: response-driven absolute Z scale, five D11 test groups, and all
+  14 D08-D10 regressions pass. An independent check validates 256 real-asset
+  transform rows; repeated seeks and settings edits preserve topology.
+  User screenshots and timestamp runs confirm the visible response. The
+  saved exponent is restored to 2, and a fresh rendered editor verifies
+  the saved level, 32 played instances, and the restored 16.75 frame.
+  See [D11 checkpoints](d11_scale_response_checkpoint.md).
 
 Next:
 
-- Finish D11's saved-level visual verification and capture before D12.
-- D12 adds the shared-response material and locks exposure after D11 closes.
+- D12 is unblocked: add the shared-response material and lock exposure.
 
 ## WIP Recommendation
 
-D11 remains in `Now` until its saved-level visual check is complete.
-Keep no more than two cards in `Now`. The next visible milestone is the
-verified D11 height response, followed by D12's material and exposure setup.
+D11 is `Done`; D12 remains `Next` until implementation begins.
+Keep no more than two cards in `Now`. The next visible milestone is D12's
+material and exposure setup, followed by D13's sequence-time/audio scene.

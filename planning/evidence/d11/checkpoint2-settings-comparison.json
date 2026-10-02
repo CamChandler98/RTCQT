@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "saved_exponent_before": 1.0,
+  "saved_exponent_after": 2.0,
+  "bands_compared": 32,
+  "bands_raised_by_exponent_1": 32,
+  "position_and_xy_scale_preserved": true,
+  "maximum_absolute_z_difference_from_checkpoint1": 4.928588648311916e-09,
+  "absolute_tolerance": 1e-06,
+  "relative_tolerance": 1e-06
+}

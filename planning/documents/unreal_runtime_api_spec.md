@@ -370,7 +370,7 @@ layout math, or failure behavior requires an explicit contract revision.
   and count do not rebuild topology. Each frame starts from freshly generated
   base transforms, so seeks and settings edits cannot accumulate scale.
   A failed transform/custom-data update returns failure and clears stale
-  instances. See [D11 code checkpoint](d11_scale_response_checkpoint.md).
+  instances. See [D11 checkpoints](d11_scale_response_checkpoint.md).
 - D12 consumes custom-data slots `0` and `1`, configures bounded emissive/color,
   and locks exposure.
 

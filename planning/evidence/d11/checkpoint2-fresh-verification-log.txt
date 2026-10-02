@@ -1,0 +1,28 @@
+D11 saved-level inspection, exponent restoration, fresh Play, and rendered-frame verification.
+Native Unreal timestamps are UTC.
+
+Source: Saved/Logs/D11-saved-level-inspection.log
+451: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+1632: [2026.10.02-12.17.02:191][  0]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+1642: [2026.10.02-12.17.02:423][  0]LogPython: D11_SAVED_LEVEL {"scene": "/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.RTCQTVisualizer_0", "settings_asset": "/Game/Audio/PrivateTest/DA_ResponseTEst.DA_ResponseTEst", "response_exponent": 1.0, "noise_floor": 0.10000000149011612, "input_ceiling": 1.0, "succeeded": true, "evaluated_time_seconds": 16.75, "observed_band_count": 32, "failure_reason": "<RTCQTFailureReason.NONE: 0>", "instance_count": 32}
+1643: [2026.10.02-12.17.02:423][  0]LogPythonScriptCommandlet: Display: Python script executed successfully
+1646: [2026.10.02-12.17.02:423][  0]LogInit: Display: Success - 0 error(s), 0 warning(s)
+1683: [2026.10.02-12.17.03:319][  0]LogExit: Exiting.
+
+Source: Saved/Logs/D11-restore-settings.log
+451: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+1632: [2026.10.02-12.19.37:015][  0]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+1645: [2026.10.02-12.19.37:104][  0]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/DA_ResponseTEst
+1651: [2026.10.02-12.19.37:120][  0]LogPython: D11_RESTORE_EXPONENT saved 1 -> 2
+1653: [2026.10.02-12.19.37:121][  0]LogPython: D11_SAVED_LEVEL {"scene": "/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.RTCQTVisualizer_0", "settings_asset": "/Game/Audio/PrivateTest/DA_ResponseTEst.DA_ResponseTEst", "response_exponent": 2.0, "noise_floor": 0.10000000149011612, "input_ceiling": 1.0, "succeeded": true, "evaluated_time_seconds": 16.75, "observed_band_count": 32, "failure_reason": "<RTCQTFailureReason.NONE: 0>", "instance_count": 32}
+1654: [2026.10.02-12.19.37:121][  0]LogPythonScriptCommandlet: Display: Python script executed successfully
+1657: [2026.10.02-12.19.37:121][  0]LogInit: Display: Success - 0 error(s), 0 warning(s)
+1694: [2026.10.02-12.19.37:622][  0]LogExit: Exiting.
+
+Source: Saved/Logs/D11-fresh-visual.log
+458: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+1948: [2026.10.02-12.22.40:383][  2]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+1994: [2026.10.02-12.22.45:829][590]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_2] D10 success=true time=16.75 bands=32 reason=None
+2000: [2026.10.02-12.22.48:742][923]LogPython: D11_FRESH_PLAY_VERIFIED time=16.75 bands=32 exponent=2
+2012: [2026.10.02-12.22.56:063][679]LogPython: D11_FRESH_CAPTURE_SAVED C:\Users\camch\source\RTCQT\Saved\Automation\D11\saved-frame-restored.png
+2071: [2026.10.02-12.23.19:197][680]LogExit: Exiting.

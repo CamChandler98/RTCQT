@@ -1,16 +1,17 @@
-# D11 Scale Response Code Checkpoint
+# D11 Scale Response Checkpoints
 
 ## Status
 
-Date: 2026-10-01 (America/New_York).
+Implementation: 2026-10-01 (America/New_York).
+Visual verification and closeout: 2026-10-02.
+Implementation checkpoint: `11985ef`.
 Engine: Unreal 5.8.0-55116800+++UE5+Release-5.8.
 Branch: `codex/d11-scale-response`.
 
-**Code checkpoint ready; delivery card remains in progress.** The Development
-Editor build and all 19 automation groups pass: five D11 groups plus 14 D08-D10
-regressions. The independent numeric check also passes. The user-built saved
-level's visible height changes, settings edit, and fresh-editor visual check
-remain the manual checkpoint before D11 closeout and D12.
+**Status: Done.** The Development Editor build and all 19 automation groups
+pass: five D11 groups plus 14 D08-D10 regressions. The independent numeric
+check, user-built scene's visible height response, exponent-change check,
+and fresh-editor Play/render verification all pass. D12 is unblocked.
 
 ## Implemented behavior
 
@@ -86,7 +87,58 @@ compiles the tests and links the module successfully. Full generated logs and
 the native report stay under `Saved`. UTC report dates show 2026-10-02 for
 this October 1 evening session.
 
-## Next manual step
+## Saved-level visual and settings verification
+
+The user supplied the first 16.75 Play screenshot, then separate timestamp
+runs at 0.75, 44.25, and 16.75 with two further screenshots captured on
+October 1 at 23:14:42 and 23:15:52 (America/New_York). Each active Play session
+returns success, 32 bands, and reason None with no runtime warning/error.
+The Blueprint's cosmetic print prefix remains `D10`; its existing call uses
+the rebuilt D11 `EvaluateAtTime` implementation.
+
+The saved settings asset was still at exponent 1 during final inspection.
+A native Unreal commandlet loaded the actual level and recorded all 32
+transforms at that setting. Codex restored and saved exponent 2 as planned,
+retaining the exponent-1 asset under ignored `Saved/Automation/D11` storage.
+All 32 interior-band heights were higher at exponent 1; restoration preserves
+position and X/Y and matches the initial exponent-2 reference within `1e-6`
+(maximum printed-capture Z difference about `4.929e-9`).
+
+The user's latest reopened session loaded the default map rather than the test
+level. Final persistence/visual proof therefore comes from a fresh rendered
+Unreal process running [the saved-frame capture script](../scripts/capture_d11_saved_frame.py).
+It loads the actual saved test level and restored settings, starts Play,
+verifies one visualizer/component and 32 instances at 16.75, and records a
+successful result with reason None. After ending Play, it evaluates the same
+isolated frame on the editor actor, requires exact equality with the played
+transforms, and exports the viewport screenshot. It does not save the level
+or settings. The final rendered view was reviewed and retains the expected
+ordered row and differing heights. Camera/framing differences mean no
+pixel-for-pixel equality is claimed for the user screenshots.
+
+Evidence:
+
+- [Initial Play view](../evidence/d11/checkpoint2-first-frame.png) and
+  [initial result record](../evidence/d11/checkpoint2-first-frame.json).
+- [User capture at 23:14:42](../evidence/d11/checkpoint2-user-231442.png) and
+  [user capture at 23:15:52](../evidence/d11/checkpoint2-user-231552.png).
+- [User timestamp/session log](../evidence/d11/checkpoint2-user-sessions-log.txt).
+- [Exponent-1 saved-level inspection](../evidence/d11/checkpoint2-exponent1-inspection.json),
+  [restored inspection](../evidence/d11/checkpoint2-restored-inspection.json), and
+  [settings comparison](../evidence/d11/checkpoint2-settings-comparison.json).
+- [Fresh Play and matching capture transforms](../evidence/d11/checkpoint2-fresh-play.json),
+  [restored rendered frame](../evidence/d11/checkpoint2-restored-frame.png), and
+  [native verification log](../evidence/d11/checkpoint2-fresh-verification-log.txt).
+- [Completion record and fingerprints](../evidence/d11/checkpoint2-verification.json).
+
+All 12 source/evidence fingerprints from code checkpoint 1 still match. No
+runtime or C++ test source changed during closeout, so the successful 19-group
+suite was not repeated. The targeted actual-asset inspection, exponent
+restoration, numeric comparison, and fresh rendered Play check ran separately.
+The initial visual record retains its historical `Now` status; the completion
+record above establishes `Done`.
+
+## Manual walkthrough for reproduction
 
 1. Reopen `C:\Users\camch\source\RTCQT\RTCQT.uproject` and load
    `/Game/Audio/PrivateTest/L_D10D11ResponseTest`.
@@ -104,7 +156,7 @@ this October 1 evening session.
    should rise while the configured bounds remain respected. Stop, restore
    exponent `2`, save, and verify the original 16.75 frame returns.
 6. Stop, Save All, close/reopen Unreal, reload the level, and Play at 16.75.
-   Retain the fresh log and viewport evidence before marking D11 Done.
+   Retain the fresh log and viewport evidence for the verification record.
 
 The private level, response asset, analyzer, and audio stay ignored under
 `Content/Audio/PrivateTest`; source and numeric evidence are tracked.
@@ -141,3 +193,17 @@ python3 -B planning/scripts/validate_d11_scale_capture.py
 
 To validate a fresh generated capture, pass
 `--capture Saved/Automation/D11/captured-transforms.csv`.
+
+To repeat the saved-level rendered check with exponent 2 already saved, run:
+
+```bash
+'/mnt/c/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe' \
+  'C:\Users\camch\source\RTCQT\RTCQT.uproject' \
+  -EnablePlugins=PythonScriptPlugin \
+  '-ExecutePythonScript=C:\Users\camch\source\RTCQT\planning\scripts\capture_d11_saved_frame.py' \
+  -unattended -nop4 -nosplash -NoSound \
+  '-abslog=C:\Users\camch\source\RTCQT\Saved\Logs\D11-fresh-visual.log'
+```
+
+This requires a graphics device and exits after writing
+`Saved/Automation/D11/saved-frame-restored.png` and its JSON report.

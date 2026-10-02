@@ -253,7 +253,7 @@ Map queried analyzer values through the response processor into bounded instance
 - D10 Connect ConstantQNRT queries to explicit song time.
 
 ## Evidence
-- Reference timestamp transforms and short editor capture.",Now,P0,M,"D09, D10",Unreal workstation,"visualizer,response,instancing,stream-mvp,priority:P0",Stream MVP
+- Reference timestamp transforms and short editor capture.",Done,P0,M,"D09, D10",Unreal workstation,"visualizer,response,instancing,stream-mvp,priority:P0",Stream MVP
 D12,Build emissive material and exposure baseline,"## Objective
 Create a stream-readable material response without unstable exposure.
 

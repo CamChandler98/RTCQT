@@ -1,0 +1,9 @@
+D11 first-frame visual checkpoint. Native Unreal log timestamps are UTC.
+The Blueprint print prefix remains D10; it calls the same EvaluateAtTime API after the D11 rebuild.
+Source: Saved/Logs/RTCQT.log
+
+471: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+2032: [2026.10.02-02.29.14:926][244]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+2100: [2026.10.02-02.29.17:268][422]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-22.29.17
+2107: [2026.10.02-02.29.17:292][422]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_5] D10 success=true time=16.75 bands=32 reason=None
+2109: [2026.10.02-02.29.17:297][422]PIE: Play in editor total start time 0.113 seconds.

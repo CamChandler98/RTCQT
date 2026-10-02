@@ -1,0 +1,32 @@
+{
+  "delivery_card": "D11",
+  "status": "Now",
+  "source_checkpoint": "11985ef",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "scene": "/Game/Audio/PrivateTest/L_D10D11ResponseTest",
+  "evaluated_time_seconds": 16.75,
+  "succeeded": true,
+  "observed_band_count": 32,
+  "failure_reason": "None",
+  "first_frame_visual_reviewed": true,
+  "visual_observation": "Play-in-Editor viewport shows one ordered row with visibly differing cube heights; actor remains labeled D08 - 32 Static Bands.",
+  "log_prefix": "D10",
+  "log_prefix_note": "Cosmetic label was unchanged; the existing Blueprint invokes the rebuilt D11 EvaluateAtTime implementation.",
+  "runtime_warnings": 0,
+  "runtime_errors": 0,
+  "remaining_manual_checks": [
+    "Reordered timestamp views and repeated 16.75 frame",
+    "Response exponent 2 to 1 and restored 2, with visual evidence",
+    "Saved final settings/level and fresh-editor visual check"
+  ],
+  "files": {
+    "planning/evidence/d11/checkpoint2-first-frame.png": {
+      "sha256": "3fc6ef66d58023d28599bc4f12a469418b9bdfdfce2e898b241dd4490ee75be1",
+      "bytes": 472883
+    },
+    "planning/evidence/d11/checkpoint2-first-frame-log.txt": {
+      "sha256": "0d8756e2ed026763bbb9d45c86feb848da476ffb4b2d086f3f8e6d500345c9ef",
+      "bytes": 874
+    }
+  }
+}
