@@ -284,11 +284,14 @@ Source/RTCQT/
 `-- Private/
     |-- RTCQTModule.cpp
     |-- RTCQTVisualizer.cpp
+    |-- RTCQTAnalyzerQuery.h
+    |-- RTCQTAnalyzerQuery.cpp
     |-- RTCQTResponseSettings.cpp
     |-- RTCQTResponseProcessor.cpp
     |-- RTCQTLayout.cpp
     `-- Tests/
         |-- RTCQTResponseTests.cpp
+        |-- RTCQTTimeQueryTests.cpp
         `-- RTCQTLayoutTests.cpp
 ```
 
@@ -307,12 +310,15 @@ Initial build rules:
 | Public | `CoreUObject` | Reflected enums, structs, data asset, and actor declarations. |
 | Public | `Engine` | Actor, data asset, mesh, material, and instanced-mesh types. |
 | Private | `AudioSynesthesia` | `UConstantQNRT` query implementation and asset access. |
+| Private | `AudioAnalyzer` | Native NRT base/result API and editor-test fixture installation through `SetResult`. |
+| Private | `AudioSynesthesiaCore` | ConstantQNRT result/channel metadata and deterministic test result construction. |
 
-`AudioSynesthesiaEditor`, `PropertyEditor`, `UnrealEd`, `Slate`, `UMG`,
-`SignalProcessing`, `AudioMixer`, and the legacy `AudioAnalyzer` integrations
-are not runtime dependencies for this design. If the installed engine requires
-a direct `AudioAnalyzer` dependency for inherited NRT members, D06 may add it
-as a private runtime dependency and record why.
+D10 adds the direct private `AudioAnalyzer` and `AudioSynesthesiaCore`
+references required by the installed UE 5.8 linker for these native APIs.
+The runtime module declares no direct `AudioSynesthesiaEditor`,
+`PropertyEditor`, `UnrealEd`, `Slate`, `UMG`, `SignalProcessing`, or `AudioMixer`
+dependency. Synthetic result installation is compiled only in editor
+automation tests; production queries read the analyzer's existing result.
 
 Movie Render Queue is a project plugin used by D13-D14, not a dependency of
 the `RTCQT` visualizer module.
@@ -350,7 +356,12 @@ layout math, or failure behavior requires an explicit contract revision.
 - D09 implements `FRTCQTResponseProcessor` and ports D02 vectors into Unreal
   automation tests.
 - D10 implements validation, the timestamped ConstantQNRT query, and band-count
-  checks inside `EvaluateAtTime`.
+  checks inside `EvaluateAtTime`. Its internal `RTCQTAnalysis::QueryBandsAtTime`
+  helper returns normalized values in a call-local output array, clears that
+  array on failure, and stores no query history. The public actor API remains
+  the three operations described above. Missing settings, unavailable channels,
+  and unfinished result data report `EmptyAnalyzerResult` before the native
+  query. See [D10 code checkpoint](d10_timestamp_query_checkpoint.md).
 - D11 maps the shared response to local Z scale without changing X/Y or
   rebuilding topology.
 - D12 consumes custom-data slots `0` and `1`, configures bounded emissive/color,

@@ -1,6 +1,8 @@
 #include "RTCQTVisualizer.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "ConstantQNRT.h"
+#include "RTCQTAnalyzerQuery.h"
 #include "RTCQTLayout.h"
 #include "RTCQTLog.h"
 
@@ -53,6 +55,59 @@ FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 {
 	FRTCQTEvaluationResult Result;
 	Result.EvaluatedTimeSeconds = TimeSeconds;
+	const auto Fail = [this, &Result](ERTCQTFailureReason Reason, const TCHAR* Message)
+	{
+		Result.FailureReason = Reason;
+		FailRebuild(Reason, Message);
+		return Result;
+	};
+	if (!FMath::IsFinite(TimeSeconds))
+		return Fail(ERTCQTFailureReason::InvalidTime, TEXT("Song time must be finite."));
+	if (!ConstantQNRT)
+		return Fail(ERTCQTFailureReason::MissingAnalyzer, TEXT("Assign Constant QNRT before evaluating song time."));
+	if (!ConstantQNRT->Sound)
+		return Fail(ERTCQTFailureReason::MissingAnalyzedSound, TEXT("Constant QNRT has no analyzed Sound; assign the test SoundWave and analyze it."));
+	if (!ResponseSettings)
+		return Fail(ERTCQTFailureReason::MissingResponseSettings, TEXT("Assign Response Settings before evaluating song time."));
+	if (!InstanceMesh)
+		return Fail(ERTCQTFailureReason::MissingMesh, TEXT("Assign Instance Mesh to display the configured bands."));
+	if (ExpectedBandCount <= 0)
+		return Fail(ERTCQTFailureReason::InvalidExpectedBandCount, TEXT("Set Expected Band Count above zero to display instances."));
+
+	TArray<float> Bands;
+	Result = RTCQTAnalysis::QueryBandsAtTime(ConstantQNRT, TimeSeconds, AnalyzerChannel, ExpectedBandCount, Bands);
+	if (!Result.bSucceeded)
+	{
+		FString Message;
+		switch (Result.FailureReason)
+		{
+		case ERTCQTFailureReason::TimeOutsideAnalysis:
+			Message = FString::Printf(TEXT("Song time %.9g is outside a valid analysis duration of %.9g seconds."),
+				TimeSeconds, ConstantQNRT->DurationInSeconds);
+			break;
+		case ERTCQTFailureReason::EmptyAnalyzerResult:
+			Message = FString::Printf(TEXT("Constant QNRT has no queryable data for channel %d; check the channel, settings, and completed analysis."), AnalyzerChannel);
+			break;
+		case ERTCQTFailureReason::BandCountMismatch:
+			Message = FString::Printf(TEXT("Constant QNRT returned %d bands; Expected Band Count is %d. Match the analyzer and visualizer counts."),
+				Result.ObservedBandCount, ExpectedBandCount);
+			break;
+		default:
+			Message = TEXT("Could not query Constant QNRT; check the assigned analyzer and song time.");
+			break;
+		}
+		return Fail(Result.FailureReason, *Message);
+	}
+	if (!RebuildInstances())
+	{
+		Result.bSucceeded = false;
+		Result.FailureReason = LastFailureReason;
+		return Result;
+	}
+
+	// D10 validates/queries the frame and restores static topology. D11 consumes
+	// this call-local band array to apply response; no time or band history is kept.
+	LastFailureReason = ERTCQTFailureReason::None;
 	return Result;
 }
 
@@ -157,9 +212,16 @@ bool ARTCQTVisualizer::FailRebuild(ERTCQTFailureReason Reason, const TCHAR* Mess
 
 void ARTCQTVisualizer::ResetInstances()
 {
-	if (InstanceComponent)
+	// A missing member reference must still clear the actor-owned default
+	// component, which may remain attached and rendered through the root.
+	UInstancedStaticMeshComponent* OwnedInstances = InstanceComponent.Get();
+	if (!OwnedInstances)
 	{
-		InstanceComponent->ClearInstances();
+		OwnedInstances = Cast<UInstancedStaticMeshComponent>(GetDefaultSubobjectByName(TEXT("RTCQTInstances")));
+	}
+	if (OwnedInstances)
+	{
+		OwnedInstances->ClearInstances();
 	}
 	bHasCachedLayout = false;
 	CachedBandCount = INDEX_NONE;

@@ -1,0 +1,26 @@
+Excerpt from Saved/Logs/D10-tests.log; all test completions and warning/error entries retained.
+LogCsvProfiler: Display: Metadata set : commandline="" C:\Users\camch\source\RTCQT\RTCQT.uproject -unattended -nop4 -nosplash -NullRHI -NoSound -ExecCmds="Automation RunTests RTCQT." -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\camch\source\RTCQT\Saved\Automation\D10 -abslog=C:\Users\camch\source\RTCQT\Saved\Logs\D10-tests.log""
+LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+LogInit: Compatible Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+LogInit: Command Line: -unattended -nop4 -nosplash -NullRHI -NoSound -ExecCmds="Automation RunTests RTCQT." -TestExit="Automation Test Queue Empty" -ReportExportPath=C:\Users\camch\source\RTCQT\Saved\Automation\D10 -abslog=C:\Users\camch\source\RTCQT\Saved\Logs\D10-tests.log
+[2026.10.02-01.22.36:677][  0]LogLayoutService: Warning: While key "UnrealEd_Layout_v1.5" was not found, and older version exists (key "UnrealEd_Layout_v1.6"). This means section "EditorLayouts" was created with a previous version of UE and is no longer compatible. The old key has been removed and updated with the new one.
+[2026.10.02-01.22.43:526][597]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.10.02-01.22.43:542][599]LogAutomationController: Display: Test Completed. Result={Success} Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.10.02-01.22.43:566][601]LogAutomationController: Display: Test Completed. Result={Success} Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.10.02-01.22.43:591][604]LogAutomationController: Display: Test Completed. Result={Success} Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.10.02-01.22.43:605][606]LogAutomationController: Display: Test Completed. Result={Success} Name={BasicCalculations} Path={RTCQT.D09.Response.BasicCalculations}
+[2026.10.02-01.22.43:622][608]LogAutomationController: Display: Test Completed. Result={Success} Name={BatchAndWeights} Path={RTCQT.D09.Response.BatchAndWeights}
+[2026.10.02-01.22.43:638][610]LogAutomationController: Display: Test Completed. Result={Success} Name={ExtremeValuesAndBounds} Path={RTCQT.D09.Response.ExtremeValuesAndBounds}
+[2026.10.02-01.22.43:654][612]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D09.Response.GoldenVectors}
+[2026.10.02-01.22.43:654][612]LogAutomationController: Checked 32 D02 vectors: normalization, weighting, response, and range mapping.
+[2026.10.02-01.22.43:672][614]LogAutomationController: Display: Test Completed. Result={Success} Name={OrderIndependence} Path={RTCQT.D09.Response.OrderIndependence}
+[2026.10.02-01.22.43:689][616]LogAutomationController: Display: Test Completed. Result={Success} Name={SettingsSnapshot} Path={RTCQT.D09.Response.SettingsSnapshot}
+[2026.10.02-01.22.43:739][619]LogAutomationController: Display: Test Completed. Result={Success} Name={D07ReferenceValues} Path={RTCQT.D10.LocalFixture.D07ReferenceValues}
+[2026.10.02-01.22.43:739][619]LogAutomationController: Verified 192 D07 reference values across 15 queries; maximum absolute difference 0. Analysis duration 60 seconds.
+[2026.10.02-01.22.43:752][621]LogAutomationController: Display: Test Completed. Result={Success} Name={ExactTimeAndOrder} Path={RTCQT.D10.Query.ExactTimeAndOrder}
+[2026.10.02-01.22.43:778][624]LogAutomationController: Display: Test Completed. Result={Success} Name={InvalidInputs} Path={RTCQT.D10.Query.InvalidInputs}
+[2026.10.02-01.22.43:806][627]LogAutomationController: Display: Test Completed. Result={Success} Name={FailuresAndRecovery} Path={RTCQT.D10.Visualizer.FailuresAndRecovery}
+[2026.10.02-01.22.43:809][627]LogAutomationController: Display: Successfully wrote json results file!
+[2026.10.02-01.22.43:809][628]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 14 tests performed.
+[2026.10.02-01.22.43:809][628]LogExit: Display: **** TestExit: Automation Test Queue Empty ****
+[2026.10.02-01.22.43:809][628]LogWindows: FPlatformMisc::RequestExitWithStatus(1, 0, FEngineLoop::Tick.GScopedTestExit)

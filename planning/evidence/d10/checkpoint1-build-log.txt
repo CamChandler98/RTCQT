@@ -1,0 +1,11 @@
+Excerpt from Saved/Logs/D10-build.log; successful final build.
+Log started at 10/01/2026 21:18:14 (2026-10-02T01:18:14Z)
+Building RTCQTEditor...
+Using Visual Studio 14.44.35228 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from RTCQT unity file: RTCQTAnalyzerQuery.cpp, RTCQTVisualizer.cpp, RTCQTTimeQueryTests.cpp
+[1/4] Compile [x64] RTCQTVisualizer.cpp
+[2/4] Link [x64] UnrealEditor-RTCQT.dll
+[3/4] Link [x64] UnrealEditor-RTCQT.lib
+[4/4] WriteMetadata RTCQTEditor.target [NoUba]
+Result: Succeeded
+Total execution time: 38.34 seconds

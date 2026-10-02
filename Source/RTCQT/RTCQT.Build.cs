@@ -17,7 +17,9 @@ public class RTCQT : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new[]
 		{
-			"AudioSynesthesia"
+			"AudioSynesthesia",
+			"AudioAnalyzer",
+			"AudioSynesthesiaCore"
 		});
 	}
 }

@@ -1,0 +1,62 @@
+{
+  "delivery_card": "D10",
+  "status": "Now",
+  "local_verification_date": "2026-10-01 America/New_York",
+  "branch": "codex/d10-timestamp-query",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "automated_tests": 14,
+  "automated_tests_passed": 14,
+  "d10_test_groups": 4,
+  "regression_groups": 10,
+  "d07_reference_pairs": 192,
+  "captured_queries": 15,
+  "captured_rows": 480,
+  "capture_max_absolute_difference_from_d07": 4.000000053405728e-10,
+  "absolute_tolerance": 1e-06,
+  "analysis_duration_seconds": 60,
+  "saved_level_blueprint_verified": false,
+  "audio_driven_scale_verified": false,
+  "fingerprint_encoding": "UTF-8 file bytes with CRLF normalized to LF",
+  "files": {
+    "Source/RTCQT/Private/RTCQTAnalyzerQuery.h": {
+      "sha256": "a2299523340875c9d52e7ec9591c0f164489bd995221f2300523be40ee611e4b",
+      "normalized_bytes": 342
+    },
+    "Source/RTCQT/Private/RTCQTAnalyzerQuery.cpp": {
+      "sha256": "3db2832a9b8bb27f9c630787718e0f0feb8269f74c42659570c741cda6ac32f1",
+      "normalized_bytes": 1873
+    },
+    "Source/RTCQT/Private/RTCQTVisualizer.cpp": {
+      "sha256": "c75fbf0a4a42a8e477e34d411ce21ae22c199874b2a0c408ac9f7d2a0a1711fb",
+      "normalized_bytes": 8190
+    },
+    "Source/RTCQT/Private/Tests/RTCQTTimeQueryTests.cpp": {
+      "sha256": "659d2243911e527c723babf043ba257662551e053470f064e0876b5bd07fad2f",
+      "normalized_bytes": 17537
+    },
+    "Source/RTCQT/RTCQT.Build.cs": {
+      "sha256": "5df3a5af3266fec382892c59ba3ca63834d95b8c31ce4fa945802db791b228b9",
+      "normalized_bytes": 599
+    },
+    "planning/evidence/d07/baseline.csv": {
+      "sha256": "15eb95767c7751cce86fa0f2bc7e852d773106f0daf3e8343f820846612c23ea",
+      "normalized_bytes": 6448
+    },
+    "planning/evidence/d10/checkpoint1-captured-values.csv": {
+      "sha256": "97727c0954fd832ecce407c00b872f4f446df589b8d9799a25e8a3514d21b4b8",
+      "normalized_bytes": 10895
+    },
+    "planning/evidence/d10/checkpoint1-automation.json": {
+      "sha256": "9ca84d024b5650cdfad9af329dbc3b0417da48a78c7b28f29d7102ab094d301d",
+      "normalized_bytes": 3546
+    },
+    "planning/evidence/d10/checkpoint1-build-log.txt": {
+      "sha256": "927f2f2667ba0b3f0baf4897a636bd1c2b2173bf39c7d518de78827b8f25b19c",
+      "normalized_bytes": 681
+    },
+    "planning/evidence/d10/checkpoint1-automation-log.txt": {
+      "sha256": "9c8eae44420c8ed694f293912b78992429a6e3fbee053a49ec1368ce0754c468",
+      "normalized_bytes": 4258
+    }
+  }
+}

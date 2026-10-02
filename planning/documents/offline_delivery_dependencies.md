@@ -75,14 +75,22 @@ Completed:
   calls. All six D09 and four D08 automation groups pass. See
   [D09 verification](d09_response_verification.md).
 
+In progress:
+
+- D10: exact-time C++ query, input/count validation, failure recovery, and
+  matching D07 reference values are verified by the code checkpoint. The
+  user-built Blueprint call in the saved test level is still pending. See
+  [D10 code checkpoint](d10_timestamp_query_checkpoint.md).
+
 Next:
 
-- D10 is unblocked and is the recommended next card: ConstantQNRT queries at
-  explicit song times.
+- Finish D10 by assigning the test assets, wiring the Blueprint call, and
+  verifying its returned result in the saved level.
 - D11 waits for D10; its D09 response prerequisite is complete.
 
 ## WIP Recommendation
 
-D09 is complete. Pull D10 next and keep no more than two cards in `Now`.
-The next visible milestone is D11: applying the shared response to the existing
-instances without rebuilding topology.
+D10 remains in `Now` until the saved-level Blueprint check is complete.
+Keep no more than two cards in `Now`. The next visible milestone is D11:
+applying the shared response to the existing instances without rebuilding
+topology.
