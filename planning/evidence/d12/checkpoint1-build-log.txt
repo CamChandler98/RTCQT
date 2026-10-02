@@ -42,7 +42,7 @@ Deleting outdated item: C:\Users\camch\source\RTCQT\Intermediate\Build\Win64\x64
 Building RTCQTEditor...
 ===== Toolchain Information =====
 Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
-  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2) 
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2)
 Using Visual Studio 14.44.35228 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
 [Adaptive Build] Excluded from RTCQT unity file: RTCQTResponseSettings.cpp, RTCQTVisualizer.cpp, RTCQTMaterialResponseTests.cpp, RTCQTVisualizerTests.cpp
 =================================

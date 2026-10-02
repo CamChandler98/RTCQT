@@ -91,11 +91,12 @@ Completed:
 
 Next:
 
-- D12 is in progress: shared material settings implemented; material and exposure verification follow.
-  See [D12 plan](d12_material_exposure_plan.md).
+- D13 is unblocked: drive time, audio, and camera from one Level Sequence.
+  D12 completed the shared-response material, fixed EV100 2, and saved-scene verification.
+  See [D12 checkpoints](d12_material_exposure_checkpoint.md).
 
 ## WIP Recommendation
 
-D11 is `Done`; D12 is `Now` on `codex/d12-material-exposure`.
-Keep no more than two cards in `Now`. The next visible milestone is D12's
-material and exposure setup, followed by D13's sequence-time/audio scene.
+D11 and D12 are `Done`; D13 remains `Next` until implementation begins.
+Keep no more than two cards in `Now`. The next visible milestone is D13's
+sequence-time/audio scene.

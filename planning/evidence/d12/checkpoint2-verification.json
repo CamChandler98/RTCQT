@@ -1,0 +1,67 @@
+{
+  "status": "Done",
+  "date_local": "2026-10-02",
+  "timezone": "America/New_York",
+  "branch": "codex/d12-material-exposure",
+  "implementation_checkpoint": "460a429",
+  "tests_passed": 22,
+  "test_errors": 0,
+  "test_warnings": 0,
+  "tested_source_fingerprints_unchanged": true,
+  "material_compile_errors": [],
+  "graph_nodes": 17,
+  "instance_count": 32,
+  "active_shared_material_count": 1,
+  "fresh_play_passed": true,
+  "frame_order": [
+    16.75,
+    0.75,
+    2,
+    33.25,
+    16.75
+  ],
+  "six_stills_reviewed": true,
+  "exposure": {
+    "min_ev100": 2,
+    "max_ev100": 2,
+    "compensation": 0,
+    "bloom_intensity": 0.15,
+    "global_eye_adaptation_disabled": true
+  },
+  "capture_validation": {
+    "passed": true,
+    "queries": 5,
+    "bands_per_query": 32,
+    "band_rows_checked": 160,
+    "play_editor_inputs_match_exactly": true,
+    "same_time_inputs_repeat_exactly": true,
+    "maximum_response_difference": 4.851073986955612e-10,
+    "maximum_scale_difference": 4.928588648311916e-09,
+    "baseline": "D11 checkpoint1-captured-transforms.csv",
+    "absolute_and_relative_tolerance": 1e-06
+  },
+  "capture_saved_no_files": true,
+  "pixel_identical_rendering_claimed": false,
+  "retained_sha256": {
+    "Content/Materials/M_RTCQT_Bands.uasset": "d7543d93cc2db5873c38f27ec43fc5300e4488acb46b2138dfe4ed833f6f3b73",
+    "Content/Materials/README.md": "848c2898f5c916602d8279422c829121da83463aa561a04c085a87c6db41797c",
+    "planning/scripts/setup_d12_material_scene.py": "eae75810a00cc920f16980357f7e630f24424e89bc701a239d5655e19a7df614",
+    "planning/scripts/capture_d12_material_frames.py": "4b81fcf73d767f8d6f26174a85c4389da9e3b5090f359a3fea42ff4a3907636d",
+    "planning/scripts/validate_d12_material_capture.py": "00312fb313a24d13afe595354f742c0838b8b9bef8751d9065e851fdd49a12dc",
+    "planning/evidence/d12/checkpoint2-capture-validation.json": "3b83cb1f462ff1d1d2a886282e096a7816f06cb4c79ea1fbf0466728c764c61f",
+    "planning/evidence/d12/checkpoint2-fresh-frames.json": "499ed8e1e6a6400fed2ee716d6f4d903c6c4a3259efddaf98535ccfdecdd2c16",
+    "planning/evidence/d12/checkpoint2-material-scene-setup.json": "ebc84bd0613505ee538e5f684d137c2049aa9f63853acc4035d000061ee33687",
+    "planning/evidence/d12/checkpoint2-native-log.txt": "086d79ff83ae90a2fe254bbe1c7148ab62874c8ead35761f9fd3cf7d41833aa1",
+    "planning/evidence/d12/frame-strong-first.png": "eaad42858781e453d699a79e1abb112d00fd9d3072e80c02fd4a47c6a3322224",
+    "planning/evidence/d12/frame-quiet.png": "a428fa91d4ecf9f520cbd1a95d7b0216aa925f4bf5a2d7d5bef29a92a7043c34",
+    "planning/evidence/d12/frame-moderate.png": "568e9a9f6f9b5d425631bba34388fffda8be1ab0c160baead136b7e4d9a47d91",
+    "planning/evidence/d12/frame-bright.png": "72c2524017d81f5f81e9782fca58eeafc1d7d1259aed4ea45a016b803a7690be",
+    "planning/evidence/d12/frame-strong-repeat.png": "bc4f6deeb29c8e02b2520027c2329c775de96de144db0faa006300755452612d",
+    "planning/evidence/d12/frame-controlled-endpoints.png": "a1cb6a5956459aee552ed5d3b10b65212f38fbbb74ffc0b00993aabe7382cc4d"
+  },
+  "ignored_asset_sha256": {
+    "Content/Audio/PrivateTest/L_D10D11ResponseTest.umap": "221cded94bd00efae8f07838936a874c5d36db47818ea8ebff52573fc5d89b17",
+    "Content/Audio/PrivateTest/DA_ResponseTEst.uasset": "a199bfc45671718947ec081463a251f25903ab34caa0d97954986a15a8155b75",
+    "Content/Audio/PrivateTest/CQNRT_NoTimeToExplain_32.uasset": "35d34424c7fc3ce3efc4f160e21a6915fed134dfd101788191145e99f29eeab7"
+  }
+}

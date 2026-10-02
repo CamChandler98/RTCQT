@@ -1,0 +1,37 @@
+Source: Saved/Logs/D12-material-setup.log
+[2026.10.02-13.29.48:066][  0]LogConsoleManager: Warning: Console variable 'r.MotionVectorSimulation' used in the render thread. Rendering artifacts could happen. Use ECVF_RenderThreadSafe or don't use in render thread.
+[2026.10.02-13.29.51:642][  2]LogSavePackage: Moving output files for package: /Game/Materials/M_RTCQT_Bands
+[2026.10.02-13.29.51:643][  2]LogSavePackage: Moving '../../../../../../Users/camch/source/RTCQT/Saved/M_RTCQT_BandsEAADB707494908A8E3E71590A07EE824.tmp' to '../../../../../../Users/camch/source/RTCQT/Content/Materials/M_RTCQT_Bands.uasset'
+[2026.10.02-13.29.51:738][  2]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/DA_ResponseTEst
+[2026.10.02-13.29.51:739][  2]LogSavePackage: Moving '../../../../../../Users/camch/source/RTCQT/Saved/DA_ResponseTEst1A141D8049DD6085F846B8ABCC5C56EA.tmp' to '../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/DA_ResponseTEst.uasset'
+[2026.10.02-13.29.51:917][  2]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+[2026.10.02-13.29.51:918][  2]LogSavePackage: Moving '../../../../../../Users/camch/source/RTCQT/Saved/L_D10D11ResponseTest8DEC2EB9408E4B26050964BBD384318E.tmp' to '../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap'
+[2026.10.02-13.29.51:948][  2]LogPython: D12_MATERIAL_SCENE_SAVED {"level": "/Game/Audio/PrivateTest/L_D10D11ResponseTest", "material": "/Game/Materials/M_RTCQT_Bands", "actor": "/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.RTCQTVisualizer_0", "previous_material": "/Game/Materials/M_RTCQT_Bands.M_RTCQT_Bands", "scene_actors": [{"label": "D08 - 32 Static Bands", "class": "RTCQTVisualizer"}, {"label": "D08 - Ground", "class": "StaticMeshActor"}, {"label": "D08 - Key Light", "class": "DirectionalLight"}, {"label": "D08 - Fill Light", "class": "SkyLight"}, {"label": "D08 - Layout Camera", "class": "CameraActor"}, {"label": "D12 - Fixed Exposure", "class": "PostProcessVolume"}], "camera_post_process_blend_weights": [1.0], "camera_exposure_overrides_disabled": [[]], "material_compile_errors": [], "instanced_mesh_usage": true, "material_expression_count": 17, "emissive_range": [0.0, 10.0], "response_exponent": 2.0, "min_ev100": 2.0, "max_ev100": 2.0, "exposure_compensation": 0.0, "bloom_intensity": 0.15, "level_saved": true}
+[2026.10.02-13.29.52:117][  3]LogExit: Preparing to exit.
+[2026.10.02-13.29.52:935][  3]LogExit: Editor shut down
+[2026.10.02-13.29.52:938][  3]LogExit: Transaction tracking system shut down
+[2026.10.02-13.29.52:993][  3]LogExit: Object subsystem successfully closed.
+[2026.10.02-13.29.54:724][  3]LogExit: Exiting.
+Source: Saved/Logs/D12-fresh-frames.log
+[2026.10.02-13.31.11:106][  0]LogConsoleManager: Warning: Console variable 'r.MotionVectorSimulation' used in the render thread. Rendering artifacts could happen. Use ECVF_RenderThreadSafe or don't use in render thread.
+[2026.10.02-13.31.19:018][581]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2026.10.02-13.31.19:024][581]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+[2026.10.02-13.31.19:028][581]LogPlayLevel: PIE: StaticDuplicateObject took: (0.003852s)
+[2026.10.02-13.31.19:028][581]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.003919s)
+[2026.10.02-13.31.19:096][581]LogPlayLevel: PIE: World Init took: (0.003109s)
+[2026.10.02-13.31.19:120][581]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_2] D10 success=true time=16.75 bands=32 reason=None
+[2026.10.02-13.31.22:033][852]LogPython: D12_FRESH_PLAY_VERIFIED one_actor=1 instances=32 shared_materials=1
+[2026.10.02-13.31.22:057][853]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2026.10.02-13.31.22:146][855]LogPlayLevel: Display: Destroying online subsystem :Context_1
+[2026.10.02-13.31.32:331][810]LogPython: D12_FRAME_SAVED frame-strong-first.png
+[2026.10.02-13.31.42:652][975]LogPython: D12_FRAME_SAVED frame-quiet.png
+[2026.10.02-13.31.53:100][150]LogPython: D12_FRAME_SAVED frame-moderate.png
+[2026.10.02-13.32.03:573][335]LogPython: D12_FRAME_SAVED frame-bright.png
+[2026.10.02-13.32.13:992][524]LogPython: D12_FRAME_SAVED frame-strong-repeat.png
+[2026.10.02-13.32.24:432][710]LogPython: D12_FRAME_SAVED frame-controlled-endpoints.png
+[2026.10.02-13.32.24:445][710]LogPython: D12_FRESH_SCENE_AND_FRAMES_VERIFIED
+[2026.10.02-13.32.24:694][711]LogExit: Preparing to exit.
+[2026.10.02-13.32.25:787][711]LogExit: Editor shut down
+[2026.10.02-13.32.25:788][711]LogExit: Transaction tracking system shut down
+[2026.10.02-13.32.25:848][711]LogExit: Object subsystem successfully closed.
+[2026.10.02-13.32.26:898][711]LogExit: Exiting.

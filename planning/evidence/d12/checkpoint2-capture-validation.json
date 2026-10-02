@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "queries": 5,
+  "bands_per_query": 32,
+  "band_rows_checked": 160,
+  "play_editor_inputs_match_exactly": true,
+  "same_time_inputs_repeat_exactly": true,
+  "maximum_response_difference": 4.851073986955612e-10,
+  "maximum_scale_difference": 4.928588648311916e-09,
+  "baseline": "D11 checkpoint1-captured-transforms.csv",
+  "absolute_and_relative_tolerance": 1e-06
+}

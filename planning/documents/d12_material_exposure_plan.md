@@ -2,7 +2,8 @@
 
 Prepared: 2026-10-02, America/New_York.
 
-Status: In progress; implementation started 2026-10-02 on `codex/d12-material-exposure`.
+Status: Done; implemented and verified 2026-10-02 on `codex/d12-material-exposure`.
+Implementation checkpoint: `460a429`. See [D12 verification](d12_material_exposure_checkpoint.md).
 Prerequisite: D11 is complete at `e574d06` on `codex/d11-scale-response`.
 
 ## Finish line
@@ -194,3 +195,12 @@ validation depend on the successful build.
 D12 proves the look at explicit timestamps. D13 adds the shared sequence
 clock and synchronized audio; D14 proves rendered repeatability. Finish
 D12's checkpoints before starting those delivery cards.
+
+## Selected baseline
+
+The material uses linear cyan `(0.01, 0.65, 1.0)` and magenta
+`(0.85, 0.01, 0.65)`. Emissive stays `[0, 10]`, metallic is `0`, and roughness
+is `0.65`. Review at EV100 `0` showed excessive whitening in the strong
+frame; the selected fixed baseline is **Min EV100 = Max EV100 = 2**, exposure
+compensation `0`, and bloom intensity `0.15`. Camera exposure overrides are
+disabled; its other post-process settings remain unchanged.

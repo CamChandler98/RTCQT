@@ -1,0 +1,51 @@
+{
+  "level": "/Game/Audio/PrivateTest/L_D10D11ResponseTest",
+  "material": "/Game/Materials/M_RTCQT_Bands",
+  "actor": "/Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest:PersistentLevel.RTCQTVisualizer_0",
+  "previous_material": "/Game/Materials/M_RTCQT_Bands.M_RTCQT_Bands",
+  "scene_actors": [
+    {
+      "label": "D08 - 32 Static Bands",
+      "class": "RTCQTVisualizer"
+    },
+    {
+      "label": "D08 - Ground",
+      "class": "StaticMeshActor"
+    },
+    {
+      "label": "D08 - Key Light",
+      "class": "DirectionalLight"
+    },
+    {
+      "label": "D08 - Fill Light",
+      "class": "SkyLight"
+    },
+    {
+      "label": "D08 - Layout Camera",
+      "class": "CameraActor"
+    },
+    {
+      "label": "D12 - Fixed Exposure",
+      "class": "PostProcessVolume"
+    }
+  ],
+  "camera_post_process_blend_weights": [
+    1.0
+  ],
+  "camera_exposure_overrides_disabled": [
+    []
+  ],
+  "material_compile_errors": [],
+  "instanced_mesh_usage": true,
+  "material_expression_count": 17,
+  "emissive_range": [
+    0.0,
+    10.0
+  ],
+  "response_exponent": 2.0,
+  "min_ev100": 2.0,
+  "max_ev100": 2.0,
+  "exposure_compensation": 0.0,
+  "bloom_intensity": 0.15,
+  "level_saved": true
+}
