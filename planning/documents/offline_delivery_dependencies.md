@@ -89,14 +89,19 @@ Completed:
   the saved level, 32 played instances, and the restored 16.75 frame.
   See [D11 checkpoints](d11_scale_response_checkpoint.md).
 
+- [x] D13: one saved Level Sequence drives time, aligned audio, and camera.
+  The build and all 25 RTCQT groups pass. A fresh full-song Play preview,
+  reordered/repeated seeks, 224 independent band rows, eight stills, and
+  maximum-height framing pass. Cam confirms audible music, camera/cubes,
+  and restart. See [D13 checkpoints](d13_sequencer_scene_checkpoint.md).
+
 Next:
 
-- D13 is unblocked: drive time, audio, and camera from one Level Sequence.
-  D12 completed the shared-response material, fixed EV100 2, and saved-scene verification.
-  See [D12 checkpoints](d12_material_exposure_checkpoint.md).
+- D14 is unblocked and remains `Next`: perform the repeated 30-second
+  Movie Render Queue proof renders from the verified D13 scene.
 
 ## WIP Recommendation
 
-D11 and D12 are `Done`; D13 remains `Next` until implementation begins.
-Keep no more than two cards in `Now`. The next visible milestone is D13's
-sequence-time/audio scene.
+D11, D12, and D13 are `Done`; D14 is `Next` and unblocked. Keep no more
+than two cards in `Now`. The next visible milestone is the repeated MRQ
+render proof, followed by synchronized media in D15 and OBS playback in D16.

@@ -1,0 +1,61 @@
+{
+  "date_local": "2026-10-02",
+  "branch": "codex/d13-sequencer-scene",
+  "native_checkpoint": "b58915f",
+  "status": "Done",
+  "saved_scene_verified": true,
+  "fresh_session_play_verified": true,
+  "full_forward_preview_verified": true,
+  "captured_stills": 8,
+  "still_dimensions": [
+    1920,
+    1080
+  ],
+  "all_stills_visually_reviewed": true,
+  "maximum_height_framing_verified": true,
+  "independent_band_rows_checked": 224,
+  "camera_view_verified_while_playing": true,
+  "final_output_frame_camera_verified": true,
+  "capture_saved_no_assets": true,
+  "all_seven_asset_hashes_unchanged_during_capture": true,
+  "original_d12_level_unchanged": true,
+  "private_asset_sha256": {
+    "Content/Audio/PrivateTest/L_D13SequenceTest.umap": "f4e2918077a1aabbe5d7cf94f806bab767089672349338f9e90d089784bbff88",
+    "Content/Audio/PrivateTest/LS_RTCQT_60s.uasset": "4d96078b16a6b85d44802533a67ba65ac931c35516eb1b7c14707b0fe7f46238",
+    "Content/Audio/PrivateTest/MRQ_RTCQT_1080p60_Base.uasset": "8ff9361113f9b70e7ff402c5b033a066fe82a6f124c77b934c833617e04be416",
+    "Content/Audio/PrivateTest/L_D10D11ResponseTest.umap": "221cded94bd00efae8f07838936a874c5d36db47818ea8ebff52573fc5d89b17",
+    "Content/Audio/PrivateTest/DA_ResponseTEst.uasset": "a199bfc45671718947ec081463a251f25903ab34caa0d97954986a15a8155b75",
+    "Content/Audio/PrivateTest/CQNRT_NoTimeToExplain_32.uasset": "35d34424c7fc3ce3efc4f160e21a6915fed134dfd101788191145e99f29eeab7",
+    "Content/Materials/M_RTCQT_Bands.uasset": "d7543d93cc2db5873c38f27ec43fc5300e4488acb46b2138dfe4ed833f6f3b73"
+  },
+  "source_sha256_unchanged_since_checkpoint1": {
+    "Source/RTCQT/Public/RTCQTVisualizer.h": "21e27b07324e001ff3b5b0ba5f6f911a948d47cd58bd3071b8b9329927a25416",
+    "Source/RTCQT/Private/RTCQTVisualizer.cpp": "71365505b0d4293149b1daf2e41131d12441f75b09a385ad4b15ec974a3cf9a2",
+    "Source/RTCQT/Private/Tests/RTCQTSequenceTests.cpp": "f57b99aff4f081004dd0745de53d99dd33ea33f12654744cf3d46ca759f57ea7",
+    "Source/RTCQT/RTCQT.Build.cs": "c95cdc533bd7857bfe020d2bdb8b90755acb290dca990efb5bae294c9ce67eb1"
+  },
+  "still_sha256": {
+    "frame-strong-first.png": "37a2e3086529192b8147f9ac2df8efe5e938608de332f67e037e64dff8c2274a",
+    "frame-quiet.png": "c90efbeb3da563eb6a50b567d56d3c415c7c725fd3fd9b60260fa639502df3a1",
+    "frame-late.png": "3039dfa7f022f5c744a9c40aada2ddd790e813774d08a0c1d7bbc4e6d00d9769",
+    "frame-moderate.png": "33ba3e65932806cc2a861549e44d598d54dd2403af785d29e7a407d51d374003",
+    "frame-onset.png": "ff6d14955e28c8698ad9ffa5142b5ab8b3f12db7aa747f93cf563a628e1afa92",
+    "frame-bright.png": "7d047b8a467c578718a7c4b51580044f33ee9c2999b3f8f4f42dfd0d394c15fd",
+    "frame-strong-repeat.png": "aac5fa7adfc4deddd1a6be5a3bf781c85254fa7bde1de0343f2ecf05ffbff673",
+    "frame-maximum-height.png": "fc4b06da5bf05c4df8f70fc93f8a92445b9debd351ca379983050cde26f7ddd7"
+  },
+  "native_sessions_errors_ensures_fatals": 0,
+  "session_warnings": {
+    "D13-setup.log": [
+      "[2026.10.02-20.53.08:149][  2]LogPython: Warning: C:/Users/camch/source/RTCQT/planning/scripts/setup_d13_sequence_scene.py:175: DeprecationWarning: LevelSequenceEditorBlueprintLibrary: Function 'set_current_time' on 'LevelSequenceEditorBlueprintLibrary' is deprecated: Use SetCurrentTime that takes a FMovieSceneSequencePlaybackParams"
+    ],
+    "D13-inspection.log": [],
+    "D13-capture.log": [
+      "[2026.10.02-20.56.28:573][  0]LogConsoleManager: Warning: Console variable 'r.MotionVectorSimulation' used in the render thread. Rendering artifacts could happen. Use ECVF_RenderThreadSafe or don't use in render thread."
+    ]
+  },
+  "audible_preview_gate": "Passed: Cam confirms music, cubes, camera, and restart work",
+  "pixel_identical_rendering_claimed": false,
+  "d14_proof_renders_performed": false,
+  "audible_preview_evidence": "workstation-listening-result.json"
+}

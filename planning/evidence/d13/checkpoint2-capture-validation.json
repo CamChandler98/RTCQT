@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "real_sequence_seeks": 7,
+  "distinct_reference_times": 6,
+  "bands_per_query": 32,
+  "band_rows_checked": 224,
+  "play_editor_inputs_match_exactly": true,
+  "same_time_inputs_repeat_exactly": true,
+  "forward_samples": 13,
+  "playing_camera_samples": 12,
+  "camera_cuts_verified_in_play": true,
+  "maximum_response_difference": 2.955406541715888e-08,
+  "maximum_scale_difference": 2.1136459515957995e-07,
+  "baseline": "D07 baseline.csv with independent D02 quadratic response calculation",
+  "absolute_and_relative_tolerance": 1e-06,
+  "audible_confirmation": "Pending workstation listening check",
+  "pixel_identical_rendering_claimed": false
+}

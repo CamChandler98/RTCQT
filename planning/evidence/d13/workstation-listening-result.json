@@ -1,0 +1,12 @@
+{
+  "status": "Passed",
+  "date_local": "2026-10-02",
+  "level": "/Game/Audio/PrivateTest/L_D13SequenceTest",
+  "sequence": "/Game/Audio/PrivateTest/LS_RTCQT_60s",
+  "required_check": "Main Play: listen through about 17 seconds, then stop and Play again",
+  "confirmation": "Yes—music, cubes, camera, and restart work",
+  "evidence_source": "Direct response from Cam to the workstation listening question",
+  "audible_song_once": true,
+  "camera_and_32_cubes_advance_with_music": true,
+  "restart_from_opening": true
+}

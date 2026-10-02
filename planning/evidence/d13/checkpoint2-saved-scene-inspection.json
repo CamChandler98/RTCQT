@@ -1,0 +1,57 @@
+{
+  "saved_scene_verified": true,
+  "display_rate": [
+    60,
+    1
+  ],
+  "tick_resolution": [
+    24000,
+    1
+  ],
+  "playback_frames": [
+    0,
+    3600
+  ],
+  "time_section_frames": [
+    0,
+    3601
+  ],
+  "time_key_values": [
+    0,
+    60
+  ],
+  "linear_keys": true,
+  "constant_extrapolation": true,
+  "completion_mode": "KeepState",
+  "audio_asset": "/Game/Audio/PrivateTest/SW_NoTimeToExplain_60s.SW_NoTimeToExplain_60s",
+  "audio_frames": [
+    0,
+    3600
+  ],
+  "audio_offset_ticks": 0,
+  "camera_cut_frames": [
+    0,
+    3600
+  ],
+  "camera_auto_activation": "Disabled",
+  "frozen_beginplay_branch_disabled": true,
+  "output_resolution": [
+    1920,
+    1080
+  ],
+  "output_frame_rate": [
+    60,
+    1
+  ],
+  "files_saved": false,
+  "maximum_height_framing": {
+    "all_instances": 32,
+    "cube_corners_checked": 256,
+    "scale_z": 4.0,
+    "maximum_abs_ndc_x": 0.6810010119269847,
+    "maximum_abs_ndc_y": 0.14276418729587745,
+    "required_max_ndc": 0.95,
+    "camera_fov": 65.0,
+    "camera_aspect": 1.7777777910232544
+  }
+}

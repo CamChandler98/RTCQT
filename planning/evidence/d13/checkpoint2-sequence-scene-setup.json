@@ -1,0 +1,57 @@
+{
+  "level": "/Game/Audio/PrivateTest/L_D13SequenceTest",
+  "sequence": "/Game/Audio/PrivateTest/LS_RTCQT_60s",
+  "output_config": "/Game/Audio/PrivateTest/MRQ_RTCQT_1080p60_Base",
+  "source_level_unchanged_sha256": "221cded94bd00efae8f07838936a874c5d36db47818ea8ebff52573fc5d89b17",
+  "disabled_frozen_calls": [],
+  "display_rate": [
+    60,
+    1
+  ],
+  "tick_resolution": [
+    24000,
+    1
+  ],
+  "playback_frames": [
+    0,
+    3600
+  ],
+  "time_section_frames": [
+    0,
+    3601
+  ],
+  "time_keys": [
+    [
+      0,
+      0.0
+    ],
+    [
+      3600,
+      60.0
+    ]
+  ],
+  "linear_interpolation": true,
+  "completion_mode": "KeepState",
+  "audio": "/Game/Audio/PrivateTest/SW_NoTimeToExplain_60s",
+  "audio_frames": [
+    0,
+    3600
+  ],
+  "audio_offset_ticks": 0,
+  "autoplay": true,
+  "play_rate": 1.0,
+  "loop_count": 0,
+  "camera": "D08 - Layout Camera",
+  "camera_location": [
+    0.0,
+    -3300.0,
+    1800.0
+  ],
+  "camera_fov": 65.0,
+  "camera_auto_activation": "Disabled",
+  "output_resolution": [
+    1920,
+    1080
+  ],
+  "saved": true
+}

@@ -1,7 +1,9 @@
 # D13: Sequencer, audio, and camera plan
 
 Prepared: 2026-10-02, America/New_York.
-Status: In progress; implementation began on 2026-10-02.
+Status: Done; implemented and verified on 2026-10-02.
+Native checkpoint: `b58915f`; saved-scene evidence and workstation listening
+result are in [D13 checkpoints](d13_sequencer_scene_checkpoint.md).
 Starting checkpoint: D12 complete at `3f1be90` on `codex/d12-material-exposure`.
 
 ## Finish line and prerequisites
@@ -147,8 +149,10 @@ approved source audio exactly once into the delivery media.
 
 ## Step 6: Bind the camera and output baseline — Unreal workstation, together
 
-1. Reuse `D08 - Layout Camera` as the initial camera. Bind it to the
-   sequence and add a Camera Cuts section covering frames `[0, 3600)`.
+1. Reuse `D08 - Layout Camera` as the initial camera. Disable its old
+   Auto Activate for Player setting so Sequencer owns the camera handoff.
+   Bind it to the sequence and add a Camera Cuts section covering frames
+   `[0, 3600)`.
 2. View through that camera. Set its aspect to `16:9`; refine its framing
    so all 32 bands, including the maximum configured height, fit with a
    small margin. Keep the frame static for the baseline.
