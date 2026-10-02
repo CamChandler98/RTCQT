@@ -232,12 +232,12 @@ Drive normalized frequency-band values from one authoritative time input.
 - D08 Implement static instanced line layout.
 
 ## Evidence
-- Timestamp captures from repeated and out-of-order queries.",Now,P0,M,"D07, D08",Unreal workstation,"sync,analysis,unreal,stream-mvp,priority:P0",Stream MVP
+- Timestamp captures from repeated and out-of-order queries.",Done,P0,M,"D07, D08",Unreal workstation,"sync,analysis,unreal,stream-mvp,priority:P0",Stream MVP
 D11,Drive mesh scale with deterministic response,"## Objective
 Map queried analyzer values through the response processor into bounded instance transforms.
 
 ## Scope
-- Connect D10 raw band values to D09 processing.
+- Connect D10 normalized band values to D09 processing.
 - Apply bounded Z scale while preserving base X and Y scale.
 - Update existing instances without recreating them.
 - Expose response settings as an Unreal data asset.

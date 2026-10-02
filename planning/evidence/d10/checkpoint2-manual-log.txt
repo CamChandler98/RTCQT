@@ -1,0 +1,51 @@
+D10 saved-level Blueprint verification. Timestamps below are native Unreal UTC.
+Only result, map-save/load, PIE lifecycle, and engine-start/exit events are retained.
+
+Source: Saved/Logs/RTCQT-backup-2026.10.02-01.55.58.log
+467: LogInit: Build: ++UE5+Release-5.8-CL-55116800
+471: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+2084: [2026.10.02-01.35.32:427][585]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+2122: [2026.10.02-01.42.00:157][962]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2126: [2026.10.02-01.42.00:246][962]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2198: [2026.10.02-01.49.00:511][493]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2202: [2026.10.02-01.49.00:581][493]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2233: [2026.10.02-01.49.02:982][761]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2235: [2026.10.02-01.49.02:986][761]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.003663s)
+2277: [2026.10.02-01.49.03:061][761]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.49.03
+2291: [2026.10.02-01.51.34:113][534]LogWorld: BeginTearingDown for /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2310: [2026.10.02-01.52.33:157][338]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2314: [2026.10.02-01.52.33:221][338]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2343: [2026.10.02-01.52.34:916][523]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2345: [2026.10.02-01.52.34:918][523]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.002029s)
+2387: [2026.10.02-01.52.34:977][523]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.52.34
+2391: [2026.10.02-01.52.34:983][523]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_2] D10 success=true time=16.75 bands=32 reason=None
+2401: [2026.10.02-01.54.25:297][237]LogWorld: BeginTearingDown for /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2417: [2026.10.02-01.54.57:296][987]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2419: [2026.10.02-01.54.57:298][987]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.002158s)
+2461: [2026.10.02-01.54.57:359][987]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.54.57
+2465: [2026.10.02-01.54.57:364][987]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_3] D10 success=true time=0.75 bands=32 reason=None
+2472: [2026.10.02-01.54.59:537][216]LogWorld: BeginTearingDown for /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2488: [2026.10.02-01.55.14:477][929]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2490: [2026.10.02-01.55.14:479][929]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.002413s)
+2532: [2026.10.02-01.55.14:542][929]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.55.14
+2536: [2026.10.02-01.55.14:546][929]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_4] D10 success=true time=44.25 bands=32 reason=None
+2543: [2026.10.02-01.55.18:956][433]LogWorld: BeginTearingDown for /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2557: [2026.10.02-01.55.36:084][197]LogFileHelpers: Saving Map: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2561: [2026.10.02-01.55.36:148][197]LogSavePackage: Moving output files for package: /Game/Audio/PrivateTest/L_D10D11ResponseTest
+2590: [2026.10.02-01.55.42:843][966]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2592: [2026.10.02-01.55.42:845][966]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.002059s)
+2634: [2026.10.02-01.55.42:908][966]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.55.42
+2638: [2026.10.02-01.55.42:912][966]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_5] D10 success=true time=16.75 bands=32 reason=None
+2645: [2026.10.02-01.55.48:716][644]LogWorld: BeginTearingDown for /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2665: [2026.10.02-01.55.53:141][ 29]LogCore: Engine exit requested (reason: UUnrealEdEngine::CloseEditor())
+2666: [2026.10.02-01.55.53:154][ 29]LogCore: Engine exit requested (reason: EngineExit() was called; note: exit was already requested)
+2731: [2026.10.02-01.55.58:308][ 29]LogExit: Exiting.
+
+Source: Saved/Logs/RTCQT.log
+467: LogInit: Build: ++UE5+Release-5.8-CL-55116800
+471: LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+2035: [2026.10.02-01.56.37:904][379]Cmd: MAP LOAD FILE="../../../../../../Users/camch/source/RTCQT/Content/Audio/PrivateTest/L_D10D11ResponseTest.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=4
+2059: [2026.10.02-01.56.50:966][646]LogPlayLevel: Creating play world package: /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest
+2061: [2026.10.02-01.56.50:972][646]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/Audio/PrivateTest/L_D10D11ResponseTest.L_D10D11ResponseTest to /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest (0.006311s)
+2103: [2026.10.02-01.56.51:055][646]LogWorld: Bringing World /Game/Audio/PrivateTest/UEDPIE_0_L_D10D11ResponseTest.L_D10D11ResponseTest up for play (max tick rate 0) at 2026.10.01-21.56.51
+2110: [2026.10.02-01.56.51:088][646]LogBlueprintUserMessages: [L_D10D11ResponseTest_C_5] D10 success=true time=16.75 bands=32 reason=None

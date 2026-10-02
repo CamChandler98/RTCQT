@@ -1,0 +1,125 @@
+{
+  "delivery_card": "D10",
+  "status": "Done",
+  "local_verification_date": "2026-10-01 America/New_York",
+  "source_checkpoint": "0be38f5db44c3e3d9ff6b23f3ef17195ae77eb43",
+  "branch": "codex/d10-timestamp-query",
+  "engine_version": "5.8.0-55116800+++UE5+Release-5.8",
+  "checkpoint1_fingerprints_verified": 10,
+  "automated_tests": 14,
+  "automated_tests_passed": 14,
+  "automated_evidence": "checkpoint1-automation.json",
+  "automated_tests_rerun_for_documentation_only_closeout": false,
+  "d07_reference_pairs": 192,
+  "captured_queries": 15,
+  "captured_rows": 480,
+  "capture_max_absolute_difference_from_d07": 4.000000053405728e-10,
+  "absolute_tolerance": 1e-06,
+  "scene": "/Game/Audio/PrivateTest/L_D10D11ResponseTest",
+  "response_settings_asset": "/Game/Audio/PrivateTest/DA_ResponseTEst",
+  "saved_level_blueprint_verified": true,
+  "saved_scene_reopened": true,
+  "reopened_scene_required_blueprint_compile": false,
+  "out_of_order_manual_times_seconds": [
+    0.75,
+    44.25,
+    16.75
+  ],
+  "reopened_time_seconds": 16.75,
+  "manual_queries": [
+    {
+      "session": "before_reopen",
+      "source_log": "RTCQT-backup-2026.10.02-01.55.58.log",
+      "source_line": 2391,
+      "timestamp_utc": "2026-10-02T01:52:34.983000+00:00",
+      "timestamp_local": "2026-10-01T21:52:34.983000-04:00",
+      "succeeded": true,
+      "evaluated_time_seconds": 16.75,
+      "observed_band_count": 32,
+      "failure_reason": "None",
+      "play_session_errors": 0,
+      "play_session_warnings": 0
+    },
+    {
+      "session": "before_reopen",
+      "source_log": "RTCQT-backup-2026.10.02-01.55.58.log",
+      "source_line": 2465,
+      "timestamp_utc": "2026-10-02T01:54:57.364000+00:00",
+      "timestamp_local": "2026-10-01T21:54:57.364000-04:00",
+      "succeeded": true,
+      "evaluated_time_seconds": 0.75,
+      "observed_band_count": 32,
+      "failure_reason": "None",
+      "play_session_errors": 0,
+      "play_session_warnings": 0
+    },
+    {
+      "session": "before_reopen",
+      "source_log": "RTCQT-backup-2026.10.02-01.55.58.log",
+      "source_line": 2536,
+      "timestamp_utc": "2026-10-02T01:55:14.546000+00:00",
+      "timestamp_local": "2026-10-01T21:55:14.546000-04:00",
+      "succeeded": true,
+      "evaluated_time_seconds": 44.25,
+      "observed_band_count": 32,
+      "failure_reason": "None",
+      "play_session_errors": 0,
+      "play_session_warnings": 0
+    },
+    {
+      "session": "before_reopen",
+      "source_log": "RTCQT-backup-2026.10.02-01.55.58.log",
+      "source_line": 2638,
+      "timestamp_utc": "2026-10-02T01:55:42.912000+00:00",
+      "timestamp_local": "2026-10-01T21:55:42.912000-04:00",
+      "succeeded": true,
+      "evaluated_time_seconds": 16.75,
+      "observed_band_count": 32,
+      "failure_reason": "None",
+      "play_session_errors": 0,
+      "play_session_warnings": 0
+    },
+    {
+      "session": "after_reopen",
+      "source_log": "RTCQT.log",
+      "source_line": 2110,
+      "timestamp_utc": "2026-10-02T01:56:51.088000+00:00",
+      "timestamp_local": "2026-10-01T21:56:51.088000-04:00",
+      "succeeded": true,
+      "evaluated_time_seconds": 16.75,
+      "observed_band_count": 32,
+      "failure_reason": "None",
+      "play_session_errors": 0,
+      "play_session_warnings": 0
+    }
+  ],
+  "manual_scope": "Each manual timestamp runs in a separate Play-in-Editor session. Repeated/reordered queries in one running actor and exact band-value repeatability are covered by the unchanged checkpoint 1 C++ automation.",
+  "audio_driven_scale_verified": false,
+  "files": {
+    "planning/evidence/d10/checkpoint1-verification.json": {
+      "sha256": "d97802c5159be47d5687b96e5172406dc8a21e1c4c54fdb07d60bfa9b2668a71",
+      "normalized_bytes": 2456
+    },
+    "planning/evidence/d10/checkpoint2-manual-log.txt": {
+      "sha256": "2053eaf751e029869e582762688effd208ff04b7ada9ceb2f22c6db50b203f91",
+      "normalized_bytes": 6894
+    }
+  },
+  "private_files": {
+    "Content/Audio/PrivateTest/DA_ResponseTEst.uasset": {
+      "sha256": "a199bfc45671718947ec081463a251f25903ab34caa0d97954986a15a8155b75",
+      "size": 1192,
+      "ignored": true
+    },
+    "Content/Audio/PrivateTest/L_D10D11ResponseTest.umap": {
+      "sha256": "5cec5d9b431e33aa1d970d1455b37ae2a725daa354b9b08e492d3fa2e17ab988",
+      "size": 74248,
+      "ignored": true
+    },
+    "Content/Audio/PrivateTest/CQNRT_NoTimeToExplain_32.uasset": {
+      "sha256": "35d34424c7fc3ce3efc4f160e21a6915fed134dfd101788191145e99f29eeab7",
+      "size": 839945,
+      "ignored": true
+    }
+  }
+}

@@ -75,22 +75,20 @@ Completed:
   calls. All six D09 and four D08 automation groups pass. See
   [D09 verification](d09_response_verification.md).
 
-In progress:
-
-- D10: exact-time C++ query, input/count validation, failure recovery, and
-  matching D07 reference values are verified by the code checkpoint. The
-  user-built Blueprint call in the saved test level is still pending. See
-  [D10 code checkpoint](d10_timestamp_query_checkpoint.md).
+- [x] D10: exact-time C++ query, safe validation/recovery, all 192 D07
+  reference values, and the saved-level Blueprint call. Manual runs at
+  0.75, 44.25, and 16.75 seconds return success with 32 bands; a fresh
+  editor session reloads the saved level and returns the same 16.75 result.
+  See [D10 checkpoints](d10_timestamp_query_checkpoint.md).
 
 Next:
 
-- Finish D10 by assigning the test assets, wiring the Blueprint call, and
-  verifying its returned result in the saved level.
-- D11 waits for D10; its D09 response prerequisite is complete.
+- D11 is unblocked: both D09 and D10 are complete. Apply the shared response
+  to the existing instances without rebuilding unchanged topology.
 
 ## WIP Recommendation
 
-D10 remains in `Now` until the saved-level Blueprint check is complete.
+D10 is `Done`; D11 remains `Next` until implementation begins.
 Keep no more than two cards in `Now`. The next visible milestone is D11:
 applying the shared response to the existing instances without rebuilding
 topology.
