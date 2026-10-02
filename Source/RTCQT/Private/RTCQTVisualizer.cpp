@@ -54,6 +54,12 @@ void ARTCQTVisualizer::BeginPlay()
 	RebuildInstances();
 }
 
+void ARTCQTVisualizer::SetSequenceTimeSeconds(float TimeSeconds)
+{
+	SequenceTimeSeconds = TimeSeconds;
+	LastSequenceEvaluation = EvaluateAtTime(TimeSeconds);
+}
+
 FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 {
 	FRTCQTEvaluationResult Result;

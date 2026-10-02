@@ -1,0 +1,229 @@
+LogCsvProfiler: Display: Metadata set : commandline="" C:/Users/camch/source/RTCQT/RTCQT.uproject -Unattended -NullRHI -NoSplash -NoSound -ExecCmds="Automation RunTests RTCQT" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:/Users/camch/source/RTCQT/Saved/Automation/D13/checkpoint1 -AbsLog=C:/Users/camch/source/RTCQT/Saved/Logs/D13-automation.log""
+LogInit: Command Line: -Unattended -NullRHI -NoSplash -NoSound -ExecCmds="Automation RunTests RTCQT" -TestExit="Automation Test Queue Empty" -ReportExportPath=C:/Users/camch/source/RTCQT/Saved/Automation/D13/checkpoint1 -AbsLog=C:/Users/camch/source/RTCQT/Saved/Logs/D13-automation.log
+[2026.10.02-20.26.39:720][  0]LogAutomationController: Ignoring very large delta of 16808448.63 seconds in calls to FAutomationControllerManager::Tick() and not penalizing unresponsive tests
+[2026.10.02-20.26.40:189][  2]LogAutomationCommandLine: Display: Ready to start automation
+[2026.10.02-20.26.45:205][589]LogAutomationWorker: Received FindWorkersMessage from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:205][589]LogAutomationController: Received FindWorkersResponseMessage from 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:205][589]LogAutomationController: Requesting test list from 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:214][590]LogAutomationWorker: Received RequestTestsMessage from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:269][590]LogAutomationWorker: Set 6972 tests to FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:269][590]LogAutomationController: Received RequestTestsReplyCompleteMessage from 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:271][590]LogAutomationController: 6972 tests available on 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: Found 25 automation tests based on 'RTCQT'
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D08.Layout.GoldenVectors
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D08.Layout.RepeatabilityAndInvalidInputs
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D08.Visualizer.SafeFailuresAndRecovery
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D08.Visualizer.TopologyAndCache
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.BasicCalculations
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.BatchAndWeights
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.ExtremeValuesAndBounds
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.GoldenVectors
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.OrderIndependence
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D09.Response.SettingsSnapshot
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D10.LocalFixture.D07ReferenceValues
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D10.Query.ExactTimeAndOrder
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D10.Query.InvalidInputs
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D10.Visualizer.FailuresAndRecovery
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D11.LocalFixture.D07ScaleReferences
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D11.Scale.BoundsAndFailureRecovery
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D11.Scale.KnownValuesAndLocalTransforms
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D11.Scale.SeekingAndSettingsEdits
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D11.Scale.SingleBandAndLayoutRefresh
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D12.Material.ActorOwnership
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D12.Material.SeekingReplacementAndFallback
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D12.Material.SharedSettingsAndBounds
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D13.Sequence.FailuresAndRecovery
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames
+[2026.10.02-20.26.45:303][590]LogAutomationCommandLine: Display: 	RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart
+[2026.10.02-20.26.45:303][590]LogAutomationController: Sending StopTests to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:306][590]LogAutomationController: Display: Loading results html template...
+[2026.10.02-20.26.45:307][590]LogAutomationController: Display: Successfully wrote html results file!
+[2026.10.02-20.26.45:307][590]LogAutomationController: Sending StartTestSession to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:307][590]LogAutomationController: Display: Clearing ../../../../../../Users/camch/source/RTCQT/Saved/Automation/Logs/ and ../../../../../../Users/camch/source/RTCQT/Saved/Automation/Tmp/
+[2026.10.02-20.26.45:308][590]LogAutomationController: Sending RunTest GoldenVectors to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:308][590]LogAutomationController: Display: Test Started. Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.10.02-20.26.45:309][591]LogAutomationWorker: Received StopTests from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:309][591]LogAutomationWorker: Received StartTestSession from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:309][591]LogAutomationWorker: Received RunTests GoldenVectors from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:318][592]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.10.02-20.26.45:318][592]LogAutomationController: BeginEvents: RTCQT.D08.Layout.GoldenVectors
+[2026.10.02-20.26.45:318][592]LogAutomationController: EndEvents: RTCQT.D08.Layout.GoldenVectors
+[2026.10.02-20.26.45:318][592]LogAutomationController: Sending RunTest RepeatabilityAndInvalidInputs to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:318][593]LogAutomationController: Display: Test Started. Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.10.02-20.26.45:326][593]LogAutomationWorker: Received RunTests RepeatabilityAndInvalidInputs from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:334][594]LogAutomationController: Display: Test Completed. Result={Success} Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.10.02-20.26.45:334][594]LogAutomationController: BeginEvents: RTCQT.D08.Layout.RepeatabilityAndInvalidInputs
+[2026.10.02-20.26.45:334][594]LogAutomationController: EndEvents: RTCQT.D08.Layout.RepeatabilityAndInvalidInputs
+[2026.10.02-20.26.45:334][594]LogAutomationController: Sending RunTest SafeFailuresAndRecovery to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:334][594]LogAutomationController: Display: Test Started. Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.10.02-20.26.45:342][595]LogAutomationWorker: Received RunTests SafeFailuresAndRecovery from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Set Expected Band Count above zero to display instances.
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Select Line layout; Circle and Fibonacci Sphere are deferred to D19.
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.10.02-20.26.45:345][595]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.10.02-20.26.45:353][596]LogAutomationController: Display: Test Completed. Result={Success} Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.10.02-20.26.45:353][596]LogAutomationController: BeginEvents: RTCQT.D08.Visualizer.SafeFailuresAndRecovery
+[2026.10.02-20.26.45:354][596]LogAutomationController: EndEvents: RTCQT.D08.Visualizer.SafeFailuresAndRecovery
+[2026.10.02-20.26.45:354][596]LogAutomationController: Sending RunTest TopologyAndCache to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:354][596]LogAutomationController: Display: Test Started. Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.10.02-20.26.45:364][597]LogAutomationWorker: Received RunTests TopologyAndCache from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:380][599]LogAutomationController: Display: Test Completed. Result={Success} Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.10.02-20.26.45:380][599]LogAutomationController: BeginEvents: RTCQT.D08.Visualizer.TopologyAndCache
+[2026.10.02-20.26.45:380][599]LogAutomationController: EndEvents: RTCQT.D08.Visualizer.TopologyAndCache
+[2026.10.02-20.26.45:380][599]LogAutomationController: Sending RunTest BasicCalculations to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:380][599]LogAutomationController: Display: Test Started. Name={BasicCalculations} Path={RTCQT.D09.Response.BasicCalculations}
+[2026.10.02-20.26.45:386][600]LogAutomationWorker: Received RunTests BasicCalculations from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:394][601]LogAutomationController: Display: Test Completed. Result={Success} Name={BasicCalculations} Path={RTCQT.D09.Response.BasicCalculations}
+[2026.10.02-20.26.45:394][601]LogAutomationController: BeginEvents: RTCQT.D09.Response.BasicCalculations
+[2026.10.02-20.26.45:394][601]LogAutomationController: EndEvents: RTCQT.D09.Response.BasicCalculations
+[2026.10.02-20.26.45:394][601]LogAutomationController: Sending RunTest BatchAndWeights to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:394][601]LogAutomationController: Display: Test Started. Name={BatchAndWeights} Path={RTCQT.D09.Response.BatchAndWeights}
+[2026.10.02-20.26.45:401][602]LogAutomationWorker: Received RunTests BatchAndWeights from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:410][603]LogAutomationController: Display: Test Completed. Result={Success} Name={BatchAndWeights} Path={RTCQT.D09.Response.BatchAndWeights}
+[2026.10.02-20.26.45:410][603]LogAutomationController: BeginEvents: RTCQT.D09.Response.BatchAndWeights
+[2026.10.02-20.26.45:410][603]LogAutomationController: EndEvents: RTCQT.D09.Response.BatchAndWeights
+[2026.10.02-20.26.45:411][603]LogAutomationController: Sending RunTest ExtremeValuesAndBounds to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:411][603]LogAutomationController: Display: Test Started. Name={ExtremeValuesAndBounds} Path={RTCQT.D09.Response.ExtremeValuesAndBounds}
+[2026.10.02-20.26.45:419][604]LogAutomationWorker: Received RunTests ExtremeValuesAndBounds from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:427][605]LogAutomationController: Display: Test Completed. Result={Success} Name={ExtremeValuesAndBounds} Path={RTCQT.D09.Response.ExtremeValuesAndBounds}
+[2026.10.02-20.26.45:427][605]LogAutomationController: BeginEvents: RTCQT.D09.Response.ExtremeValuesAndBounds
+[2026.10.02-20.26.45:427][605]LogAutomationController: EndEvents: RTCQT.D09.Response.ExtremeValuesAndBounds
+[2026.10.02-20.26.45:427][605]LogAutomationController: Sending RunTest GoldenVectors to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:427][605]LogAutomationController: Display: Test Started. Name={GoldenVectors} Path={RTCQT.D09.Response.GoldenVectors}
+[2026.10.02-20.26.45:435][606]LogAutomationWorker: Received RunTests GoldenVectors from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:444][607]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D09.Response.GoldenVectors}
+[2026.10.02-20.26.45:444][607]LogAutomationController: BeginEvents: RTCQT.D09.Response.GoldenVectors
+[2026.10.02-20.26.45:444][607]LogAutomationController: Checked 32 D02 vectors: normalization, weighting, response, and range mapping.
+[2026.10.02-20.26.45:444][607]LogAutomationController: EndEvents: RTCQT.D09.Response.GoldenVectors
+[2026.10.02-20.26.45:444][607]LogAutomationController: Sending RunTest OrderIndependence to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:444][608]LogAutomationController: Display: Test Started. Name={OrderIndependence} Path={RTCQT.D09.Response.OrderIndependence}
+[2026.10.02-20.26.45:452][608]LogAutomationWorker: Received RunTests OrderIndependence from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:469][610]LogAutomationController: Display: Test Completed. Result={Success} Name={OrderIndependence} Path={RTCQT.D09.Response.OrderIndependence}
+[2026.10.02-20.26.45:469][610]LogAutomationController: BeginEvents: RTCQT.D09.Response.OrderIndependence
+[2026.10.02-20.26.45:469][610]LogAutomationController: EndEvents: RTCQT.D09.Response.OrderIndependence
+[2026.10.02-20.26.45:469][610]LogAutomationController: Sending RunTest SettingsSnapshot to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:469][610]LogAutomationController: Display: Test Started. Name={SettingsSnapshot} Path={RTCQT.D09.Response.SettingsSnapshot}
+[2026.10.02-20.26.45:476][611]LogAutomationWorker: Received RunTests SettingsSnapshot from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:485][612]LogAutomationController: Display: Test Completed. Result={Success} Name={SettingsSnapshot} Path={RTCQT.D09.Response.SettingsSnapshot}
+[2026.10.02-20.26.45:485][612]LogAutomationController: BeginEvents: RTCQT.D09.Response.SettingsSnapshot
+[2026.10.02-20.26.45:485][612]LogAutomationController: EndEvents: RTCQT.D09.Response.SettingsSnapshot
+[2026.10.02-20.26.45:486][612]LogAutomationController: Sending RunTest D07ReferenceValues to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:486][612]LogAutomationController: Display: Test Started. Name={D07ReferenceValues} Path={RTCQT.D10.LocalFixture.D07ReferenceValues}
+[2026.10.02-20.26.45:493][613]LogAutomationWorker: Received RunTests D07ReferenceValues from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:504][614]LogAutomationController: Display: Test Completed. Result={Success} Name={D07ReferenceValues} Path={RTCQT.D10.LocalFixture.D07ReferenceValues}
+[2026.10.02-20.26.45:504][614]LogAutomationController: BeginEvents: RTCQT.D10.LocalFixture.D07ReferenceValues
+[2026.10.02-20.26.45:504][614]LogAutomationController: Verified 192 D07 reference values across 15 queries; maximum absolute difference 0. Analysis duration 60 seconds.
+[2026.10.02-20.26.45:504][614]LogAutomationController: EndEvents: RTCQT.D10.LocalFixture.D07ReferenceValues
+[2026.10.02-20.26.45:504][614]LogAutomationController: Sending RunTest ExactTimeAndOrder to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:504][614]LogAutomationController: Display: Test Started. Name={ExactTimeAndOrder} Path={RTCQT.D10.Query.ExactTimeAndOrder}
+[2026.10.02-20.26.45:513][615]LogAutomationWorker: Received RunTests ExactTimeAndOrder from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:519][616]LogAutomationController: Display: Test Completed. Result={Success} Name={ExactTimeAndOrder} Path={RTCQT.D10.Query.ExactTimeAndOrder}
+[2026.10.02-20.26.45:519][616]LogAutomationController: BeginEvents: RTCQT.D10.Query.ExactTimeAndOrder
+[2026.10.02-20.26.45:519][616]LogAutomationController: EndEvents: RTCQT.D10.Query.ExactTimeAndOrder
+[2026.10.02-20.26.45:520][616]LogAutomationController: Sending RunTest InvalidInputs to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:520][616]LogAutomationController: Display: Test Started. Name={InvalidInputs} Path={RTCQT.D10.Query.InvalidInputs}
+[2026.10.02-20.26.45:527][617]LogAutomationWorker: Received RunTests InvalidInputs from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:536][618]LogAutomationController: Display: Test Completed. Result={Success} Name={InvalidInputs} Path={RTCQT.D10.Query.InvalidInputs}
+[2026.10.02-20.26.45:536][618]LogAutomationController: BeginEvents: RTCQT.D10.Query.InvalidInputs
+[2026.10.02-20.26.45:536][618]LogAutomationController: EndEvents: RTCQT.D10.Query.InvalidInputs
+[2026.10.02-20.26.45:536][618]LogAutomationController: Sending RunTest FailuresAndRecovery to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:536][618]LogAutomationController: Display: Test Started. Name={FailuresAndRecovery} Path={RTCQT.D10.Visualizer.FailuresAndRecovery}
+[2026.10.02-20.26.45:544][619]LogAutomationWorker: Received RunTests FailuresAndRecovery from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Constant QNRT before evaluating song time.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Constant QNRT has no analyzed Sound; assign the test SoundWave and analyze it.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Response Settings before evaluating song time.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Instance Mesh to display the configured bands.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Set Expected Band Count above zero to display instances.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Constant QNRT returned 4 bands; Expected Band Count is 3. Match the analyzer and visualizer counts.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Constant QNRT has no queryable data for channel 1; check the channel, settings, and completed analysis.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Song time must be finite.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Song time -1 is outside a valid analysis duration of 2 seconds.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Select Line layout; Circle and Fibonacci Sphere are deferred to D19.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: RTCQTInstances component is missing; restore the visualizer actor.
+[2026.10.02-20.26.45:546][619]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.10.02-20.26.45:554][620]LogAutomationController: Display: Test Completed. Result={Success} Name={FailuresAndRecovery} Path={RTCQT.D10.Visualizer.FailuresAndRecovery}
+[2026.10.02-20.26.45:554][620]LogAutomationController: BeginEvents: RTCQT.D10.Visualizer.FailuresAndRecovery
+[2026.10.02-20.26.45:554][620]LogAutomationController: EndEvents: RTCQT.D10.Visualizer.FailuresAndRecovery
+[2026.10.02-20.26.45:554][620]LogAutomationController: Sending RunTest D07ScaleReferences to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:554][620]LogAutomationController: Display: Test Started. Name={D07ScaleReferences} Path={RTCQT.D11.LocalFixture.D07ScaleReferences}
+[2026.10.02-20.26.45:563][621]LogAutomationWorker: Received RunTests D07ScaleReferences from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:570][622]LogAutomationController: Display: Test Completed. Result={Success} Name={D07ScaleReferences} Path={RTCQT.D11.LocalFixture.D07ScaleReferences}
+[2026.10.02-20.26.45:570][622]LogAutomationController: BeginEvents: RTCQT.D11.LocalFixture.D07ScaleReferences
+[2026.10.02-20.26.45:570][622]LogAutomationController: Verified 192 D07 reference bands and 256 applied scale rows across 8 queries; repeated matrices match exactly and topology changes are zero.
+[2026.10.02-20.26.45:570][622]LogAutomationController: EndEvents: RTCQT.D11.LocalFixture.D07ScaleReferences
+[2026.10.02-20.26.45:570][622]LogAutomationController: Sending RunTest BoundsAndFailureRecovery to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:570][622]LogAutomationController: Display: Test Started. Name={BoundsAndFailureRecovery} Path={RTCQT.D11.Scale.BoundsAndFailureRecovery}
+[2026.10.02-20.26.45:577][623]LogAutomationWorker: Received RunTests BoundsAndFailureRecovery from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:579][623]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Response Settings before evaluating song time.
+[2026.10.02-20.26.45:579][623]LogRTCQT: Verbose: RTCQTVisualizer_0: Constant QNRT returned 4 bands; Expected Band Count is 3. Match the analyzer and visualizer counts.
+[2026.10.02-20.26.45:587][624]LogAutomationController: Display: Test Completed. Result={Success} Name={BoundsAndFailureRecovery} Path={RTCQT.D11.Scale.BoundsAndFailureRecovery}
+[2026.10.02-20.26.45:587][624]LogAutomationController: BeginEvents: RTCQT.D11.Scale.BoundsAndFailureRecovery
+[2026.10.02-20.26.45:587][624]LogAutomationController: EndEvents: RTCQT.D11.Scale.BoundsAndFailureRecovery
+[2026.10.02-20.26.45:588][624]LogAutomationController: Sending RunTest KnownValuesAndLocalTransforms to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:588][624]LogAutomationController: Display: Test Started. Name={KnownValuesAndLocalTransforms} Path={RTCQT.D11.Scale.KnownValuesAndLocalTransforms}
+[2026.10.02-20.26.45:597][625]LogAutomationWorker: Received RunTests KnownValuesAndLocalTransforms from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:603][626]LogAutomationController: Display: Test Completed. Result={Success} Name={KnownValuesAndLocalTransforms} Path={RTCQT.D11.Scale.KnownValuesAndLocalTransforms}
+[2026.10.02-20.26.45:603][626]LogAutomationController: BeginEvents: RTCQT.D11.Scale.KnownValuesAndLocalTransforms
+[2026.10.02-20.26.45:603][626]LogAutomationController: EndEvents: RTCQT.D11.Scale.KnownValuesAndLocalTransforms
+[2026.10.02-20.26.45:604][626]LogAutomationController: Sending RunTest SeekingAndSettingsEdits to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:604][626]LogAutomationController: Display: Test Started. Name={SeekingAndSettingsEdits} Path={RTCQT.D11.Scale.SeekingAndSettingsEdits}
+[2026.10.02-20.26.45:609][627]LogAutomationWorker: Received RunTests SeekingAndSettingsEdits from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:627][629]LogAutomationController: Display: Test Completed. Result={Success} Name={SeekingAndSettingsEdits} Path={RTCQT.D11.Scale.SeekingAndSettingsEdits}
+[2026.10.02-20.26.45:627][629]LogAutomationController: BeginEvents: RTCQT.D11.Scale.SeekingAndSettingsEdits
+[2026.10.02-20.26.45:627][629]LogAutomationController: EndEvents: RTCQT.D11.Scale.SeekingAndSettingsEdits
+[2026.10.02-20.26.45:627][629]LogAutomationController: Sending RunTest SingleBandAndLayoutRefresh to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:627][629]LogAutomationController: Display: Test Started. Name={SingleBandAndLayoutRefresh} Path={RTCQT.D11.Scale.SingleBandAndLayoutRefresh}
+[2026.10.02-20.26.45:634][630]LogAutomationWorker: Received RunTests SingleBandAndLayoutRefresh from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:645][631]LogAutomationController: Display: Test Completed. Result={Success} Name={SingleBandAndLayoutRefresh} Path={RTCQT.D11.Scale.SingleBandAndLayoutRefresh}
+[2026.10.02-20.26.45:645][631]LogAutomationController: BeginEvents: RTCQT.D11.Scale.SingleBandAndLayoutRefresh
+[2026.10.02-20.26.45:645][631]LogAutomationController: EndEvents: RTCQT.D11.Scale.SingleBandAndLayoutRefresh
+[2026.10.02-20.26.45:646][631]LogAutomationController: Sending RunTest ActorOwnership to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:646][631]LogAutomationController: Display: Test Started. Name={ActorOwnership} Path={RTCQT.D12.Material.ActorOwnership}
+[2026.10.02-20.26.45:652][632]LogAutomationWorker: Received RunTests ActorOwnership from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:663][633]LogAutomationController: Display: Test Completed. Result={Success} Name={ActorOwnership} Path={RTCQT.D12.Material.ActorOwnership}
+[2026.10.02-20.26.45:663][633]LogAutomationController: BeginEvents: RTCQT.D12.Material.ActorOwnership
+[2026.10.02-20.26.45:663][633]LogAutomationController: EndEvents: RTCQT.D12.Material.ActorOwnership
+[2026.10.02-20.26.45:663][633]LogAutomationController: Sending RunTest SeekingReplacementAndFallback to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:663][633]LogAutomationController: Display: Test Started. Name={SeekingReplacementAndFallback} Path={RTCQT.D12.Material.SeekingReplacementAndFallback}
+[2026.10.02-20.26.45:669][634]LogAutomationWorker: Received RunTests SeekingReplacementAndFallback from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:671][634]LogRTCQT: Verbose: RTCQTVisualizer_0: Instance Material is unset; using the mesh's default material. Assign an override if needed.
+[2026.10.02-20.26.45:685][636]LogAutomationController: Display: Test Completed. Result={Success} Name={SeekingReplacementAndFallback} Path={RTCQT.D12.Material.SeekingReplacementAndFallback}
+[2026.10.02-20.26.45:685][636]LogAutomationController: BeginEvents: RTCQT.D12.Material.SeekingReplacementAndFallback
+[2026.10.02-20.26.45:685][636]LogAutomationController: EndEvents: RTCQT.D12.Material.SeekingReplacementAndFallback
+[2026.10.02-20.26.45:686][636]LogAutomationController: Sending RunTest SharedSettingsAndBounds to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:686][637]LogAutomationController: Display: Test Started. Name={SharedSettingsAndBounds} Path={RTCQT.D12.Material.SharedSettingsAndBounds}
+[2026.10.02-20.26.45:694][637]LogAutomationWorker: Received RunTests SharedSettingsAndBounds from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:703][638]LogAutomationController: Display: Test Completed. Result={Success} Name={SharedSettingsAndBounds} Path={RTCQT.D12.Material.SharedSettingsAndBounds}
+[2026.10.02-20.26.45:703][638]LogAutomationController: BeginEvents: RTCQT.D12.Material.SharedSettingsAndBounds
+[2026.10.02-20.26.45:703][638]LogAutomationController: EndEvents: RTCQT.D12.Material.SharedSettingsAndBounds
+[2026.10.02-20.26.45:704][638]LogAutomationController: Sending RunTest FailuresAndRecovery to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:704][639]LogAutomationController: Display: Test Started. Name={FailuresAndRecovery} Path={RTCQT.D13.Sequence.FailuresAndRecovery}
+[2026.10.02-20.26.45:710][639]LogAutomationWorker: Received RunTests FailuresAndRecovery from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:714][639]LogRTCQT: Verbose: RTCQTVisualizer_0: Assign Constant QNRT before evaluating song time.
+[2026.10.02-20.26.45:714][639]LogRTCQT: Verbose: RTCQTVisualizer_0: Song time must be finite.
+[2026.10.02-20.26.45:721][640]LogAutomationController: Display: Test Completed. Result={Success} Name={FailuresAndRecovery} Path={RTCQT.D13.Sequence.FailuresAndRecovery}
+[2026.10.02-20.26.45:721][640]LogAutomationController: BeginEvents: RTCQT.D13.Sequence.FailuresAndRecovery
+[2026.10.02-20.26.45:721][640]LogAutomationController: EndEvents: RTCQT.D13.Sequence.FailuresAndRecovery
+[2026.10.02-20.26.45:721][640]LogAutomationController: Sending RunTest RealTrackSeekingAndReferenceFrames to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:722][640]LogAutomationController: Display: Test Started. Name={RealTrackSeekingAndReferenceFrames} Path={RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames}
+[2026.10.02-20.26.45:732][641]LogAutomationWorker: Received RunTests RealTrackSeekingAndReferenceFrames from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:740][642]LogAutomationController: Display: Test Completed. Result={Success} Name={RealTrackSeekingAndReferenceFrames} Path={RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames}
+[2026.10.02-20.26.45:740][642]LogAutomationController: BeginEvents: RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames
+[2026.10.02-20.26.45:740][642]LogAutomationController: EndEvents: RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames
+[2026.10.02-20.26.45:740][642]LogAutomationController: Sending RunTest SubframesBoundariesAndPauseRestart to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:740][642]LogAutomationController: Display: Test Started. Name={SubframesBoundariesAndPauseRestart} Path={RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart}
+[2026.10.02-20.26.45:747][643]LogAutomationWorker: Received RunTests SubframesBoundariesAndPauseRestart from FDCEA275448382A2E20C60AF333A0F43
+[2026.10.02-20.26.45:757][644]LogAutomationController: Display: Test Completed. Result={Success} Name={SubframesBoundariesAndPauseRestart} Path={RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart}
+[2026.10.02-20.26.45:757][644]LogAutomationController: BeginEvents: RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart
+[2026.10.02-20.26.45:757][644]LogAutomationController: EndEvents: RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart
+[2026.10.02-20.26.45:758][644]LogAutomationController: Display: Exporting Automation Report.
+[2026.10.02-20.26.45:758][644]LogAutomationController: Display: Converting results to json object...
+[2026.10.02-20.26.45:758][644]LogAutomationController: Writing reports to C:/Users/camch/source/RTCQT/Saved/Automation/D13/checkpoint1...
+[2026.10.02-20.26.45:759][644]LogAutomationController: Display: Successfully wrote json results file!
+[2026.10.02-20.26.45:759][644]LogAutomationController: Exported report to 'C:/Users/camch/source/RTCQT/Saved/Automation/D13/checkpoint1' in 0.00 Seconds
+[2026.10.02-20.26.45:759][644]LogAutomationController: Display: Report can be opened in the editor at 'C:/Users/camch/source/RTCQT/Saved/Automation/D13/checkpoint1'
+[2026.10.02-20.26.45:759][645]LogAutomationController: Sending StopTestSession to 2A28B6594DA164C9736587B257890BD7
+[2026.10.02-20.26.45:759][645]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 25 tests performed.
+[2026.10.02-20.26.45:764][645]LogAutomationWorker: Received StopTestSession from FDCEA275448382A2E20C60AF333A0F43

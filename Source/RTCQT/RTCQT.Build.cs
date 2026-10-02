@@ -21,5 +21,12 @@ public class RTCQT : ModuleRules
 			"AudioAnalyzer",
 			"AudioSynesthesiaCore"
 		});
+
+		// The actor's property setter is engine-only. Real sequence integration
+		// fixtures compile only with editor development automation.
+		if (Target.bBuildEditor)
+		{
+			PrivateDependencyModuleNames.AddRange(new[] { "LevelSequence", "MovieScene", "MovieSceneTracks" });
+		}
 	}
 }

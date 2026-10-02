@@ -27,6 +27,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RTCQT|Evaluation")
 	FRTCQTEvaluationResult EvaluateAtTime(float TimeSeconds);
 
+	/** Song seconds assigned by a linear Sequencer property track; not a ticking clock. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintSetter = SetSequenceTimeSeconds, Interp, Category = "RTCQT|Evaluation")
+	float SequenceTimeSeconds = 0.0f;
+
+	/** Evaluates every assigned sequence time, including repeated and backward seeks. */
+	UFUNCTION(BlueprintSetter, Category = "RTCQT|Evaluation")
+	void SetSequenceTimeSeconds(float TimeSeconds);
+
+	/** Diagnostics from the latest sequence setter, without per-frame logging. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, DuplicateTransient, Category = "RTCQT|Evaluation")
+	FRTCQTEvaluationResult LastSequenceEvaluation;
+
 	/** Recreates static instances only when layout inputs or expected count changed. */
 	UFUNCTION(BlueprintCallable, Category = "RTCQT|Layout")
 	bool RebuildInstances();

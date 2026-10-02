@@ -1,0 +1,18 @@
+{
+  "date_local": "2026-10-02",
+  "branch": "codex/d13-sequencer-scene",
+  "base_checkpoint": "3f1be90",
+  "status": "In progress",
+  "build": "Succeeded",
+  "tests_passed": 25,
+  "test_errors": 0,
+  "test_warnings": 0,
+  "real_track_tests_passed": 3,
+  "source_sha256": {
+    "Source/RTCQT/Public/RTCQTVisualizer.h": "21e27b07324e001ff3b5b0ba5f6f911a948d47cd58bd3071b8b9329927a25416",
+    "Source/RTCQT/Private/RTCQTVisualizer.cpp": "71365505b0d4293149b1daf2e41131d12441f75b09a385ad4b15ec974a3cf9a2",
+    "Source/RTCQT/Private/Tests/RTCQTSequenceTests.cpp": "f57b99aff4f081004dd0745de53d99dd33ea33f12654744cf3d46ca759f57ea7",
+    "Source/RTCQT/RTCQT.Build.cs": "c95cdc533bd7857bfe020d2bdb8b90755acb290dca990efb5bae294c9ce67eb1"
+  },
+  "saved_scene_gate": "Pending sequence/audio/camera authoring, fresh captures, and audible preview"
+}

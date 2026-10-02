@@ -1,0 +1,440 @@
+{
+  "devices": [
+    {
+      "deviceName": "CAMPC",
+      "instance": "8F88F5C04D74CFE81D240F96FF7105D9",
+      "instanceName": "CAMPC-7224",
+      "platform": "WindowsEditor",
+      "oSVersion": "Windows 11 (25H2) [10.0.26200.9457] ",
+      "model": "Default",
+      "gPU": "NVIDIA GeForce RTX 5060",
+      "cPUModel": "Intel(R) Core(TM) i5-14400F",
+      "rAMInGB": 16,
+      "renderMode": "SM6",
+      "rHI": "",
+      "appInstanceLog": ""
+    }
+  ],
+  "reportCreatedOn": "2026.10.02-20.26.45",
+  "succeeded": 25,
+  "succeededWithWarnings": 0,
+  "failed": 0,
+  "notRun": 0,
+  "inProcess": 0,
+  "totalDuration": 0.21816298365592957,
+  "comparisonExported": false,
+  "comparisonExportDirectory": "",
+  "tests": [
+    {
+      "testDisplayName": "GoldenVectors",
+      "fullTestPath": "RTCQT.D08.Layout.GoldenVectors",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008099600672721863,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "RepeatabilityAndInvalidInputs",
+      "fullTestPath": "RTCQT.D08.Layout.RepeatabilityAndInvalidInputs",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008261602371931076,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SafeFailuresAndRecovery",
+      "fullTestPath": "RTCQT.D08.Visualizer.SafeFailuresAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.01063229888677597,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "TopologyAndCache",
+      "fullTestPath": "RTCQT.D08.Visualizer.TopologyAndCache",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.005873698741197586,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "BasicCalculations",
+      "fullTestPath": "RTCQT.D09.Response.BasicCalculations",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.00812619924545288,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "BatchAndWeights",
+      "fullTestPath": "RTCQT.D09.Response.BatchAndWeights",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008214499801397324,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ExtremeValuesAndBounds",
+      "fullTestPath": "RTCQT.D09.Response.ExtremeValuesAndBounds",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.00811539962887764,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "GoldenVectors",
+      "fullTestPath": "RTCQT.D09.Response.GoldenVectors",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008364401757717133,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Checked 32 D02 vectors: normalization, weighting, response, and range mapping.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.02-20.26.45"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "OrderIndependence",
+      "fullTestPath": "RTCQT.D09.Response.OrderIndependence",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008283097296953201,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SettingsSnapshot",
+      "fullTestPath": "RTCQT.D09.Response.SettingsSnapshot",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008161399513483047,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "D07ReferenceValues",
+      "fullTestPath": "RTCQT.D10.LocalFixture.D07ReferenceValues",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.010502800345420837,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Verified 192 D07 reference values across 15 queries; maximum absolute difference 0. Analysis duration 60 seconds.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.02-20.26.45"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ExactTimeAndOrder",
+      "fullTestPath": "RTCQT.D10.Query.ExactTimeAndOrder",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.005284801125526428,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "InvalidInputs",
+      "fullTestPath": "RTCQT.D10.Query.InvalidInputs",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.008423101156949997,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "FailuresAndRecovery",
+      "fullTestPath": "RTCQT.D10.Visualizer.FailuresAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.010533798485994339,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "D07ScaleReferences",
+      "fullTestPath": "RTCQT.D11.LocalFixture.D07ScaleReferences",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.006428100168704987,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [
+        {
+          "event": {
+            "type": "Info",
+            "message": "Verified 192 D07 reference bands and 256 applied scale rows across 8 queries; repeated matrices match exactly and topology changes are zero.",
+            "context": "",
+            "artifact": "00000000000000000000000000000000"
+          },
+          "filename": "",
+          "lineNumber": -1,
+          "timestamp": "2026.10.02-20.26.45"
+        }
+      ],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "BoundsAndFailureRecovery",
+      "fullTestPath": "RTCQT.D11.Scale.BoundsAndFailureRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.010299097746610641,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "KnownValuesAndLocalTransforms",
+      "fullTestPath": "RTCQT.D11.Scale.KnownValuesAndLocalTransforms",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.006305702030658722,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SeekingAndSettingsEdits",
+      "fullTestPath": "RTCQT.D11.Scale.SeekingAndSettingsEdits",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.009587500244379044,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SingleBandAndLayoutRefresh",
+      "fullTestPath": "RTCQT.D11.Scale.SingleBandAndLayoutRefresh",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.009820498526096344,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "ActorOwnership",
+      "fullTestPath": "RTCQT.D12.Material.ActorOwnership",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.011002801358699799,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SeekingReplacementAndFallback",
+      "fullTestPath": "RTCQT.D12.Material.SeekingReplacementAndFallback",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.009902000427246094,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SharedSettingsAndBounds",
+      "fullTestPath": "RTCQT.D12.Material.SharedSettingsAndBounds",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.009444702416658401,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "FailuresAndRecovery",
+      "fullTestPath": "RTCQT.D13.Sequence.FailuresAndRecovery",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.01046459749341011,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "RealTrackSeekingAndReferenceFrames",
+      "fullTestPath": "RTCQT.D13.Sequence.RealTrackSeekingAndReferenceFrames",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.007450997829437256,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    },
+    {
+      "testDisplayName": "SubframesBoundariesAndPauseRestart",
+      "fullTestPath": "RTCQT.D13.Sequence.SubframesBoundariesAndPauseRestart",
+      "tags": [],
+      "state": "Success",
+      "deviceInstance": [
+        "8F88F5C04D74CFE81D240F96FF7105D9"
+      ],
+      "duration": 0.01058029755949974,
+      "dateTime": "2026.10.02-20.26.45",
+      "entries": [],
+      "warnings": 0,
+      "errors": 0,
+      "artifacts": []
+    }
+  ]
+}

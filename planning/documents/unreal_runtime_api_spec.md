@@ -384,3 +384,27 @@ layout math, or failure behavior requires an explicit contract revision.
 - [Epic: `UConstantQNRT` API, Unreal Engine 5.8](https://dev.epicgames.com/documentation/unreal-engine/API/Plugins/AudioSynesthesia/UConstantQNRT?lang=en-US)
 - [Epic: `UAudioAnalyzerNRT` API, Unreal Engine 5.8](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/AudioAnalyzer/UAudioAnalyzerNRT?lang=en-US)
 - [Epic: `UInstancedStaticMeshComponent` API, Unreal Engine 5.8](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/UInstancedStaticMeshComponent?lang=en-US)
+
+
+## D13 implemented Sequencer time bridge
+
+`ARTCQTVisualizer.SequenceTimeSeconds` is an animatable float with a native
+Blueprint setter, `SetSequenceTimeSeconds(float TimeSeconds)`. The setter
+stores the assigned song seconds and delegates to `EvaluateAtTime`. It runs
+for forward, backward, fractional, and repeated sequence assignments and
+introduces no tick, audio-cursor clock, or previous-frame response state.
+`LastSequenceEvaluation` exposes the latest setter result for verification;
+it is transient and resets independently in duplicated worlds.
+
+Use a built-in MovieScene float property track named `SequenceTimeSeconds`
+with Linear keys `(frame 0, value 0)` and `(frame 3600, value 60)` at 60 fps.
+Keep State retains the last evaluated geometry at stop; a restart explicitly
+seeks to frame zero. Failure retains the existing clear-and-recover behavior.
+The private D13 scene verifies persistent actor bindings separately from the
+native automation fixtures, whose transient actors use binding overrides.
+
+Only editor development tests link `LevelSequence`, `MovieScene`, and
+`MovieSceneTracks`; the actor's engine-only setter adds no runtime-module
+or editor-module dependency. Synthetic sequence tests initialize their game
+world for Play before evaluating the track, and use blocking evaluation to
+make their assertions synchronous.

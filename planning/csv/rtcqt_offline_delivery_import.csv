@@ -296,7 +296,7 @@ Drive audio, visualizer time, camera, and output duration from one Level Sequenc
 - D12 Build emissive material and exposure baseline.
 
 ## Evidence
-- Sequence settings and reference-timestamp screenshots.",Next,P0,M,"D05, D11, D12",Unreal workstation,"sequencer,sync,render,stream-mvp,priority:P0",Stream MVP
+- Sequence settings and reference-timestamp screenshots.",Now,P0,M,"D05, D11, D12",Unreal workstation,"sequencer,sync,render,stream-mvp,priority:P0",Stream MVP
 D14,Render repeatability and synchronization proof,"## Objective
 Prove Movie Render Queue produces clean and repeatable output from the deterministic scene.
 
