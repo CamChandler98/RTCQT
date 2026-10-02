@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "d07_reference_pairs": 192,
+  "queries": 8,
+  "captured_rows": 256,
+  "query_order_seconds": [
+    16.75,
+    0.75,
+    44.25,
+    16.75,
+    2.0,
+    11.75,
+    33.25,
+    16.75
+  ],
+  "absolute_tolerance": 1e-06,
+  "relative_tolerance": 1e-06,
+  "maximum_absolute_differences": {
+    "analyzer_normalized": 4.000000053405728e-10,
+    "response": 3.0606583267811516e-08,
+    "local_x": 0.0,
+    "local_y": 0.0,
+    "local_z": 0.0,
+    "scale_x": 0.0,
+    "scale_y": 0.0,
+    "scale_z": 2.1405557859566215e-07,
+    "normalized_band_index": 2.8483871039597375e-08
+  },
+  "repeated_capture_values_match_exactly": true
+}

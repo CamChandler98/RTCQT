@@ -81,14 +81,23 @@ Completed:
   editor session reloads the saved level and returns the same 16.75 result.
   See [D10 checkpoints](d10_timestamp_query_checkpoint.md).
 
+In progress:
+
+- D11: response-driven absolute Z scale is implemented and the five D11
+  automation groups plus all 14 D08-D10 regressions pass. Repeated and
+  reordered queries reproduce stored transforms exactly without rebuilding
+  unchanged topology; an independent check validates 256 real-asset scale
+  rows against D07. The user-built level's visible height changes, settings
+  edit, and fresh-editor visual check remain pending. See
+  [D11 code checkpoint](d11_scale_response_checkpoint.md).
+
 Next:
 
-- D11 is unblocked: both D09 and D10 are complete. Apply the shared response
-  to the existing instances without rebuilding unchanged topology.
+- Finish D11's saved-level visual verification and capture before D12.
+- D12 adds the shared-response material and locks exposure after D11 closes.
 
 ## WIP Recommendation
 
-D10 is `Done`; D11 remains `Next` until implementation begins.
-Keep no more than two cards in `Now`. The next visible milestone is D11:
-applying the shared response to the existing instances without rebuilding
-topology.
+D11 remains in `Now` until its saved-level visual check is complete.
+Keep no more than two cards in `Now`. The next visible milestone is the
+verified D11 height response, followed by D12's material and exposure setup.

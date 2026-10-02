@@ -1,0 +1,15 @@
+D11 runtime compilation (from the preceding build; test matrix type fixed afterward):
+[2/5] Compile [x64] RTCQTVisualizer.cpp
+
+Final successful build:
+Log file: C:\Users\camch\source\RTCQT\Saved\Logs\D11-build.log
+Using Visual Studio 14.44.35228 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from RTCQT unity file: RTCQTVisualizer.cpp, RTCQTScaleResponseTests.cpp
+Cache bucket 4243511716 used. Action: Compile [x64] RTCQTScaleResponseTests.cpp ()
+Cache bucket 416513229 used. Action: Link [x64] UnrealEditor-RTCQT.dll ()
+[1/4] Compile [x64] RTCQTScaleResponseTests.cpp
+[2/4] Link [x64] UnrealEditor-RTCQT.lib
+[3/4] Link [x64] UnrealEditor-RTCQT.dll
+[4/4] WriteMetadata RTCQTEditor.target [NoUba]
+Result: Succeeded
+Total execution time: 7.80 seconds

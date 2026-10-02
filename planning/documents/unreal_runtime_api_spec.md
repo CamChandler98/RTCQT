@@ -361,9 +361,16 @@ layout math, or failure behavior requires an explicit contract revision.
   array on failure, and stores no query history. The public actor API remains
   the three operations described above. Missing settings, unavailable channels,
   and unfinished result data report `EmptyAnalyzerResult` before the native
-  query. See [D10 code checkpoint](d10_timestamp_query_checkpoint.md).
-- D11 maps the shared response to local Z scale without changing X/Y or
-  rebuilding topology.
+  query. See [D10 checkpoints](d10_timestamp_query_checkpoint.md).
+- D11 now processes the queried bands from a fresh settings snapshot, maps
+  the shared response to absolute local Z scale, and preserves the D03 base
+  position, rotation, and X/Y scale. It batch-updates existing instances in
+  local space, writes response slot `0`, leaves band-index slot `1` intact,
+  and marks render state dirty once after those updates. Unchanged layout
+  and count do not rebuild topology. Each frame starts from freshly generated
+  base transforms, so seeks and settings edits cannot accumulate scale.
+  A failed transform/custom-data update returns failure and clears stale
+  instances. See [D11 code checkpoint](d11_scale_response_checkpoint.md).
 - D12 consumes custom-data slots `0` and `1`, configures bounded emissive/color,
   and locks exposure.
 

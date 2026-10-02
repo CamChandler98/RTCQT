@@ -1,0 +1,83 @@
+LogInit: Engine Version: 5.8.0-55116800+++UE5+Release-5.8
+[2026.10.02-02.16.48:298][  0]LogLayoutService: Warning: While key "UnrealEd_Layout_v1.5" was not found, and older version exists (key "UnrealEd_Layout_v1.6"). This means section "EditorLayouts" was created with a previous version of UE and is no longer compatible. The old key has been removed and updated with the new one.
+[2026.10.02-02.16.55:223][592]LogAutomationController: Display: Test Started. Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.10.02-02.16.55:242][594]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D08.Layout.GoldenVectors}
+[2026.10.02-02.16.55:242][594]LogAutomationController: BeginEvents: RTCQT.D08.Layout.GoldenVectors
+[2026.10.02-02.16.55:242][594]LogAutomationController: EndEvents: RTCQT.D08.Layout.GoldenVectors
+[2026.10.02-02.16.55:242][595]LogAutomationController: Display: Test Started. Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.10.02-02.16.55:266][597]LogAutomationController: Display: Test Completed. Result={Success} Name={RepeatabilityAndInvalidInputs} Path={RTCQT.D08.Layout.RepeatabilityAndInvalidInputs}
+[2026.10.02-02.16.55:266][597]LogAutomationController: BeginEvents: RTCQT.D08.Layout.RepeatabilityAndInvalidInputs
+[2026.10.02-02.16.55:266][597]LogAutomationController: EndEvents: RTCQT.D08.Layout.RepeatabilityAndInvalidInputs
+[2026.10.02-02.16.55:266][597]LogAutomationController: Display: Test Started. Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.10.02-02.16.55:288][599]LogAutomationController: Display: Test Completed. Result={Success} Name={SafeFailuresAndRecovery} Path={RTCQT.D08.Visualizer.SafeFailuresAndRecovery}
+[2026.10.02-02.16.55:288][599]LogAutomationController: BeginEvents: RTCQT.D08.Visualizer.SafeFailuresAndRecovery
+[2026.10.02-02.16.55:288][599]LogAutomationController: EndEvents: RTCQT.D08.Visualizer.SafeFailuresAndRecovery
+[2026.10.02-02.16.55:290][599]LogAutomationController: Display: Test Started. Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.10.02-02.16.55:305][601]LogAutomationController: Display: Test Completed. Result={Success} Name={TopologyAndCache} Path={RTCQT.D08.Visualizer.TopologyAndCache}
+[2026.10.02-02.16.55:305][601]LogAutomationController: BeginEvents: RTCQT.D08.Visualizer.TopologyAndCache
+[2026.10.02-02.16.55:305][601]LogAutomationController: EndEvents: RTCQT.D08.Visualizer.TopologyAndCache
+[2026.10.02-02.16.55:305][601]LogAutomationController: Display: Test Started. Name={BasicCalculations} Path={RTCQT.D09.Response.BasicCalculations}
+[2026.10.02-02.16.55:328][604]LogAutomationController: Display: Test Completed. Result={Success} Name={BasicCalculations} Path={RTCQT.D09.Response.BasicCalculations}
+[2026.10.02-02.16.55:328][604]LogAutomationController: BeginEvents: RTCQT.D09.Response.BasicCalculations
+[2026.10.02-02.16.55:328][604]LogAutomationController: EndEvents: RTCQT.D09.Response.BasicCalculations
+[2026.10.02-02.16.55:328][605]LogAutomationController: Display: Test Started. Name={BatchAndWeights} Path={RTCQT.D09.Response.BatchAndWeights}
+[2026.10.02-02.16.55:344][606]LogAutomationController: Display: Test Completed. Result={Success} Name={BatchAndWeights} Path={RTCQT.D09.Response.BatchAndWeights}
+[2026.10.02-02.16.55:344][606]LogAutomationController: BeginEvents: RTCQT.D09.Response.BatchAndWeights
+[2026.10.02-02.16.55:344][606]LogAutomationController: EndEvents: RTCQT.D09.Response.BatchAndWeights
+[2026.10.02-02.16.55:344][606]LogAutomationController: Display: Test Started. Name={ExtremeValuesAndBounds} Path={RTCQT.D09.Response.ExtremeValuesAndBounds}
+[2026.10.02-02.16.55:360][608]LogAutomationController: Display: Test Completed. Result={Success} Name={ExtremeValuesAndBounds} Path={RTCQT.D09.Response.ExtremeValuesAndBounds}
+[2026.10.02-02.16.55:360][608]LogAutomationController: BeginEvents: RTCQT.D09.Response.ExtremeValuesAndBounds
+[2026.10.02-02.16.55:360][608]LogAutomationController: EndEvents: RTCQT.D09.Response.ExtremeValuesAndBounds
+[2026.10.02-02.16.55:361][609]LogAutomationController: Display: Test Started. Name={GoldenVectors} Path={RTCQT.D09.Response.GoldenVectors}
+[2026.10.02-02.16.55:386][611]LogAutomationController: Display: Test Completed. Result={Success} Name={GoldenVectors} Path={RTCQT.D09.Response.GoldenVectors}
+[2026.10.02-02.16.55:386][611]LogAutomationController: BeginEvents: RTCQT.D09.Response.GoldenVectors
+[2026.10.02-02.16.55:386][611]LogAutomationController: Checked 32 D02 vectors: normalization, weighting, response, and range mapping.
+[2026.10.02-02.16.55:387][611]LogAutomationController: EndEvents: RTCQT.D09.Response.GoldenVectors
+[2026.10.02-02.16.55:387][611]LogAutomationController: Display: Test Started. Name={OrderIndependence} Path={RTCQT.D09.Response.OrderIndependence}
+[2026.10.02-02.16.55:403][613]LogAutomationController: Display: Test Completed. Result={Success} Name={OrderIndependence} Path={RTCQT.D09.Response.OrderIndependence}
+[2026.10.02-02.16.55:403][613]LogAutomationController: BeginEvents: RTCQT.D09.Response.OrderIndependence
+[2026.10.02-02.16.55:403][613]LogAutomationController: EndEvents: RTCQT.D09.Response.OrderIndependence
+[2026.10.02-02.16.55:403][613]LogAutomationController: Display: Test Started. Name={SettingsSnapshot} Path={RTCQT.D09.Response.SettingsSnapshot}
+[2026.10.02-02.16.55:419][615]LogAutomationController: Display: Test Completed. Result={Success} Name={SettingsSnapshot} Path={RTCQT.D09.Response.SettingsSnapshot}
+[2026.10.02-02.16.55:419][615]LogAutomationController: BeginEvents: RTCQT.D09.Response.SettingsSnapshot
+[2026.10.02-02.16.55:419][615]LogAutomationController: EndEvents: RTCQT.D09.Response.SettingsSnapshot
+[2026.10.02-02.16.55:419][615]LogAutomationController: Display: Test Started. Name={D07ReferenceValues} Path={RTCQT.D10.LocalFixture.D07ReferenceValues}
+[2026.10.02-02.16.55:447][617]LogAutomationController: Display: Test Completed. Result={Success} Name={D07ReferenceValues} Path={RTCQT.D10.LocalFixture.D07ReferenceValues}
+[2026.10.02-02.16.55:447][617]LogAutomationController: BeginEvents: RTCQT.D10.LocalFixture.D07ReferenceValues
+[2026.10.02-02.16.55:447][617]LogAutomationController: Verified 192 D07 reference values across 15 queries; maximum absolute difference 0. Analysis duration 60 seconds.
+[2026.10.02-02.16.55:447][617]LogAutomationController: EndEvents: RTCQT.D10.LocalFixture.D07ReferenceValues
+[2026.10.02-02.16.55:447][617]LogAutomationController: Display: Test Started. Name={ExactTimeAndOrder} Path={RTCQT.D10.Query.ExactTimeAndOrder}
+[2026.10.02-02.16.55:460][619]LogAutomationController: Display: Test Completed. Result={Success} Name={ExactTimeAndOrder} Path={RTCQT.D10.Query.ExactTimeAndOrder}
+[2026.10.02-02.16.55:460][619]LogAutomationController: BeginEvents: RTCQT.D10.Query.ExactTimeAndOrder
+[2026.10.02-02.16.55:460][619]LogAutomationController: EndEvents: RTCQT.D10.Query.ExactTimeAndOrder
+[2026.10.02-02.16.55:460][620]LogAutomationController: Display: Test Started. Name={InvalidInputs} Path={RTCQT.D10.Query.InvalidInputs}
+[2026.10.02-02.16.55:486][622]LogAutomationController: Display: Test Completed. Result={Success} Name={InvalidInputs} Path={RTCQT.D10.Query.InvalidInputs}
+[2026.10.02-02.16.55:486][622]LogAutomationController: BeginEvents: RTCQT.D10.Query.InvalidInputs
+[2026.10.02-02.16.55:486][622]LogAutomationController: EndEvents: RTCQT.D10.Query.InvalidInputs
+[2026.10.02-02.16.55:487][622]LogAutomationController: Display: Test Started. Name={FailuresAndRecovery} Path={RTCQT.D10.Visualizer.FailuresAndRecovery}
+[2026.10.02-02.16.55:504][624]LogAutomationController: Display: Test Completed. Result={Success} Name={FailuresAndRecovery} Path={RTCQT.D10.Visualizer.FailuresAndRecovery}
+[2026.10.02-02.16.55:504][624]LogAutomationController: BeginEvents: RTCQT.D10.Visualizer.FailuresAndRecovery
+[2026.10.02-02.16.55:504][624]LogAutomationController: EndEvents: RTCQT.D10.Visualizer.FailuresAndRecovery
+[2026.10.02-02.16.55:504][624]LogAutomationController: Display: Test Started. Name={D07ScaleReferences} Path={RTCQT.D11.LocalFixture.D07ScaleReferences}
+[2026.10.02-02.16.55:530][627]LogAutomationController: Display: Test Completed. Result={Success} Name={D07ScaleReferences} Path={RTCQT.D11.LocalFixture.D07ScaleReferences}
+[2026.10.02-02.16.55:531][627]LogAutomationController: BeginEvents: RTCQT.D11.LocalFixture.D07ScaleReferences
+[2026.10.02-02.16.55:531][627]LogAutomationController: Verified 192 D07 reference bands and 256 applied scale rows across 8 queries; repeated matrices match exactly and topology changes are zero.
+[2026.10.02-02.16.55:531][627]LogAutomationController: EndEvents: RTCQT.D11.LocalFixture.D07ScaleReferences
+[2026.10.02-02.16.55:531][628]LogAutomationController: Display: Test Started. Name={BoundsAndFailureRecovery} Path={RTCQT.D11.Scale.BoundsAndFailureRecovery}
+[2026.10.02-02.16.55:555][630]LogAutomationController: Display: Test Completed. Result={Success} Name={BoundsAndFailureRecovery} Path={RTCQT.D11.Scale.BoundsAndFailureRecovery}
+[2026.10.02-02.16.55:555][630]LogAutomationController: BeginEvents: RTCQT.D11.Scale.BoundsAndFailureRecovery
+[2026.10.02-02.16.55:555][630]LogAutomationController: EndEvents: RTCQT.D11.Scale.BoundsAndFailureRecovery
+[2026.10.02-02.16.55:557][631]LogAutomationController: Display: Test Started. Name={KnownValuesAndLocalTransforms} Path={RTCQT.D11.Scale.KnownValuesAndLocalTransforms}
+[2026.10.02-02.16.55:571][632]LogAutomationController: Display: Test Completed. Result={Success} Name={KnownValuesAndLocalTransforms} Path={RTCQT.D11.Scale.KnownValuesAndLocalTransforms}
+[2026.10.02-02.16.55:571][632]LogAutomationController: BeginEvents: RTCQT.D11.Scale.KnownValuesAndLocalTransforms
+[2026.10.02-02.16.55:571][632]LogAutomationController: EndEvents: RTCQT.D11.Scale.KnownValuesAndLocalTransforms
+[2026.10.02-02.16.55:571][633]LogAutomationController: Display: Test Started. Name={SeekingAndSettingsEdits} Path={RTCQT.D11.Scale.SeekingAndSettingsEdits}
+[2026.10.02-02.16.55:594][635]LogAutomationController: Display: Test Completed. Result={Success} Name={SeekingAndSettingsEdits} Path={RTCQT.D11.Scale.SeekingAndSettingsEdits}
+[2026.10.02-02.16.55:595][635]LogAutomationController: BeginEvents: RTCQT.D11.Scale.SeekingAndSettingsEdits
+[2026.10.02-02.16.55:595][635]LogAutomationController: EndEvents: RTCQT.D11.Scale.SeekingAndSettingsEdits
+[2026.10.02-02.16.55:595][635]LogAutomationController: Display: Test Started. Name={SingleBandAndLayoutRefresh} Path={RTCQT.D11.Scale.SingleBandAndLayoutRefresh}
+[2026.10.02-02.16.55:619][638]LogAutomationController: Display: Test Completed. Result={Success} Name={SingleBandAndLayoutRefresh} Path={RTCQT.D11.Scale.SingleBandAndLayoutRefresh}
+[2026.10.02-02.16.55:619][638]LogAutomationController: BeginEvents: RTCQT.D11.Scale.SingleBandAndLayoutRefresh
+[2026.10.02-02.16.55:619][638]LogAutomationController: EndEvents: RTCQT.D11.Scale.SingleBandAndLayoutRefresh
+[2026.10.02-02.16.55:622][639]LogAutomationCommandLine: Display: ...Automation Test Queue Empty 19 tests performed.
+[2026.10.02-02.16.55:628][640]LogExit: Display: **** TestExit: Automation Test Queue Empty ****

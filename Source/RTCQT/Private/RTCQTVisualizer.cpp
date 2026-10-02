@@ -5,6 +5,7 @@
 #include "RTCQTAnalyzerQuery.h"
 #include "RTCQTLayout.h"
 #include "RTCQTLog.h"
+#include "RTCQTResponseSettings.h"
 
 namespace
 {
@@ -57,6 +58,7 @@ FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 	Result.EvaluatedTimeSeconds = TimeSeconds;
 	const auto Fail = [this, &Result](ERTCQTFailureReason Reason, const TCHAR* Message)
 	{
+		Result.bSucceeded = false;
 		Result.FailureReason = Reason;
 		FailRebuild(Reason, Message);
 		return Result;
@@ -105,8 +107,48 @@ FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 		return Result;
 	}
 
-	// D10 validates/queries the frame and restores static topology. D11 consumes
-	// this call-local band array to apply response; no time or band history is kept.
+	TArray<float> Responses;
+	FRTCQTResponseProcessor::ProcessBands(Bands, ResponseSettings->MakeProcessorParameters(), Responses);
+	TArray<FRTCQTLayoutTransform> Layout;
+	FRTCQTLayout::Build(LayoutSettings, ExpectedBandCount, Layout);
+	if (Layout.Num() != Responses.Num())
+	{
+		return Fail(ERTCQTFailureReason::LayoutGenerationFailed,
+			TEXT("Base layout does not match the evaluated bands; rebuild the visualizer."));
+	}
+
+	// Recreate values from the base layout, never from a previously scaled frame.
+	// MeshZScaleRange is absolute local Z scale; X/Y, position, and rotation stay authored.
+	TArray<FTransform> Transforms;
+	Transforms.Reserve(Layout.Num());
+	for (int32 Index = 0; Index < Layout.Num(); ++Index)
+	{
+		FTransform Transform = Layout[Index].ToTransform();
+		FVector Scale = Transform.GetScale3D();
+		Scale.Z = FRTCQTResponseProcessor::MapResponse(Responses[Index],
+			ResponseSettings->MeshZScaleRange.Min, ResponseSettings->MeshZScaleRange.Max);
+		Transform.SetScale3D(Scale);
+		if (!Transform.IsValid())
+		{
+			return Fail(ERTCQTFailureReason::LayoutGenerationFailed,
+				TEXT("Response produced an invalid instance transform; check the layout and scale range."));
+		}
+		Transforms.Add(Transform);
+	}
+	if (!InstanceComponent->BatchUpdateInstancesTransforms(0, Transforms, false, false, true))
+	{
+		return Fail(ERTCQTFailureReason::InstanceUpdateFailed,
+			TEXT("Could not apply the evaluated instance transforms; rebuild the visualizer."));
+	}
+	for (int32 Index = 0; Index < Responses.Num(); ++Index)
+	{
+		if (!InstanceComponent->SetCustomDataValue(Index, RTCQTCustomData::Response, Responses[Index], false))
+		{
+			return Fail(ERTCQTFailureReason::InstanceUpdateFailed,
+				TEXT("Could not apply the evaluated response custom data; rebuild the visualizer."));
+		}
+	}
+	InstanceComponent->MarkRenderStateDirty();
 	LastFailureReason = ERTCQTFailureReason::None;
 	return Result;
 }
