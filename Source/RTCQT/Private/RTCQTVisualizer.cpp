@@ -60,6 +60,30 @@ void ARTCQTVisualizer::SetSequenceTimeSeconds(float TimeSeconds)
 	LastSequenceEvaluation = EvaluateAtTime(TimeSeconds);
 }
 
+void ARTCQTVisualizer::SetPlaybackAnalyzer(UConstantQNRT* Analyzer, int32 Channel)
+{
+	ClearVisualization();
+	ConstantQNRT = Analyzer;
+	AnalyzerChannel = Channel;
+	bPlaybackDriven = true;
+	ExpectedBandCount = Analyzer && Analyzer->Settings ? Analyzer->Settings->NumBands : 0;
+	SequenceTimeSeconds = 0;
+	LastSequenceEvaluation = FRTCQTEvaluationResult();
+}
+
+FRTCQTLayoutSettings ARTCQTVisualizer::EffectiveLayout() const
+{
+	FRTCQTLayoutSettings Value = LayoutSettings;
+	if (bPlaybackDriven && bKeepPlaybackLineWidth && Value.Mode == ERTCQTLayoutMode::Line)
+	{
+		const float OriginalSpacing = Value.Spacing;
+		Value.Spacing = ExpectedBandCount > 1 ? OriginalSpacing * (FMath::Max(2, PlaybackReferenceBandCount) - 1) / (ExpectedBandCount - 1) : 0;
+		if (OriginalSpacing > 0 && ExpectedBandCount > 1)
+			Value.BaseScale.X *= FMath::Min(1.f, Value.Spacing / OriginalSpacing);
+	}
+	return Value;
+}
+
 FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 {
 	FRTCQTEvaluationResult Result;
@@ -116,9 +140,13 @@ FRTCQTEvaluationResult ARTCQTVisualizer::EvaluateAtTime(float TimeSeconds)
 	}
 
 	TArray<float> Responses;
-	FRTCQTResponseProcessor::ProcessBands(Bands, ResponseSettings->MakeProcessorParameters(), Responses);
+	auto Parameters = ResponseSettings->MakeProcessorParameters();
+	if (!ResponseSettings->FrequencyWeights.IsEmpty() && ConstantQNRT->Settings)
+		Parameters.BandWeights = ResponseSettings->ResolveBandWeights(ExpectedBandCount,
+			ConstantQNRT->Settings->StartingFrequency, ConstantQNRT->Settings->NumBandsPerOctave);
+	FRTCQTResponseProcessor::ProcessBands(Bands, Parameters, Responses);
 	TArray<FRTCQTLayoutTransform> Layout;
-	FRTCQTLayout::Build(LayoutSettings, ExpectedBandCount, Layout);
+	FRTCQTLayout::Build(EffectiveLayout(), ExpectedBandCount, Layout);
 	if (Layout.Num() != Responses.Num())
 	{
 		return Fail(ERTCQTFailureReason::LayoutGenerationFailed,
@@ -188,8 +216,9 @@ bool ARTCQTVisualizer::RebuildInstances()
 	InstanceComponent->SetStaticMesh(InstanceMesh);
 	RefreshMaterial();
 
+	const auto FrameLayout = EffectiveLayout();
 	if (bHasCachedLayout && CachedBandCount == ExpectedBandCount
-		&& SameLayout(CachedLayoutSettings, LayoutSettings)
+		&& SameLayout(CachedLayoutSettings, FrameLayout)
 		&& InstanceComponent->GetInstanceCount() == ExpectedBandCount
 		&& InstanceComponent->NumCustomDataFloats == RTCQTCustomData::NumFloats)
 	{
@@ -198,7 +227,7 @@ bool ARTCQTVisualizer::RebuildInstances()
 	}
 
 	TArray<FRTCQTLayoutTransform> Layout;
-	FRTCQTLayout::Build(LayoutSettings, ExpectedBandCount, Layout);
+	FRTCQTLayout::Build(FrameLayout, ExpectedBandCount, Layout);
 	if (Layout.Num() != ExpectedBandCount)
 	{
 		return FailRebuild(ERTCQTFailureReason::LayoutGenerationFailed,
@@ -237,7 +266,7 @@ bool ARTCQTVisualizer::RebuildInstances()
 		}
 	}
 	InstanceComponent->MarkRenderStateDirty();
-	CachedLayoutSettings = LayoutSettings;
+	CachedLayoutSettings = FrameLayout;
 	CachedBandCount = ExpectedBandCount;
 	bHasCachedLayout = true;
 	LastFailureReason = ERTCQTFailureReason::None;

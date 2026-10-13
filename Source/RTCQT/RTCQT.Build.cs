@@ -12,7 +12,9 @@ public class RTCQT : ModuleRules
 		{
 			"Core",
 			"CoreUObject",
-			"Engine"
+			"Engine",
+			"UMG",
+			"SlateCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new[]

@@ -47,6 +47,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RTCQT|Layout")
 	void ClearVisualization();
 
+	/** Atomically clears the prior frame and changes the playback analysis source. */
+	UFUNCTION(BlueprintCallable, Category = "RTCQT|Evaluation")
+	void SetPlaybackAnalyzer(UConstantQNRT* Analyzer, int32 Channel = 0);
+
+	/** Holds the authored line span when playback changes the number of bands. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTCQT|Layout")
+	bool bKeepPlaybackLineWidth = true;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTCQT|Layout", meta=(ClampMin="2"))
+	int32 PlaybackReferenceBandCount = 32;
+
+	UFUNCTION(BlueprintPure, Category="RTCQT|Analysis")
+	int32 GetBandCount() const { return ExpectedBandCount; }
+
 protected:
 	/** Refreshes the static preview after actor placement or an editor property change. */
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -55,6 +68,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	FRTCQTLayoutSettings EffectiveLayout() const;
+	bool bPlaybackDriven = false;
 	/** Clears stale geometry and logs only when entering a different failure. */
 	bool FailRebuild(ERTCQTFailureReason Reason, const TCHAR* Message);
 
