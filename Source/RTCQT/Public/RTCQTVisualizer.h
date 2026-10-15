@@ -51,6 +51,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RTCQT|Evaluation")
 	void SetPlaybackAnalyzer(UConstantQNRT* Analyzer, int32 Channel = 0);
 
+	/** Reads the assigned material's defaults; false leaves both outputs unchanged. */
+	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
+	bool GetAuthoredPaletteColors(FLinearColor& LowColor, FLinearColor& HighColor) const;
+
+	/** Reads the displayed pair without evaluating music or changing the material. */
+	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
+	bool GetDisplayedPaletteColors(FLinearColor& LowColor, FLinearColor& HighColor) const;
+
+	/** Applies a finite pair to this actor only; incompatible materials leave state unchanged. */
+	UFUNCTION(BlueprintCallable, Category = "RTCQT|Palette")
+	bool SetRuntimePaletteColors(const FLinearColor& LowColor, const FLinearColor& HighColor);
+
+	/** Restores authored colors without clearing unrelated material parameters. */
+	UFUNCTION(BlueprintCallable, Category = "RTCQT|Palette")
+	void ClearRuntimePaletteColors();
+
+	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
+	bool HasRuntimePaletteOverride() const { return bHasRuntimePaletteOverride; }
+
 	/** Holds the authored line span when playback changes the number of bands. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="RTCQT|Layout")
 	bool bKeepPlaybackLineWidth = true;
@@ -102,6 +121,19 @@ private:
 	/** Runtime-only shared override; reconstructed independently in duplicated worlds. */
 	UPROPERTY(Transient, DuplicateTransient)
 	TObjectPtr<UMaterialInstanceDynamic> SharedMaterial;
+
+	UPROPERTY(Transient, DuplicateTransient)
+	bool bHasRuntimePaletteOverride = false;
+
+	UPROPERTY(Transient, DuplicateTransient)
+	FLinearColor RuntimeLowColor = FLinearColor::White;
+
+	UPROPERTY(Transient, DuplicateTransient)
+	FLinearColor RuntimeHighColor = FLinearColor::White;
+
+	/** Only mirrors authored values after this MID has received explicit palette writes. */
+	UPROPERTY(Transient, DuplicateTransient)
+	bool bHasWrittenPaletteColors = false;
 
 	/** Stores the explicit D03 inputs used to generate local base transforms. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Layout", meta = (AllowPrivateAccess = "true"))

@@ -11,6 +11,24 @@
 
 namespace
 {
+bool FiniteColor(const FLinearColor& Color)
+{
+	return FMath::IsFinite(Color.R) && FMath::IsFinite(Color.G)
+		&& FMath::IsFinite(Color.B) && FMath::IsFinite(Color.A);
+}
+
+bool ReadPalette(const UMaterialInterface* Material, FLinearColor& LowColor, FLinearColor& HighColor)
+{
+	FLinearColor Low, High;
+	if (!Material
+		|| !Material->GetVectorParameterValue(RTCQTMaterialParameters::LowBandColor, Low)
+		|| !Material->GetVectorParameterValue(RTCQTMaterialParameters::HighBandColor, High)
+		|| !FiniteColor(Low) || !FiniteColor(High)) return false;
+	LowColor = Low;
+	HighColor = High;
+	return true;
+}
+
 bool SameScalar(double A, double B)
 {
 	// Invalid values sanitize to the same zero; NaN must not defeat the cache.
@@ -69,6 +87,37 @@ void ARTCQTVisualizer::SetPlaybackAnalyzer(UConstantQNRT* Analyzer, int32 Channe
 	ExpectedBandCount = Analyzer && Analyzer->Settings ? Analyzer->Settings->NumBands : 0;
 	SequenceTimeSeconds = 0;
 	LastSequenceEvaluation = FRTCQTEvaluationResult();
+}
+
+bool ARTCQTVisualizer::GetAuthoredPaletteColors(FLinearColor& LowColor, FLinearColor& HighColor) const
+{
+	return ReadPalette(InstanceMaterial, LowColor, HighColor);
+}
+
+bool ARTCQTVisualizer::GetDisplayedPaletteColors(FLinearColor& LowColor, FLinearColor& HighColor) const
+{
+	return ReadPalette(InstanceComponent ? InstanceComponent->GetMaterial(0) : nullptr, LowColor, HighColor);
+}
+
+bool ARTCQTVisualizer::SetRuntimePaletteColors(const FLinearColor& LowColor, const FLinearColor& HighColor)
+{
+	FLinearColor AuthoredLow, AuthoredHigh;
+	if (!InstanceComponent || !FiniteColor(LowColor) || !FiniteColor(HighColor)
+		|| !GetAuthoredPaletteColors(AuthoredLow, AuthoredHigh)) return false;
+	RuntimeLowColor = LowColor;
+	RuntimeHighColor = HighColor;
+	bHasRuntimePaletteOverride = true;
+	RefreshMaterial();
+	return true;
+}
+
+void ARTCQTVisualizer::ClearRuntimePaletteColors()
+{
+	if (!bHasRuntimePaletteOverride) return;
+	bHasRuntimePaletteOverride = false;
+	RuntimeLowColor = FLinearColor::White;
+	RuntimeHighColor = FLinearColor::White;
+	if (InstanceComponent) RefreshMaterial();
 }
 
 FRTCQTLayoutSettings ARTCQTVisualizer::EffectiveLayout() const
@@ -281,6 +330,16 @@ void ARTCQTVisualizer::RefreshMaterial()
 		{
 			SharedMaterial = UMaterialInstanceDynamic::Create(InstanceMaterial, this);
 			SharedMaterial->SetFlags(RF_Transient);
+			bHasWrittenPaletteColors = false;
+		}
+		FLinearColor Low, High;
+		if ((bHasRuntimePaletteOverride || bHasWrittenPaletteColors) && GetAuthoredPaletteColors(Low, High))
+		{
+			SharedMaterial->SetVectorParameterValue(RTCQTMaterialParameters::LowBandColor,
+				bHasRuntimePaletteOverride ? RuntimeLowColor : Low);
+			SharedMaterial->SetVectorParameterValue(RTCQTMaterialParameters::HighBandColor,
+				bHasRuntimePaletteOverride ? RuntimeHighColor : High);
+			bHasWrittenPaletteColors = true;
 		}
 		// Emissive is a shader intensity, unlike D11's signed scale range.
 		// Bound it to [0, 100] to avoid invalid or overflowing shader inputs.
@@ -303,6 +362,7 @@ void ARTCQTVisualizer::RefreshMaterial()
 	else
 	{
 		SharedMaterial = nullptr;
+		bHasWrittenPaletteColors = false;
 		InstanceComponent->SetMaterial(0, nullptr);
 		if (!bUsingDefaultMaterial)
 		{

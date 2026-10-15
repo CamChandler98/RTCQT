@@ -1,6 +1,7 @@
 #include "RTCQTMusicLabManager.h"
 #include "RTCQTMusicLabControls.h"
 #include "RTCQTStreamerBotComponent.h"
+#include "RTCQTPaletteComponent.h"
 #include "RTCQTVisualizer.h"
 #include "RTCQTAnalyzerQuery.h"
 #include "Components/AudioComponent.h"
@@ -17,6 +18,7 @@ ARTCQTMusicLabManager::ARTCQTMusicLabManager()
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->bAutoActivate = false;
 	StreamerBot = CreateDefaultSubobject<URTCQTStreamerBotComponent>(TEXT("StreamerBot"));
+	Palette = CreateDefaultSubobject<URTCQTPaletteComponent>(TEXT("Palette"));
 }
 
 bool ARTCQTMusicLabManager::IsValidTrack(const FRTCQTMusicTrack& Track) const
