@@ -6,6 +6,7 @@
 
 class ARTCQTVisualizer;
 class URTCQTPalettePresets;
+class URTCQTStreamerBotComponent;
 
 /** Opt-in local palette transitions, independent of audio and pulse state. */
 UCLASS(ClassGroup = (RTCQT), meta = (BlueprintSpawnableComponent))
@@ -24,9 +25,21 @@ public:
 	UFUNCTION(BlueprintSetter, Category = "RTCQT|Palette")
 	void SetPaletteEnabled(bool bNewEnabled);
 
+	/** Viewer-only path; local selection/reset never consult this lock or cooldown. */
+	UFUNCTION(BlueprintCallable, Category = "RTCQT|Palette")
+	bool TryViewerPalette(const FString& Value);
+	UFUNCTION(BlueprintSetter, Category = "RTCQT|Palette")
+	void SetViewerPalettesEnabled(bool bNewEnabled);
+	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
+	float GetViewerPaletteCooldownRemaining() const;
+
 	/** Disabled by default; changing this at runtime uses the same setup checks. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintSetter = SetPaletteEnabled, Category = "RTCQT|Palette")
 	bool bPaletteEnabled = false;
+
+	/** Blocks new viewer requests; a previously accepted color transition can finish. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintSetter = SetViewerPalettesEnabled, Category = "RTCQT|Palette")
+	bool bViewerPalettesEnabled = true;
 
 	/** Optional artist-edited asset; unset uses the four built-in starter presets. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RTCQT|Palette")
@@ -38,8 +51,11 @@ public:
 	bool bBlending = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, DuplicateTransient, Category = "RTCQT|Palette")
 	FString LastError;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, DuplicateTransient, Category = "RTCQT|Palette")
+	int32 AcceptedViewerPaletteCount = 0;
 
 	static constexpr double BlendDurationSeconds = 0.5;
+	static constexpr double ViewerCooldownSeconds = 15.0;
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,8 +64,17 @@ protected:
 
 private:
 	friend class FRTCQTPaletteTransitionsTest;
+	friend class FRTCQTPaletteViewerControlsTest;
+	friend class FRTCQTPalettePlaybackPersistenceTest;
 	const URTCQTPalettePresets* GetPresets() const;
 	ARTCQTVisualizer* GetVisualizer() const;
+	URTCQTStreamerBotComponent* GetReceiver() const;
+	void BindReceiver();
+	void UnbindReceiver();
+	UFUNCTION() void HandleChatCommand(const FString& Command, const FString& Value);
+	bool TryViewerPaletteAt(const FString& Value, double Now);
+	double ViewerCooldownRemainingAt(double Now) const;
+	bool IsAlreadySelected(FName Id, const FLinearColor& Low, const FLinearColor& High) const;
 	bool CheckSetup();
 	bool SelectPaletteAt(FName Id, double Now);
 	bool ResetPaletteAt(double Now);
@@ -59,6 +84,8 @@ private:
 
 	UPROPERTY(Transient, DuplicateTransient)
 	TWeakObjectPtr<ARTCQTVisualizer> OwnedVisualizer;
+	UPROPERTY(Transient, DuplicateTransient)
+	TWeakObjectPtr<URTCQTStreamerBotComponent> BoundReceiver;
 
 	double BlendStartedAt = 0;
 	FLinearColor FromLow = FLinearColor::White;
@@ -66,4 +93,6 @@ private:
 	FLinearColor TargetLow = FLinearColor::White;
 	FLinearColor TargetHigh = FLinearColor::White;
 	bool bResetOnCompletion = false;
+	bool bHasAcceptedViewerPalette = false;
+	double LastViewerAcceptedAt = 0;
 };

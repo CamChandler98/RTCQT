@@ -5,12 +5,14 @@
 #include "RTCQTPaletteComponent.h"
 #include "RTCQTPalettePresets.h"
 #include "RTCQTResponseSettings.h"
+#include "RTCQTStreamerBotComponent.h"
 #include "RTCQTVisualizer.h"
 #include "Components/AudioComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "ConstantQNRT.h"
 #include "ConstantQNRTFactory.h"
 #include "Engine/Level.h"
+#include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "InstancedStaticMeshDelegates.h"
@@ -93,12 +95,13 @@ struct FFixture
 		Palette = Manager->Palette;
 	}
 
-	~FFixture() { World->DestroyWorld(false); }
+	~FFixture() { if (World) World->DestroyWorld(false); }
 
 	UConstantQNRT* MakeAnalyzer(int32 Count)
 	{
 		auto* Result = NewObject<UConstantQNRT>(Actor);
 		Result->Sound = NewObject<USoundWave>(Result);
+		Result->Sound->Duration = 2.f;
 		Result->Settings->NumBands = Count;
 		Result->Settings->NoiseFloorDb = -60;
 		auto Data = MakeShared<Audio::FConstantQNRTResult, ESPMode::ThreadSafe>();
@@ -352,6 +355,198 @@ bool FRTCQTPaletteTransitionsTest::RunTest(const FString& Parameters)
 	Colors(*this, F.Actor, AuthoredLow, AuthoredHigh);
 	TestFalse(TEXT("Blend did not resume audio"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Playing);
 	TestNull(TEXT("Blend did not start an audio source"), F.Manager->AudioComponent->Sound.Get());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRTCQTPaletteViewerControlsTest, "RTCQT.Palette.ViewerGateCooldownAndLifecycle",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRTCQTPaletteViewerControlsTest::RunTest(const FString& Parameters)
+{
+	using namespace RTCQTPaletteTests;
+	FFixture F;
+	auto* Palette = F.Palette;
+	auto* Receiver = F.Manager->StreamerBot.Get();
+	const auto* Defaults = GetDefault<URTCQTPalettePresets>();
+	Receiver->ConnectionStatus = TEXT("Ready");
+	F.Instances->SetMaterial(0, nullptr);
+	FLinearColor UnreadyLow, UnreadyHigh;
+	TestFalse(TEXT("Fixture has no displayed palette before visualizer initialization"),
+		F.Actor->GetDisplayedPaletteColors(UnreadyLow, UnreadyHigh));
+	Palette->SetPaletteEnabled(true);
+	TestTrue(TEXT("Valid authored setup enables before the visualizer's MID is ready"), Palette->bPaletteEnabled);
+	TestFalse(TEXT("Viewer request before BeginPlay is ignored"), Palette->TryViewerPaletteAt(TEXT("ice"), 1000));
+	TestFalse(TEXT("Pre-play request does not bind the receiver"), Receiver->OnCommandReceived.GetAllObjects().Contains(Palette));
+	Palette->RegisterAllComponentTickFunctions(true);
+	Palette->BeginPlay();
+	TestTrue(TEXT("Component startup retains the authored opt-in"), Palette->bPaletteEnabled);
+	TestTrue(TEXT("BeginPlay binds the receiver"), Receiver->OnCommandReceived.GetAllObjects().Contains(Palette));
+	TestFalse(TEXT("Early request safely waits for displayed material initialization"), Palette->TryViewerPaletteAt(TEXT("ice"), 1000));
+	TestEqual(TEXT("Early request does not consume cooldown"), Palette->ViewerCooldownRemainingAt(1000), 0.0);
+	TestTrue(TEXT("Visualizer initializes its displayed material"), F.Actor->RebuildInstances());
+	Palette->SetPaletteEnabled(true);
+	Palette->SetPaletteEnabled(true);
+	TestEqual(TEXT("Repeated enabling retains one palette listener"), Receiver->OnCommandReceived.GetAllObjects().Num(), 1);
+	Palette->LastError = TEXT("Unrelated commands leave palette feedback alone");
+	Receiver->OnCommandReceived.Broadcast(TEXT("pulse"), TEXT("gentle"));
+	Receiver->OnCommandReceived.Broadcast(TEXT("test"), TEXT("hello"));
+	Receiver->OnCommandReceived.Broadcast(TEXT("PALETTE"), TEXT("ice"));
+	TestTrue(TEXT("Pulse and test are ignored"), Palette->SelectedPaletteId.IsNone());
+	TestEqual(TEXT("Unrelated commands preserve feedback"), Palette->LastError,
+		FString(TEXT("Unrelated commands leave palette feedback alone")));
+	Receiver->ConnectionStatus = TEXT("ready");
+	TestFalse(TEXT("Receiver readiness uses its exact status"), Palette->TryViewerPaletteAt(TEXT("ice"), 1000));
+	Receiver->ConnectionStatus = TEXT("Ready");
+	for (const auto& Value : {TEXT("ICE"), TEXT("Ice"), TEXT("unknown"), TEXT("ice extra"), TEXT(" ice"), TEXT("ice "), TEXT("")})
+		TestFalse(TEXT("Only canonical viewer values are allowed"), Palette->TryViewerPaletteAt(Value, 1000));
+	TestEqual(TEXT("Invalid requests do not consume cooldown"), Palette->ViewerCooldownRemainingAt(1000), 0.0);
+	TestTrue(TEXT("First viewer request works immediately"), Palette->TryViewerPaletteAt(TEXT("ice"), 1000));
+	TestEqual(TEXT("First accepted request counted once"), Palette->AcceptedViewerPaletteCount, 1);
+	TestEqual(TEXT("Viewer palette cooldown is 15 seconds"), Palette->ViewerCooldownRemainingAt(1000), 15.0);
+	TestFalse(TEXT("Burst request rejected"), Palette->TryViewerPaletteAt(TEXT("ember"), 1000.1));
+	TestFalse(TEXT("Request just before cooldown boundary rejected"), Palette->TryViewerPaletteAt(TEXT("ember"), 1014.999));
+	TestEqual(TEXT("Rejected requests preserve blend clock"), Palette->BlendStartedAt, 1000.0);
+	TestFalse(TEXT("Same target at boundary remains a no-op"), Palette->TryViewerPaletteAt(TEXT("ice"), 1015));
+	TestEqual(TEXT("No-op preserves acceptance time"), Palette->LastViewerAcceptedAt, 1000.0);
+	TestTrue(TEXT("Different target accepted at exact cooldown boundary"), Palette->TryViewerPaletteAt(TEXT("sunset"), 1015));
+	TestEqual(TEXT("Boundary acceptance counted"), Palette->AcceptedViewerPaletteCount, 2);
+	Palette->SetViewerPalettesEnabled(false);
+	TestFalse(TEXT("Viewer lock rejects a new request"), Palette->TryViewerPaletteAt(TEXT("ember"), 1030));
+	TestTrue(TEXT("Accepted transition finishes through a viewer lock"), Palette->AdvanceBlend(1015.5));
+	Colors(*this, F.Actor, Defaults->Presets[1].LowColor, Defaults->Presets[1].HighColor);
+	TestTrue(TEXT("Local selection bypasses viewer lock and cooldown"), Palette->SelectPaletteAt(TEXT("ember"), 1016));
+	Palette->AdvanceBlend(1016.5);
+	TestTrue(TEXT("Local reset bypasses viewer lock and cooldown"), Palette->ResetPaletteAt(1017));
+	Palette->AdvanceBlend(1017.5);
+	TestEqual(TEXT("Local selection and reset preserve viewer cooldown"), Palette->LastViewerAcceptedAt, 1015.0);
+	TestEqual(TEXT("Local controls do not count as viewer accepts"), Palette->AcceptedViewerPaletteCount, 2);
+	Palette->SetPaletteEnabled(false);
+	TestFalse(TEXT("Overall feature disable rejects viewer requests"), Palette->TryViewerPaletteAt(TEXT("next"), 1018));
+	Palette->SetPaletteEnabled(true);
+	Palette->SetViewerPalettesEnabled(true);
+	TestFalse(TEXT("Disable/re-enable does not bypass cooldown"), Palette->TryViewerPaletteAt(TEXT("next"), 1018));
+	TestTrue(TEXT("Bare palette selects first preset after reset"), Palette->TryViewerPaletteAt(TEXT("next"), 1030));
+	TestEqual(TEXT("Bare palette target is Neon"), Palette->SelectedPaletteId, FName(TEXT("neon")));
+	Receiver->Disconnect();
+	TestTrue(TEXT("Accepted transition finishes through disconnect"), Palette->AdvanceBlend(1030.5));
+	Colors(*this, F.Actor, Defaults->Presets[0].LowColor, Defaults->Presets[0].HighColor);
+	TestFalse(TEXT("Disconnected viewer request rejected"), Palette->TryViewerPaletteAt(TEXT("sunset"), 1045));
+	TestTrue(TEXT("Local palette remains available while disconnected"), Palette->SelectPaletteAt(TEXT("ice"), 1031));
+	Palette->AdvanceBlend(1031.5);
+	Receiver->ConnectionStatus = TEXT("Ready");
+	TestEqual(TEXT("Reconnect does not replay a request"), Palette->AcceptedViewerPaletteCount, 3);
+	TestEqual(TEXT("Reconnect retains local palette"), Palette->SelectedPaletteId, FName(TEXT("ice")));
+	TestTrue(TEXT("Fresh request accepted after reconnect"), Palette->TryViewerPaletteAt(TEXT("sunset"), 1045));
+	F.Manager->StreamerBot = nullptr;
+	TestFalse(TEXT("Missing receiver safely rejects viewer requests"), Palette->TryViewerPaletteAt(TEXT("next"), 1060));
+	F.Manager->StreamerBot = Receiver;
+	auto* InvalidAsset = NewObject<URTCQTPalettePresets>(F.Manager);
+	InvalidAsset->Presets.RemoveAll([](const auto& Preset) { return Preset.Id == TEXT("ice"); });
+	Palette->PresetAsset = InvalidAsset;
+	TestFalse(TEXT("Unconfigured named preset is rejected"), Palette->TryViewerPaletteAt(TEXT("ice"), 1060));
+	InvalidAsset->Presets.Reset();
+	TestFalse(TEXT("Invalid catalog rejects viewer requests"), Palette->TryViewerPaletteAt(TEXT("next"), 1060));
+	TestEqual(TEXT("Invalid catalog preserves acceptance time"), Palette->LastViewerAcceptedAt, 1045.0);
+	TestEqual(TEXT("Invalid catalog preserves accepted count"), Palette->AcceptedViewerPaletteCount, 4);
+	Palette->PresetAsset = nullptr;
+	Palette->EndPlay(EEndPlayReason::EndPlayInEditor);
+	TestFalse(TEXT("EndPlay removes the receiver binding"), Receiver->OnCommandReceived.GetAllObjects().Contains(Palette));
+	TestFalse(TEXT("EndPlay restores authored colors"), F.Actor->HasRuntimePaletteOverride());
+	Colors(*this, F.Actor, AuthoredLow, AuthoredHigh);
+	Receiver->OnCommandReceived.Broadcast(TEXT("palette"), TEXT("ember"));
+	TestTrue(TEXT("An event after EndPlay has no effect"), Palette->SelectedPaletteId.IsNone());
+	Palette->SetPaletteEnabled(true);
+	Palette->BeginPlay();
+	TestEqual(TEXT("New session has no prior viewer cooldown"), Palette->ViewerCooldownRemainingAt(2000), 0.0);
+	TestEqual(TEXT("New session has no accepted requests"), Palette->AcceptedViewerPaletteCount, 0);
+	Receiver->OnCommandReceived.Broadcast(TEXT("palette"), TEXT("ember"));
+	Receiver->OnCommandReceived.Broadcast(TEXT("palette"), TEXT("ember"));
+	TestEqual(TEXT("Delegate routes one changed request"), Palette->AcceptedViewerPaletteCount, 1);
+	TestEqual(TEXT("Delegate selects named palette"), Palette->SelectedPaletteId, FName(TEXT("ember")));
+	Palette->EndPlay(EEndPlayReason::EndPlayInEditor);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRTCQTPalettePlaybackPersistenceTest, "RTCQT.Palette.MusicLabSwitchRestartAndPause",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRTCQTPalettePlaybackPersistenceTest::RunTest(const FString& Parameters)
+{
+	using namespace RTCQTPaletteTests;
+	FFixture F;
+	GEngine->CreateNewWorldContext(EWorldType::Game).SetCurrentWorld(F.World);
+	F.Manager->Catalog = NewObject<URTCQTMusicCatalog>(F.Manager);
+	for (const int32 Count : {16, 64, 32})
+	{
+		FRTCQTMusicTrack Track;
+		Track.Id = FString::FromInt(Count);
+		Track.Label = Track.Id;
+		Track.Analyzer = F.MakeAnalyzer(Count);
+		Track.SoundWave = Track.Analyzer->Sound;
+		F.Manager->Catalog->Tracks.Add(Track);
+	}
+	auto* Palette = F.Palette;
+	Palette->SetPaletteEnabled(true);
+	const auto& Ice = GetDefault<URTCQTPalettePresets>()->Presets[2];
+	F.Actor->SetActorScale3D(FVector(1.15));
+	const auto PulseTransform = F.Actor->GetActorTransform();
+	TestTrue(TEXT("Begin palette transition before playback"), Palette->SelectPaletteAt(TEXT("ice"), 1000));
+	TestTrue(TEXT("Select 16-band track through Music Lab"), F.Manager->SelectTrack(TEXT("16")));
+	auto* InitialAudio = F.Manager->AudioComponent.Get();
+	InitialAudio->OnAudioPlaybackPercentNative.Broadcast(InitialAudio, F.Manager->CurrentTrack.SoundWave, 0.f);
+	Palette->AdvanceBlend(1000.25);
+	const auto MidLow = FMath::LerpStable(AuthoredLow, Ice.LowColor, 0.5f);
+	const auto MidHigh = FMath::LerpStable(AuthoredHigh, Ice.HighColor, 0.5f);
+	Colors(*this, F.Actor, MidLow, MidHigh);
+	TestEqual(TEXT("16 analyzed instances rendered"), F.Instances->GetInstanceCount(), 16);
+	TestTrue(TEXT("Switch to 64 bands during transition"), F.Manager->SelectTrack(TEXT("64")));
+	TestTrue(TEXT("Track switch replaced the audio component"), F.Manager->AudioComponent != InitialAudio);
+	F.Manager->AudioComponent->OnAudioPlaybackPercentNative.Broadcast(
+		F.Manager->AudioComponent, F.Manager->CurrentTrack.SoundWave, 0.f);
+	Colors(*this, F.Actor, MidLow, MidHigh);
+	TestEqual(TEXT("64 analyzed instances rendered"), F.Instances->GetInstanceCount(), 64);
+	Palette->AdvanceBlend(1000.5);
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	auto* BeforeRestart = F.Manager->AudioComponent.Get();
+	TestTrue(TEXT("Restart current track through Music Lab"), F.Manager->Restart());
+	TestTrue(TEXT("Same-track restart replaced the audio component"), F.Manager->AudioComponent != BeforeRestart);
+	F.Manager->AudioComponent->OnAudioPlaybackPercentNative.Broadcast(
+		F.Manager->AudioComponent, F.Manager->CurrentTrack.SoundWave, 0.f);
+	TestEqual(TEXT("Selection survives restart"), Palette->SelectedPaletteId, FName(TEXT("ice")));
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	F.Manager->TogglePlayPause();
+	TestTrue(TEXT("Music Lab is paused"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Paused);
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	F.Manager->TogglePlayPause();
+	TestTrue(TEXT("Music Lab resumed"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Playing);
+	TestTrue(TEXT("Switch to 32-band track"), F.Manager->SelectTrack(TEXT("32")));
+	auto* CurrentAudio = F.Manager->AudioComponent.Get();
+	CurrentAudio->OnAudioPlaybackPercentNative.Broadcast(CurrentAudio, F.Manager->CurrentTrack.SoundWave, 0.f);
+	TestEqual(TEXT("32 analyzed instances rendered"), F.Instances->GetInstanceCount(), 32);
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	TestFalse(TEXT("Invalid track rejected"), F.Manager->SelectTrack(TEXT("missing")));
+	TestTrue(TEXT("Invalid track preserves current audio"), F.Manager->AudioComponent == CurrentAudio);
+	TestEqual(TEXT("Invalid track preserves palette selection"), Palette->SelectedPaletteId, FName(TEXT("ice")));
+	CurrentAudio->OnAudioFinishedNative.Broadcast(CurrentAudio);
+	TestTrue(TEXT("Music Lab reports completion"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Stopped);
+	TestEqual(TEXT("Completion clears geometry"), F.Instances->GetInstanceCount(), 0);
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	TestTrue(TEXT("Restart after completion succeeds"), F.Manager->Restart());
+	F.Manager->AudioComponent->OnAudioPlaybackPercentNative.Broadcast(
+		F.Manager->AudioComponent, F.Manager->CurrentTrack.SoundWave, 0.f);
+	Colors(*this, F.Actor, Ice.LowColor, Ice.HighColor);
+	TestTrue(TEXT("Palette and playback changes preserve pulse actor transform"), F.Actor->GetActorTransform().Equals(PulseTransform));
+	auto* AudioBeforeReset = F.Manager->AudioComponent.Get();
+	const int32 CallbacksBeforeReset = F.Manager->PlaybackCallbackCount;
+	TestTrue(TEXT("Reset palette while playback continues"), Palette->ResetPaletteAt(1001));
+	Palette->AdvanceBlend(1001.5);
+	Colors(*this, F.Actor, AuthoredLow, AuthoredHigh);
+	TestTrue(TEXT("Reset does not restart audio"), F.Manager->AudioComponent == AudioBeforeReset);
+	TestEqual(TEXT("Reset does not manufacture an analysis callback"), F.Manager->PlaybackCallbackCount, CallbacksBeforeReset);
+	TestTrue(TEXT("Reset leaves playback active"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Playing);
+	F.World->DestroyWorld(false);
+	GEngine->DestroyWorldContext(F.World);
+	F.World = nullptr;
 	return true;
 }
 

@@ -1,9 +1,10 @@
 # Unreal palette switching: implementation and concurrent work plan
 
 Prepared 2026-10-15 for `C:\Users\camch\source\RTCQT\RTCQT.uproject`, UE 5.8.
-Status: step 1 source is implemented and passed its native build and the full
-32-test RTCQT automation suite on 2026-10-15. Local UI, palette chat handling,
-asset setup, and human visual/playback review remain later integration work.
+Status: steps 1 and 2 are implemented and passed native builds and the full
+34-test RTCQT automation suite on 2026-10-15. Local UI, receiver palette
+allowlisting, asset setup, and human visual/playback review remain later
+integration work.
 
 Cam continues [the pulse walkthrough](streamerbot_pulse_command.md). Dex builds
 the Unreal palette feature alongside that work. Both features compose on the
@@ -43,6 +44,26 @@ selection blends from the currently displayed colors for 0.5 seconds, and
 reset clears the override after blending to the material's authored defaults.
 Disable restores authored colors immediately. `Last Error` reports invalid
 setup or input. The visualizer itself retains its non-ticking music pipeline.
+
+Step 2 adds a viewer-only request path, a separate Viewer Palettes Enabled
+gate, a 15-second palette cooldown, and one receiver listener per component
+lifetime. Local selection/cycling/reset bypass the viewer lock and cooldown
+without clearing the last accepted viewer timestamp. An accepted transition
+finishes through a viewer lock or receiver disconnect. EndPlay unbinds the
+receiver and clears session state. The component ignores pulse/test events.
+Setup validates authored material parameters without depending on which
+actor begins play first; early requests before the displayed material is
+ready are rejected without changing the selection or consuming cooldown.
+
+The new `RTCQT.Palette.ViewerGateCooldownAndLifecycle` test covers those rules.
+`RTCQT.Palette.MusicLabSwitchRestartAndPause` exercises the manager's actual
+track-selection, restart, pause/resume, and completion methods with synthetic
+16/64/32-band audio/analyzer pairs, including a switch mid-blend. Both passed
+without warnings in the full 34-test run: 33 clean successes, one success with
+the existing Music Lab material-fallback warning, zero failures or unrun
+tests. See the [step 2 evidence](../evidence/viewer-interactions/palette-step2.md).
+The receiver still accepts only test and pulse payloads; adding its palette
+allowlist remains implementation step 4.
 
 ## Starting point checked
 
