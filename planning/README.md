@@ -8,6 +8,9 @@ following the structure used in the D2RSO Python planning folder.
 - `csv/rtcqt_stream_roadmap_import.csv`: epic-level outcomes for a Roadmap board.
 - `csv/rtcqt_stream_delivery_import.csv`: implementation-ready cards for a Delivery board.
 - `documents/stream_roadmap_to_daily.md`: board rules, milestone map, and definitions of ready and done.
+- `documents/viewer_chat_interactions_plan.md`: proposed Music Lab palette, shape, and pulse commands through Streamer.bot, with implementation and stream-rehearsal gates.
+- `documents/streamerbot_first_command.md`: command/action setup and the native Unreal connection test; paste-in code is in `streamerbot/RTCQTTestCommand.cs`.
+- `documents/streamerbot_pulse_command.md`: full walkthrough for adding a Blueprint pulse, extending the receiver, and wiring `!pulse` through Streamer.bot; paste-in code is in `streamerbot/RTCQTPulseCommand.cs`.
 
 ## Suggested GitHub Projects setup
 

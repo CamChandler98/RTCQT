@@ -21,8 +21,11 @@ public class RTCQT : ModuleRules
 		{
 			"AudioSynesthesia",
 			"AudioAnalyzer",
-			"AudioSynesthesiaCore"
+			"AudioSynesthesiaCore",
+			"WebSockets",
+			"Json"
 		});
+		AddEngineThirdPartyPrivateStaticDependencies(Target, "OpenSSL");
 
 		// The actor's property setter is engine-only. Real sequence integration
 		// fixtures compile only with editor development automation.

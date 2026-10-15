@@ -10,6 +10,7 @@ class UConstantQNRT;
 class UAudioComponent;
 class ARTCQTVisualizer;
 class URTCQTMusicLabControls;
+class URTCQTStreamerBotComponent;
 
 USTRUCT(BlueprintType)
 struct RTCQT_API FRTCQTMusicTrack
@@ -40,6 +41,8 @@ class RTCQT_API ARTCQTMusicLabManager : public AActor
 	GENERATED_BODY()
 public:
 	ARTCQTMusicLabManager();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RTCQT|Chat")
+	TObjectPtr<URTCQTStreamerBotComponent> StreamerBot;
 	UFUNCTION(BlueprintCallable) bool SelectTrack(const FString& TrackId);
 	UFUNCTION(BlueprintCallable) bool Restart();
 	UFUNCTION(BlueprintCallable) void TogglePlayPause();
