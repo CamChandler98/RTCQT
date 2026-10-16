@@ -28,10 +28,10 @@ public class RTCQT : ModuleRules
 		AddEngineThirdPartyPrivateStaticDependencies(Target, "OpenSSL");
 
 		// The actor's property setter is engine-only. Real sequence integration
-		// fixtures compile only with editor development automation.
+		// fixtures and offscreen widget capture compile only with editor automation.
 		if (Target.bBuildEditor)
 		{
-			PrivateDependencyModuleNames.AddRange(new[] { "LevelSequence", "MovieScene", "MovieSceneTracks" });
+			PrivateDependencyModuleNames.AddRange(new[] { "LevelSequence", "MovieScene", "MovieSceneTracks", "RenderCore", "ImageCore" });
 		}
 	}
 }

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "RTCQTPalettePresets.h"
 #include "RTCQTPaletteComponent.generated.h"
 
 class ARTCQTVisualizer;
@@ -32,6 +33,9 @@ public:
 	void SetViewerPalettesEnabled(bool bNewEnabled);
 	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
 	float GetViewerPaletteCooldownRemaining() const;
+	/** Validated copies for local controls; an invalid catalog supplies no choices. */
+	UFUNCTION(BlueprintPure, Category = "RTCQT|Palette")
+	TArray<FRTCQTPalettePreset> GetAvailablePalettes() const;
 
 	/** Disabled by default; changing this at runtime uses the same setup checks. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintSetter = SetPaletteEnabled, Category = "RTCQT|Palette")
@@ -66,6 +70,7 @@ private:
 	friend class FRTCQTPaletteTransitionsTest;
 	friend class FRTCQTPaletteViewerControlsTest;
 	friend class FRTCQTPalettePlaybackPersistenceTest;
+	friend class FRTCQTPaletteControlsTest;
 	const URTCQTPalettePresets* GetPresets() const;
 	ARTCQTVisualizer* GetVisualizer() const;
 	URTCQTStreamerBotComponent* GetReceiver() const;

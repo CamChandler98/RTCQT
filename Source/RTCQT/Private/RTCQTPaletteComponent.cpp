@@ -18,6 +18,12 @@ const URTCQTPalettePresets* URTCQTPaletteComponent::GetPresets() const
 	return PresetAsset ? PresetAsset.Get() : GetDefault<URTCQTPalettePresets>();
 }
 
+TArray<FRTCQTPalettePreset> URTCQTPaletteComponent::GetAvailablePalettes() const
+{
+	FString Error;
+	return GetPresets()->ValidatePresets(Error) ? GetPresets()->Presets : TArray<FRTCQTPalettePreset>();
+}
+
 ARTCQTVisualizer* URTCQTPaletteComponent::GetVisualizer() const
 {
 	const auto* Manager = Cast<ARTCQTMusicLabManager>(GetOwner());

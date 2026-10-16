@@ -1,10 +1,11 @@
 # Unreal palette switching: implementation and concurrent work plan
 
 Prepared 2026-10-15 for `C:\Users\camch\source\RTCQT\RTCQT.uproject`, UE 5.8.
-Status: steps 1 and 2 are implemented and passed native builds and the full
-34-test RTCQT automation suite on 2026-10-15. Local UI, receiver palette
-allowlisting, asset setup, and human visual/playback review remain later
-integration work.
+Status: steps 1 through 3 are implemented and passed native builds and the
+full 35-test RTCQT automation suite on 2026-10-15. The local UI has rendered
+verification and dedicated preset setup passed real asset checks. Cam's
+saved level assignment, human visual/playback review, and step 4 receiver
+palette allowlisting remain pending.
 
 Cam continues [the pulse walkthrough](streamerbot_pulse_command.md). Dex builds
 the Unreal palette feature alongside that work. Both features compose on the
@@ -38,8 +39,8 @@ Music Lab Manager -> Palette
   -> Reset Palette()
 ```
 
-These calls are the local integration points; no preview keys or palette
-widgets are installed in this step. The component starts disabled. Each
+These calls are the local integration points, now also used by step 3's
+native palette panel. The component starts disabled. Each
 selection blends from the currently displayed colors for 0.5 seconds, and
 reset clears the override after blending to the material's authored defaults.
 Disable restores authored colors immediately. `Last Error` reports invalid
@@ -64,6 +65,24 @@ the existing Music Lab material-fallback warning, zero failures or unrun
 tests. See the [step 2 evidence](../evidence/viewer-interactions/palette-step2.md).
 The receiver still accepts only test and pulse payloads; adding its palette
 allowlist remains implementation step 4.
+
+Step 3 adds the native palette dropdown, feature opt-in, Next/Reset,
+palette-only viewer checkbox, synchronized status, and brief feedback while
+retaining the track and playback controls. `RTCQT.Palette.Controls` passed
+both headlessly in the full 35-test suite and with offscreen rendering. It
+covers local/viewer synchronization, duplicate artist labels, rejected
+setup, widget rebuilds, and unchanged playback. The full run had 34 clean
+successes and the one existing Music Lab fallback warning, with zero failed
+or unrun tests.
+
+`setup_palette_presets.py` created the dedicated DataAsset and preserves
+artist colors/labels on reruns. Real asset verification passed reuse,
+explicit default reset, and ownership checks without saving the level or
+Blueprints. Follow [the step 3 handoff](streamerbot_palette_controls.md) to
+assign `/Game/Audio/PrivateTest/MusicLab/DA_MusicLabPalettes` and enable the
+placed manager's Palette component. The saved instance settings and human
+combined palette/pulse/music/restart gates remain Cam's integration work.
+See [step 3 evidence](../evidence/viewer-interactions/palette-step3.md).
 
 ## Starting point checked
 

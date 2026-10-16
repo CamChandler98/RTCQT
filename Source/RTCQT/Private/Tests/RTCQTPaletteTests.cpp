@@ -2,20 +2,33 @@
 
 #include "RTCQTMaterialParameters.h"
 #include "RTCQTMusicLabManager.h"
+#include "RTCQTMusicLabControls.h"
 #include "RTCQTPaletteComponent.h"
 #include "RTCQTPalettePresets.h"
 #include "RTCQTResponseSettings.h"
 #include "RTCQTStreamerBotComponent.h"
 #include "RTCQTVisualizer.h"
 #include "Components/AudioComponent.h"
+#include "Components/Button.h"
+#include "Components/CheckBox.h"
+#include "Components/TextBlock.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "ConstantQNRT.h"
 #include "ConstantQNRTFactory.h"
 #include "Engine/Level.h"
 #include "Engine/Engine.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "Engine/World.h"
 #include "InstancedStaticMeshDelegates.h"
+#include "HAL/FileManager.h"
+#include "ImageUtils.h"
+#include "Misc/App.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Paths.h"
+#include "Misc/Parse.h"
+#include "RenderingThread.h"
+#include "Slate/WidgetRenderer.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialExpressionScalarParameter.h"
 #include "Materials/MaterialExpressionVectorParameter.h"
@@ -65,6 +78,7 @@ struct FFixture
 	UMaterial* Parent;
 	UConstantQNRT* Analyzer;
 	URTCQTPaletteComponent* Palette;
+	bool bOwnsWorldContext = false;
 
 	FFixture()
 	{
@@ -95,7 +109,19 @@ struct FFixture
 		Palette = Manager->Palette;
 	}
 
-	~FFixture() { if (World) World->DestroyWorld(false); }
+	~FFixture()
+	{
+		if (World)
+		{
+			World->DestroyWorld(false);
+			if (bOwnsWorldContext) GEngine->DestroyWorldContext(World);
+		}
+	}
+	void AddWorldContext()
+	{
+		GEngine->CreateNewWorldContext(EWorldType::Game).SetCurrentWorld(World);
+		bOwnsWorldContext = true;
+	}
 
 	UConstantQNRT* MakeAnalyzer(int32 Count)
 	{
@@ -132,6 +158,22 @@ void Colors(FAutomationTestBase& Test, ARTCQTVisualizer* Actor, const FLinearCol
 	Test.TestTrue(TEXT("Displayed palette is readable"), Actor->GetDisplayedPaletteColors(ActualLow, ActualHigh));
 	Test.TestTrue(TEXT("Displayed low color matches"), ActualLow.Equals(Low, 1.e-6f));
 	Test.TestTrue(TEXT("Displayed high color matches"), ActualHigh.Equals(High, 1.e-6f));
+}
+
+void CaptureControls(FAutomationTestBase& Test, const TSharedRef<SWidget>& Widget, const TCHAR* Name)
+{
+	if (!FParse::Param(FCommandLine::Get(), TEXT("RTCQTPaletteCaptureUI"))) return;
+	if (!Test.TestTrue(TEXT("Requested UI capture has rendering enabled"), FApp::CanEverRender())) return;
+	FWidgetRenderer Renderer(true);
+	auto* Target = Renderer.DrawWidget(Widget, FVector2D(640, 720));
+	if (!Test.TestNotNull(TEXT("Widget render target exists"), Target)) return;
+	FlushRenderingCommands();
+	FImage Image;
+	if (!Test.TestTrue(TEXT("Rendered widget pixels are readable"), FImageUtils::GetRenderTargetImage(Target, Image))) return;
+	const FString Directory = FPaths::Combine(FPaths::ProjectSavedDir(), TEXT("Automation/PaletteStep3/captures"));
+	IFileManager::Get().MakeDirectory(*Directory, true);
+	const FString Path = FPaths::Combine(Directory, FString(Name) + TEXT(".png"));
+	Test.TestTrue(TEXT("Widget screenshot saved"), FImageUtils::SaveImageByExtension(*Path, Image));
 }
 }
 
@@ -547,6 +589,105 @@ bool FRTCQTPalettePlaybackPersistenceTest::RunTest(const FString& Parameters)
 	F.World->DestroyWorld(false);
 	GEngine->DestroyWorldContext(F.World);
 	F.World = nullptr;
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FRTCQTPaletteControlsTest, "RTCQT.Palette.Controls",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FRTCQTPaletteControlsTest::RunTest(const FString& Parameters)
+{
+	using namespace RTCQTPaletteTests;
+	FFixture F;
+	F.AddWorldContext();
+	F.Manager->Catalog = NewObject<URTCQTMusicCatalog>(F.Manager);
+	FRTCQTMusicTrack Track;
+	Track.Id = TEXT("fixture");
+	Track.Label = TEXT("Synthetic test track");
+	Track.Analyzer = F.Analyzer;
+	Track.SoundWave = F.Analyzer->Sound;
+	F.Manager->Catalog->Tracks.Add(Track);
+	TestTrue(TEXT("Playback is active before constructing controls"), F.Manager->SelectTrack(Track.Id));
+	auto* Audio = F.Manager->AudioComponent.Get();
+	const int32 CallbackCount = F.Manager->PlaybackCallbackCount;
+	F.Palette->RegisterAllComponentTickFunctions(true);
+	F.Palette->BeginPlay();
+	auto* Controls = NewObject<URTCQTMusicLabControls>(F.World);
+	Controls->Manager = F.Manager;
+	TestTrue(TEXT("Native widget initializes"), Controls->Initialize());
+	TSharedPtr<SWidget> Slate = Controls->TakeWidget();
+	Controls->NativeTick(FGeometry(), 0.f);
+	TestEqual(TEXT("Track choices remain available"), Controls->GetTrackDropdown()->GetOptionCount(), 1);
+	TestEqual(TEXT("Palette choices include authored colors plus four presets"), Controls->GetPaletteDropdown()->GetOptionCount(), 5);
+	TestFalse(TEXT("UI starts with palette opt-in off"), Controls->PaletteEnabled->IsChecked());
+	TestFalse(TEXT("Palette dropdown is disabled until enabled"), Controls->PaletteDropdown->GetIsEnabled());
+	TestTrue(TEXT("Initial UI synchronization does not select a palette"), F.Palette->SelectedPaletteId.IsNone());
+	TestFalse(TEXT("Initial UI synchronization does not apply a color override"), F.Actor->HasRuntimePaletteOverride());
+	CaptureControls(*this, Slate.ToSharedRef(), TEXT("01-disabled"));
+	Controls->PaletteEnabled->OnCheckStateChanged.Broadcast(true);
+	TestTrue(TEXT("Feature checkbox enables the component"), F.Palette->bPaletteEnabled);
+	TestTrue(TEXT("Enabled palette dropdown accepts input"), Controls->PaletteDropdown->GetIsEnabled());
+	Controls->PaletteDropdown->SetSelectedOption(TEXT("Ice"));
+	TestTrue(TEXT("Programmatic selection has no effect"), F.Palette->SelectedPaletteId.IsNone());
+	Controls->PaletteDropdown->OnSelectionChanged.Broadcast(TEXT("Ice"), ESelectInfo::OnMouseClick);
+	TestEqual(TEXT("User selection maps to stable palette ID"), F.Palette->SelectedPaletteId, FName(TEXT("ice")));
+	TestEqual(TEXT("Dropdown follows local selection"), Controls->PaletteDropdown->GetSelectedOption(), FString(TEXT("Ice")));
+	CaptureControls(*this, Slate.ToSharedRef(), TEXT("02-ice"));
+	Controls->ViewerPalettes->OnCheckStateChanged.Broadcast(false);
+	TestFalse(TEXT("Viewer checkbox locks only viewer palettes"), F.Palette->bViewerPalettesEnabled);
+	TestTrue(TEXT("Viewer lock leaves local dropdown enabled"), Controls->PaletteDropdown->GetIsEnabled());
+	Controls->PaletteNextButton->OnClicked.Broadcast();
+	TestEqual(TEXT("Next button uses shared cycle order through viewer lock"), F.Palette->SelectedPaletteId, FName(TEXT("ember")));
+	CaptureControls(*this, Slate.ToSharedRef(), TEXT("03-viewer-locked"));
+	Controls->PaletteResetButton->OnClicked.Broadcast();
+	TestTrue(TEXT("Reset button uses authored colors"), F.Palette->SelectedPaletteId.IsNone());
+	TestEqual(TEXT("Dropdown follows reset"), Controls->PaletteDropdown->GetSelectedOption(), FString(TEXT("Authored colors")));
+	Controls->ViewerPalettes->OnCheckStateChanged.Broadcast(true);
+	F.Manager->StreamerBot->ConnectionStatus = TEXT("Ready");
+	F.Manager->StreamerBot->OnCommandReceived.Broadcast(TEXT("palette"), TEXT("ice"));
+	Controls->RefreshPaletteState();
+	TestEqual(TEXT("Dropdown follows an accepted viewer change"), Controls->PaletteDropdown->GetSelectedOption(), FString(TEXT("Ice")));
+	TestTrue(TEXT("Accepted viewer change has brief feedback"), Controls->PaletteFeedback->GetText().ToString().Contains(TEXT("viewer")));
+	Controls->RefreshPaletteState();
+	TestEqual(TEXT("Feedback synchronization does not replay requests"), F.Palette->AcceptedViewerPaletteCount, 1);
+	Controls->PaletteFeedbackUntil = FPlatformTime::Seconds() - 1;
+	Controls->RefreshPaletteState();
+	TestTrue(TEXT("Brief feedback expires"), Controls->PaletteFeedback->GetText().IsEmpty());
+	TestTrue(TEXT("External local selection is accepted during viewer cooldown"), F.Palette->SelectPalette(TEXT("sunset")));
+	Controls->RefreshPaletteState();
+	TestEqual(TEXT("Dropdown follows external local selection"), Controls->PaletteDropdown->GetSelectedOption(), FString(TEXT("Sunset")));
+	auto* ArtistAsset = NewObject<URTCQTPalettePresets>(F.Manager);
+	ArtistAsset->Presets[0].DisplayName = FText::FromString(TEXT("Same label"));
+	ArtistAsset->Presets[1].DisplayName = FText::FromString(TEXT("Same label"));
+	F.Palette->PresetAsset = ArtistAsset;
+	Controls->RefreshPaletteState();
+	Controls->PaletteDropdown->OnSelectionChanged.Broadcast(TEXT("Same label"), ESelectInfo::OnMouseClick);
+	TestEqual(TEXT("First duplicate label maps to Neon"), F.Palette->SelectedPaletteId, FName(TEXT("neon")));
+	Controls->PaletteDropdown->OnSelectionChanged.Broadcast(TEXT("Same label (2)"), ESelectInfo::OnMouseClick);
+	TestEqual(TEXT("Second duplicate label maps to Sunset"), F.Palette->SelectedPaletteId, FName(TEXT("sunset")));
+	Controls->ReleaseSlateResources(true);
+	Slate.Reset();
+	Slate = Controls->TakeWidget();
+	Controls->RefreshPaletteState();
+	TestEqual(TEXT("Widget rebuild preserves palette selection"), F.Palette->SelectedPaletteId, FName(TEXT("sunset")));
+	TestEqual(TEXT("Rebuilt dropdown has no duplicate entries"), Controls->PaletteDropdown->GetOptionCount(), 5);
+	Controls->PaletteEnabled->OnCheckStateChanged.Broadcast(false);
+	TestFalse(TEXT("Disabling from UI restores authored colors"), F.Actor->HasRuntimePaletteOverride());
+	ArtistAsset->Presets[1].Id = ArtistAsset->Presets[0].Id;
+	Controls->PaletteEnabled->OnCheckStateChanged.Broadcast(true);
+	TestFalse(TEXT("Invalid catalog cannot be enabled by the UI"), F.Palette->bPaletteEnabled);
+	TestFalse(TEXT("Checkbox reflects rejected opt-in"), Controls->PaletteEnabled->IsChecked());
+	TestFalse(TEXT("Invalid catalog leaves selection disabled"), Controls->PaletteDropdown->GetIsEnabled());
+	TestFalse(TEXT("Rejected setup has visible feedback"), Controls->PaletteFeedback->GetText().IsEmpty());
+	TestTrue(TEXT("UI did not replace the audio component"), F.Manager->AudioComponent == Audio);
+	TestEqual(TEXT("UI did not advance music analysis"), F.Manager->PlaybackCallbackCount, CallbackCount);
+	TestTrue(TEXT("UI left playback active"), F.Manager->PlaybackState == ERTCQTMusicPlaybackState::Playing);
+	Controls->Manager = nullptr;
+	Controls->RefreshPaletteState();
+	TestFalse(TEXT("Missing manager disables feature checkbox safely"), Controls->PaletteEnabled->GetIsEnabled());
+	F.Palette->EndPlay(EEndPlayReason::EndPlayInEditor);
+	Controls->ReleaseSlateResources(true);
+	Slate.Reset();
 	return true;
 }
 

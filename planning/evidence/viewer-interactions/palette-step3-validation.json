@@ -1,0 +1,92 @@
+{
+  "validation_date": "2026-10-15 America/New_York",
+  "engine": "5.8.0-55116800",
+  "build": "Succeeded",
+  "tests": {
+    "succeeded": 34,
+    "succeeded_with_warnings": 1,
+    "failed": 0,
+    "not_run": 0,
+    "in_process": 0,
+    "palette_tests": [
+      {
+        "fullTestPath": "RTCQT.Palette.Controls",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.MusicLabSwitchRestartAndPause",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.PresetsAndValidation",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.RefreshPlaybackAndMaterialReplacement",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.RuntimeColorsAndIsolation",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.TransitionsCycleAndReset",
+        "state": "Success"
+      },
+      {
+        "fullTestPath": "RTCQT.Palette.ViewerGateCooldownAndLifecycle",
+        "state": "Success"
+      }
+    ]
+  },
+  "rendered_controls": {
+    "succeeded": 1,
+    "failed": 0
+  },
+  "preset_verification": {
+    "passed": true,
+    "production_asset": "/Game/Audio/PrivateTest/MusicLab/DA_MusicLabPalettes",
+    "production_hash": "f3e073b89d6fb00af3907d3f80b2275743399b824222c6e121cd2af4e7e6e904",
+    "reused_without_save": true,
+    "artist_colors_and_labels_preserved": true,
+    "explicit_reset_restores_defaults": true,
+    "unowned_asset_refused": true,
+    "protected_asset_hashes": {
+      "C:\\Users\\camch\\source\\RTCQT\\Content\\Game\\RTCQT\\Interactions\\BP_RTCQTPulseController.uasset": "88539f3912a3b6fa4d5fc3dd0d357ff239ce6bd8b43d6629151d3e531688d9cf",
+      "C:\\Users\\camch\\source\\RTCQT\\Content\\Audio\\PrivateTest\\MusicLab\\L_MusicLab.umap": "1b0a9099c72e186afe92024758efbd82e02da16fa8393170b5533501c2f69d08"
+    },
+    "map_loaded_or_saved": false
+  },
+  "protected_files_unchanged": [
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Content\\Game\\RTCQT\\Interactions\\BP_RTCQTPulseController.uasset",
+      "Hash": "88539F3912A3B6FA4D5FC3DD0D357FF239CE6BD8B43D6629151D3E531688D9CF"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Content\\Audio\\PrivateTest\\MusicLab\\L_MusicLab.umap",
+      "Hash": "1B0A9099C72E186AFE92024758EFBD82E02DA16FA8393170B5533501C2F69D08"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Content\\Audio\\PrivateTest\\MusicLab\\BP_MusicLabManager.uasset",
+      "Hash": "7527331F708E3E68C550066B0C8F861307419AB2796F9F7A823FA72FB2BAE6F0"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Content\\Audio\\PrivateTest\\MusicLab\\WBP_MusicLabControls.uasset",
+      "Hash": "8AB19AC6B486DDF85A66D7EC9EACD59F22683CD605CD2C836301D26B94E43423"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Source\\RTCQT\\Private\\RTCQTStreamerBotComponent.cpp",
+      "Hash": "DD8118296D8DEF1E28769E1871592F02906C3C39EA6C4B9FEF458E08AC4CAE3D"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Source\\RTCQT\\Public\\RTCQTStreamerBotComponent.h",
+      "Hash": "F022E66C8D73517CA44FE3FD3E5EBD936835A607C82CC0B37CB3A9123ADE85CD"
+    },
+    {
+      "Path": "C:\\Users\\camch\\source\\RTCQT\\Source\\RTCQT\\Private\\Tests\\RTCQTStreamerBotTests.cpp",
+      "Hash": "60D7BA2C54368CF2EF0C699462D5C801CA9797D7A188EEACE68ECE69F6F794EE"
+    }
+  ],
+  "human_scene_playback_review": "pending",
+  "receiver_palette_allowlist": "step 4 pending"
+}
